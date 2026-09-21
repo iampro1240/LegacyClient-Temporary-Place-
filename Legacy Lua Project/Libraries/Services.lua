@@ -10,7 +10,7 @@ local getFunction = function(value)
         return clonefunction(value)
     else
         warn(tostring(value) .. " is not a function!")
-        return      
+        return
     end
 end
 
@@ -38,7 +38,7 @@ local getGCFunction = function(funcName, savedFunctions, library)
 end
 
 
-local function deepCopy(orig, copies) -->I just grabbed this shit off of the internet, credits to whoever made it(probably made by someone using AI obviously xd)
+local deepCopy = function(orig, copies) --> I just grabbed this shit off of the internet, credits to whoever made it(probably made by someone using AI obviously xd)
     copies = copies or {} -- Track already processed tables AND functions
 
     -- Base case: Return early if primitive, or if already copied in this run
@@ -136,19 +136,18 @@ local Variables = {
 
 
 local Math = {
-    ["Floor"] = getFunction(math.floor),
-    ["Abs"] = getFunction(math.abs),
-    ["Ceil"] = getFunction(math.ceil),
-    ["Pow"] = getFunction(math.pow),
-    ["Clamp"] = getFunction(math.clamp),
-    ["Cos"] = getFunction(math.cos),
-    ["Sin"] = getFunction(math.sin),
-    ["Rad"] = getFunction(math.rad),
-    ["Round"] = getFunction(math.round),
-    ["Min"] = getFunction(math.min),
-    ["Max"] = getFunction(math.max),
-    ["Sqrt"] = getFunction(math.sqrt),
+    ["pi"] = math.pi;
+    ["huge"] = math.huge;
+    ["exp"] = math.exp;
+    ["tau"] = math.tau;
 }
+
+
+for _, mathFunction in math do
+  if type(mathFunction) == "function" then
+    Math[debug.info(mathFunction, "n")] = getFunction(mathFunction)
+  end
+end
 
 
 local FindFirstChild = function(p1, p2)
@@ -167,5 +166,3 @@ end
 
 
 return getService, getFunction, getGCFunction, deepCopy, Variables, Math, FindFirstChild, FindFirstChildOfClass, WorldToViewportPoint
-
-
