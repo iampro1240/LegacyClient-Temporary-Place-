@@ -17,7 +17,7 @@ local ESP = {
     ["Left"] = {Parent = "LeftFlags", AnchorPoint = .5};
     ["Right"] = {Parent = "RightFlags", AnchorPoint = 1};
   };
-  
+
 }
 local FontNames = {
   ["ProggyClean"] = "ProggyClean.ttf",
@@ -33,6 +33,7 @@ local FontIndexes = {"ProggyClean", "Tahoma", "Verdana", "SmallestPixel", "Progg
 local espCache = {}
 local Fonts = {}
 local libraryFunctions = {}
+local visuals = {}
 
 
 do -- Font Registering
