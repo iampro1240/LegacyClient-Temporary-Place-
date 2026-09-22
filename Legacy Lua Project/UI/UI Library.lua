@@ -1830,7 +1830,7 @@
   				image = "rbxassetid://115194686863276",
   			})
   
-  			local watermark = library:watermark({default = os.date('DankHaxx |  - %b %d %Y - %H:%M:%S')})  
+  			local watermark = library:watermark({default = os.date('LegacyHaxx |  - %b %d %Y - %H:%M:%S')})  
   			local function color3ToHex(color)
                 local r = math.floor(color.R * 255)
                 local g = math.floor(color.G * 255)
@@ -1838,21 +1838,19 @@
                return string.format("#%02X%02X%02X", r, g, b)
   			end
   
-  			local player = game:GetService("Players").LocalPlayer
-              task.spawn(function()
-                  while task.wait() do 
-                      local hexColor = color3ToHex(themes.preset.accent)
-                      local timeString = os.date('%b %d %Y - %H:%M:%S')
+  			local player = players.LocalPlayer
+        task.spawn(function()
+          run.PreRender:Connect(function()
+            local hexColor = color3ToHex(themes.preset.accent)
+            local timeString = os.date('%b %d %Y - %H:%M:%S')
+            local ping = math.floor(player:GetNetworkPing() * 1000)
+            local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
                       
-                      -- Get the player's ping in milliseconds and round it to a whole number
-                      local ping = math.floor(player:GetNetworkPing() * 1000)
-                      
-                      -- Combine the hex color, time, and ping into the final string
-                      local richTextString = string.format("Dank<font color='%s'>Haxx</font> - %s - Ping: %sms", hexColor, timeString, tostring(ping))
-                      
-                      watermark.change_text(richTextString)
-                  end 
-              end)
+                    
+            local richTextString = string.format("Legacy<font color='%s'>Haxx</font> | %s | %s | Ping: %sms", hexColor, gameName, timeString, tostring(ping))
+            watermark.change_text(richTextString)
+          end)
+        end)
   
   			local items = style.items
   
@@ -2071,7 +2069,7 @@
 			local holder = library:panel({
 				name = "ESP Preview", 
 				anchor_point = vec2(0, 0),
-				size = dim2(0, 250, 0, 325),
+				size = dim2(0, 252, 0, 325),
 				position = dim2(0, style.items.main_holder.AbsolutePosition.X, 0, style.items.main_holder.AbsolutePosition.Y + style.items.main_holder.AbsoluteSize.Y + 2),
 				image = "rbxassetid://77684377836328",
 			})  
@@ -2216,7 +2214,7 @@
   	function library:esp_preview(properties)
   		local cfg = {items = {}, rotation = 0; objects = {};}
   		lp.Character.Archivable = true
-		local character = lp.Character:Clone()
+		  local character = lp.Character:Clone()
   		--character.Animate:Destroy()
   
   		local items = cfg.items; do 
@@ -2245,10 +2243,10 @@
   
   			items.camera.CameraSubject = character
   
-  			library:connection(run.RenderStepped, function()
+  			library:connection(run.PreRender, function()
   				task.wait()
   				cfg.rotation += 0.1
-  				character:SetPrimaryPartCFrame(cfr(Vector3.new(0, 0, -6)) * angle(0, math.rad(cfg.rotation), 0))
+  				character:SetPrimaryPartCFrame(cfr(Vector3.new(0, .4, -6)) * angle(0, math.rad(cfg.rotation), 0))
   			end)
   		end 
   
@@ -2257,7 +2255,7 @@
   				Parent = items.viewportframe;
   				Name = "\0";
   				BackgroundTransparency = 1;
-  				Position = dim2(0.5, 0, 0.55, 10);
+  				Position = dim2(.51, 0, .5, 10);
   				BorderColor3 = rgb(0, 0, 0);
   				Size = dim2(0, 135, 0, 190);
   				BorderSizePixel = 0;
@@ -2328,9 +2326,9 @@
   			});
 
 			objects[ "boxFill" ] = library:create( "UIGradient" , {
-  				Parent = objects[ "boxFillHolder" ];
+  				Parent = objects[ "box_handler" ];
   				Name = "\0";
-				Enabled = true;
+				  Enabled = true;
   				Color = ColorSequence.new{ColorSequenceKeypoint.new(0, rgb(255, 255, 255)), ColorSequenceKeypoint.new(1, rgb(255, 255, 255))};
   			});
   			
@@ -2338,7 +2336,6 @@
   				Parent = objects[ "outline" ];
   				LineJoinMode = Enum.LineJoinMode.Miter
   			});  
-			warn(objects[ "boxFill" ].Color)
   			
   			-- Corner Boxes
   				objects[ "corners" ] = library:create( "Frame" , {
@@ -2535,6 +2532,13 @@
   					BorderSizePixel = 0;
   					BackgroundColor3 = rgb(255, 255, 255)
   				});
+
+          objects[ "gradient" ] = library:create( "UIGradient" , {
+  					Parent = objects[ "healthbar" ];
+  					Name = "\0";
+  					Color = ColorSequence.new{ColorSequenceKeypoint.new(0, flags[ "GradientColor1"].Color ), ColorSequenceKeypoint.new(1, flags[ "GradientColor2"].Color )};
+            Rotation = -90
+  				});
   			-- 
   
   			-- Distance esp
@@ -2576,7 +2580,7 @@
 			-- Visible esp
   				objects[ "visible" ] = library:create( "TextLabel" , {
   					FontFace = library.font,
-  					TextColor3 = flags["Visible_Color"].Color,
+  					TextColor3 = flags["Vis_Color"].Color,
   					BorderColor3 = rgb(0, 0, 0),
   					Text = "Visible",
   					Parent = library.cache,
@@ -2589,9 +2593,64 @@
   					AutomaticSize = Enum.AutomaticSize.Y,
   					TextSize = 10,
   				});
-  			--
+      --
+
+      -- Aiming esp
+  				objects[ "aiming" ] = library:create( "TextLabel" , {
+  					FontFace = library.font,
+  					TextColor3 = flags["Aiming_Color"].Color,
+  					BorderColor3 = rgb(0, 0, 0),
+  					Text = "Aiming",
+  					Parent = library.cache,
+  					TextStrokeTransparency = 0,
+  					Name = "\0",
+  					Size = dim2(1, 0, 0, 0),
+  					BackgroundTransparency = 1,
+  					Position = dim2(0, 85, 0, -2),
+  					BorderSizePixel = 0,
+  					AutomaticSize = Enum.AutomaticSize.Y,
+  					TextSize = 10,
+  				});
+      --
+
+      -- Searching esp
+  				objects[ "searching" ] = library:create( "TextLabel" , {
+  					FontFace = library.font,
+  					TextColor3 = flags["Inventory_Color"].Color,
+  					BorderColor3 = rgb(0, 0, 0),
+  					Text = "Inv",
+  					Parent = library.cache,
+  					TextStrokeTransparency = 0,
+  					Name = "\0",
+  					Size = dim2(1, 0, 0, 0),
+  					BackgroundTransparency = 1,
+  					Position = dim2(0, 79, 0, 8),
+  					BorderSizePixel = 0,
+  					AutomaticSize = Enum.AutomaticSize.Y,
+  					TextSize = 10,
+  				});
+      --
+
+      -- Health Flag esp
+  				objects[ "healthFlag" ] = library:create( "TextLabel" , {
+  					FontFace = library.font,
+  					TextColor3 = flags["Health_Text_Color"].Color,
+  					BorderColor3 = rgb(0, 0, 0),
+  					Text = "100",
+  					Parent = library.cache,
+  					TextStrokeTransparency = 0,
+  					Name = "\0",
+  					Size = dim2(1, 0, 0, 0),
+  					BackgroundTransparency = 1,
+  					Position = dim2(0, -82, 0, -2),
+  					BorderSizePixel = 0,
+  					AutomaticSize = Enum.AutomaticSize.Y,
+  					TextSize = 10,
+  				});
+      --
   		end 
   
+
   		cfg.change_health = function()
   			if flags[ "healthbar_holder" ] and flags[ "healthbar_holder" ].Parent ~= objects[ "holder" ] then 
   				return 
@@ -2600,15 +2659,18 @@
   			local humanoid = character.Humanoid
   			
   			local multiplier = humanoid.MaxHealth * math.abs(math.sin(tick() * 2)) / humanoid.MaxHealth
-  			local color = flags[ "Health_Low" ].Color:Lerp( flags["Health_High"].Color, multiplier)
+  			--local color = flags[ "Health_Low" ].Color:Lerp( flags["Health_High"].Color, multiplier)
+
+        --GradientColor1
+        --GradientColor2
   			
   			objects[ "healthbar" ].Size = UDim2.new(1, -2, multiplier, -2)
   			objects[ "healthbar" ].Position = UDim2.new(0, 1, 1 - multiplier, 1)
-  			objects[ "healthbar" ].BackgroundColor3 = color
+        objects[ "gradient" ].Color = ColorSequence.new{ColorSequenceKeypoint.new(0, flags[ "GradientColor1"].Color ), ColorSequenceKeypoint.new(1, flags[ "GradientColor2"].Color )}
   		end 
   
   		function cfg.refresh_elements( )                                
-  			objects.holder.Parent = flags["Enabled"] and items.viewportframe or library.cache
+  			objects.holder.Parent = flags["EnableAll"] and items.viewportframe or library.cache
   
   			local temp = {
   				["Names"] = objects["name"]; 
@@ -2616,10 +2678,16 @@
   				["Healthbar"] = objects[ "healthbar_holder" ];
   				["Distance"] = objects[ "distance" ];
   				["Weapon"] = objects[ "weapon" ];
-				["Visible"] = objects[ "visible" ];
+				  ["Vis"] = objects[ "visible" ];
+          ["AimingText"] = objects[ "aiming" ];
+          ["HealthText"] = objects[ "healthFlag" ];
+          ["InventoryText"] = objects["searching"];
   				["Distance_Color"] = {objects[ "distance" ]};
   				["Weapon_Color"] = {objects[ "weapon" ]};
-				["Visible_Color"] = {objects[ "visible" ]};
+				  ["Vis_Color"] = {objects[ "visible" ]};
+          ["Aiming_Color"] = {objects[ "aiming" ]};
+          ["Inventory_Color"] = {objects[ "searching" ]};
+          ["Health_Text_Color"] = {objects[ "healthFlag" ]};
   			}
   
   			for flag,object in temp do 
@@ -2645,7 +2713,6 @@
 
 				if flags["BoxFill"] then
 					objects[ "boxFillHolder" ].Parent = objects[ "box_handler" ]
-					objects[ "boxFillHolder" ].Visible = true
 				end
 
   			else
@@ -2656,9 +2723,9 @@
   			end 
   
 			
-  			objects[ "box_color" ].Color = flags["Box_Color"].Color 
-			objects[ "boxFill" ].Color = ColorSequence.new{ColorSequenceKeypoint.new(0, flags["Box_Fill_Color_One"].Color), ColorSequenceKeypoint.new(1, flags["Box_Fill_Color_Two"].Color)}
-			objects[ "boxFill" ].Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, flags["Box_Fill_Color_One"].Transparency), NumberSequenceKeypoint.new(1, flags["Box_Fill_Color_Two"].Transparency)}
+  		objects[ "box_color" ].Color = flags["Box_Color"].Color
+			objects[ "boxFill" ].Color = ColorSequence.new{ColorSequenceKeypoint.new(0, flags["Box_Fill_Color"].Color), ColorSequenceKeypoint.new(1, flags["Box_Fill_ColorTwo"].Color)}
+			objects[ "boxFill" ].Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, flags["Box_Fill_Color"].Transparency), NumberSequenceKeypoint.new(1, flags["Box_Fill_ColorTwo"].Transparency)}
   			for _, corner in objects[ "corners" ]:GetChildren() do
   				corner.Frame.BackgroundColor3 = flags["Box_Color"].Color
   			end
@@ -6837,5 +6904,4 @@
   
   		return setmetatable(cfg, library)
   	end
-	
-return library, themes
+
