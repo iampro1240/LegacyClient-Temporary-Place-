@@ -117,7 +117,7 @@ do --// ESP functions
        obj.BorderSizePixel = 0
    
        obj.TextStrokeTransparency = 1
-   	   obj.FontFace = library.font
+   	   obj.FontFace = Fonts.Minecraftia
    
        obj.AnchorPoint = properties.AnchorPoint
 
