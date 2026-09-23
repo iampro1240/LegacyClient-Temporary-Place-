@@ -1248,6 +1248,7 @@ local function ESPObject(self)
 
      esp.UI.ManipFlag.Text = "Manipulated"
      esp.UI.ManipFlag.LayoutOrder = 4
+     esp.UI.ManipFlag.Visible = false
 
 
      esp.UI.PName.AutomaticSize = Enum.AutomaticSize.Y
