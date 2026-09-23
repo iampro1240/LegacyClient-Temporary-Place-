@@ -1318,41 +1318,7 @@ local function GetPFromChar(p)
   return Variables.Players:GetPlayerFromCharacter(p)
 end
 
- 
-local function newCharacter(Character)
-    local v = ESPObject(GetPFromChar(Character))
-    ESP:getParts(v, Character)
 
-    local canGrabWeapon = FindFirstChildOfClass(v.Character, "Tool")
-    if canGrabWeapon then
-      v.weapon = canGrabWeapon.Name
-    end
-
-
-    v.Character.ChildAdded:Connect(function(weapon)
-      if weapon:IsA("Tool") then
-        v.weapon = weapon.Name
-      end
-    end)
-
-
-    v.Character.ChildRemoved:Connect(function(weapon)
-      if weapon.Name == v.weapon then
-        v.weapon = "Empty"
-      end
-    end)
-
-end
-
-
-local function OnRemoved(player)
-      if espCache[player] then
-        espCache[player].holder:Destroy()
-        espCache[player] = nil
-      end
-end
-
-   
 local function newPlayer(player)
   if player.Character then
     Variables.taskdefer(newCharacter, player.Character)
@@ -1374,33 +1340,53 @@ local function newPlayer(player)
 
 end
 
+ 
+local newCharacter = function(Character)
+  local v = ESPObject(GetPFromChar(Character))
+  ESP:getParts(v, Character)
+end
+
+
+local function OnRemoved(player)
+      if espCache[player] then
+        espCache[player].holder:Destroy()
+        espCache[player] = nil
+      end
+end
+
+
+local newPlayer = function(player)
+     if player.Character then
+       Variables.taskdefer(newCharacter, player.Character)
+     end
+
+     
+     player.CharacterAdded:Connect(newCharacter)
+     player.CharacterRemoving:Connect(function()
+       if espCache[player] then
+          espCache[player].holder:Destroy()
+          for _, bone in espCache[player].boneCache do
+            bone.Line:Destroy()
+            bone.Outline:Destroy()
+          end
+          espCache[player].boneCache = nil
+          espCache[player] = nil
+       end
+     end)
+
+end
+
 
 function ESP:loadESP()
-  for _, player in Variables.Players:GetPlayers() do
-   if player.Name ~= Variables.Players.LocalPlayer.Name then
-      if player.Character then
-        Variables.taskdefer(newPlayer, player)
-      end
-  
-      player.CharacterAdded:Connect(newCharacter)
-      player.CharacterRemoving:Connect(function()
-          if espCache[player] then
-            espCache[player].holder:Destroy()
-            for _, bone in espCache[player].boneCache do
-              bone.Line:Destroy()
-              bone.Outline:Destroy()
-            end
-            espCache[player].boneCache = nil
-            espCache[player] = nil
-          end
-      end)
-    end
-    
-  end
 
 
   Variables.Players.PlayerAdded:Connect(newPlayer)
   Variables.Players.PlayerRemoving:Connect(OnRemoved)
+  for _, player in Variables.Players:GetPlayers() do
+    if player.Name ~= Variables.Players.LocalPlayer.Name then
+      Variables.taskdefer(newPlayer, player)
+    end
+  end
 
 
   Variables.LocalPlayer.ChildAdded:Connect(function(character) 
