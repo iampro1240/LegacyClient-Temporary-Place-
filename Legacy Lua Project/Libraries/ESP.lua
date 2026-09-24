@@ -1319,7 +1319,14 @@ local function GetPFromChar(p)
 end
 
 
+local newCharacter = function(Character)
+  local v = ESPObject(GetPFromChar(Character))
+  ESP:getParts(v, Character)
+end
+
+
 local function newPlayer(player)
+  --Variables.taskdefer(newCharacter, player.Character)
   if player.Character then
     Variables.taskdefer(newCharacter, player.Character)
   end
@@ -1340,40 +1347,12 @@ local function newPlayer(player)
 
 end
 
- 
-local newCharacter = function(Character)
-  local v = ESPObject(GetPFromChar(Character))
-  ESP:getParts(v, Character)
-end
-
 
 local function OnRemoved(player)
       if espCache[player] then
         espCache[player].holder:Destroy()
         espCache[player] = nil
       end
-end
-
-
-local newPlayer = function(player)
-     if player.Character then
-       Variables.taskdefer(newCharacter, player.Character)
-     end
-
-     
-     player.CharacterAdded:Connect(newCharacter)
-     player.CharacterRemoving:Connect(function()
-       if espCache[player] then
-          espCache[player].holder:Destroy()
-          for _, bone in espCache[player].boneCache do
-            bone.Line:Destroy()
-            bone.Outline:Destroy()
-          end
-          espCache[player].boneCache = nil
-          espCache[player] = nil
-       end
-     end)
-
 end
 
 
