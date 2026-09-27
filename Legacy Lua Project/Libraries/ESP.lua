@@ -413,6 +413,7 @@ local function renderESP()
       visParams.FilterType = Enum.RaycastFilterType.Exclude
       visParams.IgnoreWater = false
       visParams.CollisionGroup = "Default"
+      local espLimit = visuals.returnflag("espLimit")
        
       for _, player in espCache do
           local timeElapsed = 0
@@ -461,10 +462,9 @@ local function renderESP()
       
             local barGradientPattern = Variables.NewGradient{Variables.GradientNumberSequence(0, barGradientOne), Variables.GradientNumberSequence(1, barGradientTwo)}
             local fillGradientTransparency = Variables.NumberSequence{NumberSequenceKeypoint.new(0, boxFillColorOneT), NumberSequenceKeypoint.new(1, boxFillColorTwoT)}
+            
+            
             local fillGradientColor = Variables.NewGradient{Variables.GradientNumberSequence(0, boxFillColorOneC), Variables.GradientNumberSequence(1, boxFillColorTwoC)}
-      
-      
-            local espLimit = visuals.returnflag("espLimit")
             local isHBE = visuals.returnflag("hitboxExpander")
       
       
