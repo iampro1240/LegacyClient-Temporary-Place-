@@ -413,62 +413,6 @@ local function renderESP()
       visParams.FilterType = Enum.RaycastFilterType.Exclude
       visParams.IgnoreWater = false
       visParams.CollisionGroup = "Default"
-
-
-      local isFadeOnDistance, maxFadeDistance, minFadeDistance, maxFadeTransparency = visuals.returnflag("fadeOnDistance"), visuals.returnflag("MaxFadeDistance"), visuals.returnflag("MinFadeDistance"), visuals.returnflag("maxFadeTransparency")
-      local isHealthText, healthTextColor = visuals.returnflag("HealthText"), visuals.returnflagcolor("Health_Text_Color")
-      
-      
-      local isAimingText, isAimingColor, notAimingColor = visuals.returnflag("AimingText"), visuals.returnflagcolor("Aiming_Color"), visuals.returnflagcolor("Not_Aiming_Color")
-      local isInventoryText, isInventoryColor, notInventoryColor  = visuals.returnflag("InventoryText"), visuals.returnflagcolor("Inventory_Color"), visuals.returnflagcolor("Not_Inventory_Color")
-          
-              
-      local isName, nameColor  = visuals.returnflag("Names"), visuals.returnflagcolor("Name_Color")
-      local isDistance, distanceColor, distanceType = visuals.returnflag("Distance"), visuals.returnflagcolor("Distance_Color"), visuals.returnflag("DistanceType")
-          
-              
-      local isWeapon, weaponColor = visuals.returnflag("Weapon"), visuals.returnflagcolor("Weapon_Color")
-      local isVisible, isVisColor, notVisColor = visuals.returnflag("Vis"), visuals.returnflagcolor("Vis_Color"), visuals.returnflagcolor("Not_Vis_Color")
-
-
-      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = visuals.returnflag("skeletonEnabled"), 1, 3, visuals.returnflagcolor("boneColor"), Color3.fromRGB(0, 0, 0), 2, 1
-      local isBoxVis, isBoxFill, boxColor, fillRotation = visuals.returnflag("Boxes"), visuals.returnflag("BoxFill"), visuals.returnflagcolor("Box_Color"), visuals.returnflag("FillRotation")
-      local isHealthBar = visuals.returnflag("Healthbar")
-
-
-      local boxFillColorOneC, boxFillColorTwoC, boxFillColorOneT, boxFillColorTwoT = visuals.returnflagcolor("Box_Fill_Color"), visuals.returnflagcolor("Box_Fill_ColorTwo"), visuals.returnflagtransparency("Box_Fill_Color"), visuals.returnflagtransparency("Box_Fill_ColorTwo")
-      local barGradientOne, barGradientTwo = visuals.returnflagcolor("GradientColor1"), visuals.returnflagcolor("GradientColor2")
-
-
-      local isChams, chamOutlineTransparency, chamFillColor, chamOutlineColor = visuals.returnflag("Chams"), visuals.returnflagtransparency("Cham_Outline_Color"), visuals.returnflagcolor("Cham_Color"), visuals.returnflagcolor("Cham_Outline_Color")
-      local isEnabled = visuals.returnflag("EnableAll")
-
-
-      local barGradientPattern = Variables.NewGradient{Variables.GradientNumberSequence(0, barGradientOne), Variables.GradientNumberSequence(1, barGradientTwo)}
-      local fillGradientTransparency = Variables.NumberSequence{NumberSequenceKeypoint.new(0, boxFillColorOneT), NumberSequenceKeypoint.new(1, boxFillColorTwoT)}
-      local fillGradientColor = Variables.NewGradient{Variables.GradientNumberSequence(0, boxFillColorOneC), Variables.GradientNumberSequence(1, boxFillColorTwoC)}
-
-
-      local espLimit = visuals.returnflag("espLimit")
-      local isHBE = visuals.returnflag("hitboxExpander")
-
-
-      local isGradientSpin, gradientAnimationSpeed = visuals.returnflag("gradientSpin"), visuals.returnflag("gradientAnimationSpeed")
-      local boxFillRotationSpeed = visuals.returnflag("gradientAnimationSpeed")
-
-
-      local currentTextFont, flagFont = visuals.returnflag("TextFont"), visuals.returnflag("TextFlagFont")
-      local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
-      local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
-
-      
-      local Client = Variables.Players.LocalPlayer
-      local cameraPos = Variables.Camera.CFrame.Position
-      local clientCharacter = Variables.Players.LocalPlayer.Character
-
-
-      local setBoneVis = ESP.setBoneVis
-      
        
       for _, player in espCache do
           local timeElapsed = 0
@@ -484,6 +428,61 @@ local function renderESP()
         		return
         	end
         	lastTick = 0
+            
+      
+            local isFadeOnDistance, maxFadeDistance, minFadeDistance, maxFadeTransparency = visuals.returnflag("fadeOnDistance"), visuals.returnflag("MaxFadeDistance"), visuals.returnflag("MinFadeDistance"), visuals.returnflag("maxFadeTransparency")
+            local isHealthText, healthTextColor = visuals.returnflag("HealthText"), visuals.returnflagcolor("Health_Text_Color")
+            
+            
+            local isAimingText, isAimingColor, notAimingColor = visuals.returnflag("AimingText"), visuals.returnflagcolor("Aiming_Color"), visuals.returnflagcolor("Not_Aiming_Color")
+            local isInventoryText, isInventoryColor, notInventoryColor  = visuals.returnflag("InventoryText"), visuals.returnflagcolor("Inventory_Color"), visuals.returnflagcolor("Not_Inventory_Color")
+                
+                    
+            local isName, nameColor  = visuals.returnflag("Names"), visuals.returnflagcolor("Name_Color")
+            local isDistance, distanceColor, distanceType = visuals.returnflag("Distance"), visuals.returnflagcolor("Distance_Color"), visuals.returnflag("DistanceType")
+                
+                    
+            local isWeapon, weaponColor = visuals.returnflag("Weapon"), visuals.returnflagcolor("Weapon_Color")
+            local isVisible, isVisColor, notVisColor = visuals.returnflag("Vis"), visuals.returnflagcolor("Vis_Color"), visuals.returnflagcolor("Not_Vis_Color")
+      
+      
+            local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = visuals.returnflag("skeletonEnabled"), 1, 3, visuals.returnflagcolor("boneColor"), Color3.fromRGB(0, 0, 0), 2, 1
+            local isBoxVis, isBoxFill, boxColor, fillRotation = visuals.returnflag("Boxes"), visuals.returnflag("BoxFill"), visuals.returnflagcolor("Box_Color"), visuals.returnflag("FillRotation")
+            local isHealthBar = visuals.returnflag("Healthbar")
+      
+      
+            local boxFillColorOneC, boxFillColorTwoC, boxFillColorOneT, boxFillColorTwoT = visuals.returnflagcolor("Box_Fill_Color"), visuals.returnflagcolor("Box_Fill_ColorTwo"), visuals.returnflagtransparency("Box_Fill_Color"), visuals.returnflagtransparency("Box_Fill_ColorTwo")
+            local barGradientOne, barGradientTwo = visuals.returnflagcolor("GradientColor1"), visuals.returnflagcolor("GradientColor2")
+      
+      
+            local isChams, chamOutlineTransparency, chamFillColor, chamOutlineColor = visuals.returnflag("Chams"), visuals.returnflagtransparency("Cham_Outline_Color"), visuals.returnflagcolor("Cham_Color"), visuals.returnflagcolor("Cham_Outline_Color")
+            local isEnabled = visuals.returnflag("EnableAll")
+      
+      
+            local barGradientPattern = Variables.NewGradient{Variables.GradientNumberSequence(0, barGradientOne), Variables.GradientNumberSequence(1, barGradientTwo)}
+            local fillGradientTransparency = Variables.NumberSequence{NumberSequenceKeypoint.new(0, boxFillColorOneT), NumberSequenceKeypoint.new(1, boxFillColorTwoT)}
+            local fillGradientColor = Variables.NewGradient{Variables.GradientNumberSequence(0, boxFillColorOneC), Variables.GradientNumberSequence(1, boxFillColorTwoC)}
+      
+      
+            local espLimit = visuals.returnflag("espLimit")
+            local isHBE = visuals.returnflag("hitboxExpander")
+      
+      
+            local isGradientSpin, gradientAnimationSpeed = visuals.returnflag("gradientSpin"), visuals.returnflag("gradientAnimationSpeed")
+            local boxFillRotationSpeed = visuals.returnflag("gradientAnimationSpeed")
+      
+      
+            local currentTextFont, flagFont = visuals.returnflag("TextFont"), visuals.returnflag("TextFlagFont")
+            local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
+            local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
+      
+            
+            local Client = Variables.Players.LocalPlayer
+            local cameraPos = Variables.Camera.CFrame.Position
+            local clientCharacter = Variables.Players.LocalPlayer.Character
+      
+      
+            local setBoneVis = ESP.setBoneVis
 
 
             local holder = player
@@ -663,7 +662,11 @@ local function renderESP()
                   inventoryFlag.FontFace = flagTextFont
                   inventoryFlag.TextSize = flagTextSettings.FontSize
                 end
-                
+
+               
+                rightFlags.Position = Variables.UDim2fromOffset(rightX, posClamp)
+                rightFlags.Size = Variables.UDim2fromOffset(1, boxYSize)
+           
 
                 UI.BottomFlags.Position = Variables.UDim2fromOffset(centerX, Math.floor( posClamp + boxYSize + textSettings.bottomPadding))
                 UI.bottomListLayout.Padding = Variables.UDimnew(0, textSettings.bottomListLayoutPadding)
@@ -835,7 +838,7 @@ local function renderESP()
               end
                 
             end
-            
+
       end
 
     end)
