@@ -116,7 +116,7 @@ end
 
 
 do --// ESP functions
-  function lib:DrawGradient(properties)
+  function lib.DrawGradient(properties)
         local obj = Variables.Instancenew("UIGradient")
         obj.Name = "UIGradient"
         obj.Parent = properties.Parent or nil
@@ -126,14 +126,14 @@ do --// ESP functions
   end
    
    
-  function lib:DrawUIStroke(properties)
+  function lib.DrawUIStroke(properties)
        local obj = Variables.Instancenew("UIStroke")
        obj.Parent = properties.Parent
        return obj
   end
    
    
-  function lib:DrawText(properties)
+  function lib.DrawText(properties)
        local obj = Variables.Instancenew("TextLabel")
        local stroke = Variables.Instancenew("UIStroke")
        obj.Name = properties.Name
@@ -157,7 +157,7 @@ do --// ESP functions
   end
    
    
-  function lib:DrawFrame(properties)
+  function lib.DrawFrame(properties)
        local obj = Variables.Instancenew("Frame")
        obj.Name = properties.Name
        obj.Parent = properties.Parent
@@ -176,7 +176,7 @@ do --// ESP functions
   end
    
    
-  function lib:DrawImage(properties)
+  function lib.DrawImage(properties)
       local obj = Variables.Instancenew("ImageLabel")
       obj.Name = properties.Name
       obj.Parent = properties.Parent
@@ -195,7 +195,7 @@ do --// ESP functions
   end
 
 
-  function ESP:getWeapon(weapon)
+  function ESP.getWeapon(weapon)
     if weapon then
       return weapon.Name
      else
@@ -204,7 +204,7 @@ do --// ESP functions
   end
 
 
-  function ESP:getVis(vis, isVisColor, notVisColor)
+  function ESP.getVis(vis, isVisColor, notVisColor)
     if vis then
       return isVisColor
      else
@@ -213,7 +213,7 @@ do --// ESP functions
   end
   
   
-  function ESP:getManip(manip, isManipColor, notManipColor)
+  function ESP.getManip(manip, isManipColor, notManipColor)
     if manip then
       return isManipColor
      else
@@ -222,7 +222,7 @@ do --// ESP functions
   end
   
   
-  function ESP:getParts(esp, character)
+  function ESP.getParts(esp, character)
     if not character or character == nil then
       return
     end
@@ -257,7 +257,7 @@ do --// ESP functions
   end
   
   
-  function ESP:getBones(esp, character)
+  function ESP.getBones(esp, character)
     if not character or character == nil then
       return
     end
@@ -272,8 +272,8 @@ do --// ESP functions
   end
   
   
-  function ESP:distanceCheck(distancemag, onScreen)
-      if distancemag <= visuals:returnflag("MaxDistance") and onScreen then
+  function ESP.distanceCheck(distancemag, onScreen)
+      if distancemag <= visuals.returnflag("MaxDistance") and onScreen then
          return true
         else
           return false
@@ -281,8 +281,8 @@ do --// ESP functions
   end
   
   
-  function ESP:vehicleDistanceCheck(distancemag, onScreen)
-      if distancemag <= visuals:returnflag("VehicleMaxDistance") and onScreen then
+  function ESP.vehicleDistanceCheck(distancemag, onScreen)
+      if distancemag <= visuals.returnflag("VehicleMaxDistance") and onScreen then
         return true
        else
         return false
@@ -290,8 +290,8 @@ do --// ESP functions
   end
   
   
-  function ESP:corpseDistanceCheck(distancemag, onScreen)
-      if distancemag <= visuals:returnflag("CorpseMaxDistance") and onScreen then
+  function ESP.corpseDistanceCheck(distancemag, onScreen)
+      if distancemag <= visuals.returnflag("CorpseMaxDistance") and onScreen then
         return true
        else
         return false
@@ -299,7 +299,7 @@ do --// ESP functions
   end
   
   
-  function ESP:connectBone(Bone, Visible, From, To, Thickness, Color, Zindex)
+  function connectBone(Bone, Visible, From, To, Thickness, Color, Zindex)
       Bone.Visible = Visible
       Bone.From = From
       Bone.To = To
@@ -309,12 +309,12 @@ do --// ESP functions
   end
   
   
-  function ESP:getBoneValue(cache, bonePart, value)
+  function ESP.getBoneValue(cache, bonePart, value)
       return cache[bonePart][value]
   end
   
   
-  function ESP:setBoneVis(cache, visible)
+  function ESP.setBoneVis(cache, visible)
       for _, item in cache do
           item.Line.Visible = visible
           item.Outline.Visible = visible
@@ -322,7 +322,7 @@ do --// ESP functions
   end
   
   
-  function ESP:color3ToHex(color)
+  function ESP.color3ToHex(color)
       local r = Math.floor(color.R * 255)
       local g = Math.floor(color.G * 255)
       local b = Math.floor(color.B * 255)
@@ -330,12 +330,12 @@ do --// ESP functions
   end
   
   
-  function ESP:lerp(a, b, t)
+  function ESP.lerp(a, b, t)
     	return a + (b - a) * t
   end
     
   
-  function ESP:applyPulseSequence(originalKeypoints, t)
+  function ESP.applyPulseSequence(originalKeypoints, t)
         local newKeypoints = {}
         
         -- Oscillates the wave position smoothly back and forth between 0 (left) and 1 (right)
@@ -366,18 +366,18 @@ end
 
 
 do --// Library Functions
-  function visuals:returnflag(flag)
+  function visuals.returnflag(flag)
     return library.flags[flag]
   end
 
    
-  function visuals:returnflagcolor(color)
-    return visuals:returnflag(color).Color
+  function visuals.returnflagcolor(color)
+    return visuals.returnflag(color).Color
   end
    
 
-  function visuals:returnflagtransparency(color)
-    return visuals:returnflag(color).Alpha or visuals:returnflag(color).Transparency
+  function visuals.returnflagtransparency(color)
+    return visuals.returnflag(color).Alpha or visuals.returnflag(color).Transparency
   end
 end
 
@@ -388,19 +388,19 @@ local function renderESP()
     local animationSpeed = 1
 
 
-    local healthBarPadding = ESP.healthBarSettings[visuals:returnflag("HealthBarPadding")].Padding
-    local currentTextFont, flagFont = visuals:returnflag("TextFont"), visuals:returnflag("TextFlagFont")
+    local healthBarPadding = ESP.healthBarSettings[visuals.returnflag("HealthBarPadding")].Padding
+    local currentTextFont, flagFont = visuals.returnflag("TextFont"), visuals.returnflag("TextFlagFont")
 
 
     local textFont = Fonts[currentTextFont]
     local textSettings = ESP.fontSettings[currentTextFont]
     
     
-    local isHealthBarGradient = visuals:returnflag("HealthbarGradient")
-    local healthBarPaddingSize = ESP.healthBarSettings[visuals:returnflag("HealthBarPadding")].Size
+    local isHealthBarGradient = visuals.returnflag("HealthbarGradient")
+    local healthBarPaddingSize = ESP.healthBarSettings[visuals.returnflag("HealthBarPadding")].Size
 
 
-    local UseDisplayName = visuals:returnflag("UseDisplayName")
+    local UseDisplayName = visuals.returnflag("UseDisplayName")
     local textFlagFont = ESP.fontSettings[flagFont]
 
 
@@ -415,33 +415,33 @@ local function renderESP()
       visParams.CollisionGroup = "Default"
 
 
-      local isFadeOnDistance, maxFadeDistance, minFadeDistance, maxFadeTransparency = visuals:returnflag("fadeOnDistance"), visuals:returnflag("MaxFadeDistance"), visuals:returnflag("MinFadeDistance"), visuals:returnflag("maxFadeTransparency")
-      local isHealthText, healthTextColor = visuals:returnflag("HealthText"), visuals:returnflagcolor("Health_Text_Color")
+      local isFadeOnDistance, maxFadeDistance, minFadeDistance, maxFadeTransparency = visuals.returnflag("fadeOnDistance"), visuals.returnflag("MaxFadeDistance"), visuals.returnflag("MinFadeDistance"), visuals.returnflag("maxFadeTransparency")
+      local isHealthText, healthTextColor = visuals.returnflag("HealthText"), visuals.returnflagcolor("Health_Text_Color")
       
       
-      local isAimingText, isAimingColor, notAimingColor = visuals:returnflag("AimingText"), visuals:returnflagcolor("Aiming_Color"), visuals:returnflagcolor("Not_Aiming_Color")
-      local isInventoryText, isInventoryColor, notInventoryColor  = visuals:returnflag("InventoryText"), visuals:returnflagcolor("Inventory_Color"), visuals:returnflagcolor("Not_Inventory_Color")
+      local isAimingText, isAimingColor, notAimingColor = visuals.returnflag("AimingText"), visuals.returnflagcolor("Aiming_Color"), visuals.returnflagcolor("Not_Aiming_Color")
+      local isInventoryText, isInventoryColor, notInventoryColor  = visuals.returnflag("InventoryText"), visuals.returnflagcolor("Inventory_Color"), visuals.returnflagcolor("Not_Inventory_Color")
           
               
-      local isName, nameColor  = visuals:returnflag("Names"), visuals:returnflagcolor("Name_Color")
-      local isDistance, distanceColor, distanceType = visuals:returnflag("Distance"), visuals:returnflagcolor("Distance_Color"), visuals:returnflag("DistanceType")
+      local isName, nameColor  = visuals.returnflag("Names"), visuals.returnflagcolor("Name_Color")
+      local isDistance, distanceColor, distanceType = visuals.returnflag("Distance"), visuals.returnflagcolor("Distance_Color"), visuals.returnflag("DistanceType")
           
               
-      local isWeapon, weaponColor = visuals:returnflag("Weapon"), visuals:returnflagcolor("Weapon_Color")
-      local isVisible, isVisColor, notVisColor = visuals:returnflag("Vis"), visuals:returnflagcolor("Vis_Color"), visuals:returnflagcolor("Not_Vis_Color")
+      local isWeapon, weaponColor = visuals.returnflag("Weapon"), visuals.returnflagcolor("Weapon_Color")
+      local isVisible, isVisColor, notVisColor = visuals.returnflag("Vis"), visuals.returnflagcolor("Vis_Color"), visuals.returnflagcolor("Not_Vis_Color")
 
 
-      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = visuals:returnflag("skeletonEnabled"), 1, 3, visuals:returnflagcolor("boneColor"), Color3.fromRGB(0, 0, 0), 2, 1
-      local isBoxVis, isBoxFill, boxColor, fillRotation = visuals:returnflag("Boxes"), visuals:returnflag("BoxFill"), visuals:returnflagcolor("Box_Color"), visuals:returnflag("FillRotation")
-      local isHealthBar = visuals:returnflag("Healthbar")
+      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = visuals.returnflag("skeletonEnabled"), 1, 3, visuals.returnflagcolor("boneColor"), Color3.fromRGB(0, 0, 0), 2, 1
+      local isBoxVis, isBoxFill, boxColor, fillRotation = visuals.returnflag("Boxes"), visuals.returnflag("BoxFill"), visuals.returnflagcolor("Box_Color"), visuals.returnflag("FillRotation")
+      local isHealthBar = visuals.returnflag("Healthbar")
 
 
-      local boxFillColorOneC, boxFillColorTwoC, boxFillColorOneT, boxFillColorTwoT = visuals:returnflagcolor("Box_Fill_Color"), visuals:returnflagcolor("Box_Fill_ColorTwo"), visuals:returnflagtransparency("Box_Fill_Color"), visuals:returnflagtransparency("Box_Fill_ColorTwo")
-      local barGradientOne, barGradientTwo = visuals:returnflagcolor("GradientColor1"), visuals:returnflagcolor("GradientColor2")
+      local boxFillColorOneC, boxFillColorTwoC, boxFillColorOneT, boxFillColorTwoT = visuals.returnflagcolor("Box_Fill_Color"), visuals.returnflagcolor("Box_Fill_ColorTwo"), visuals.returnflagtransparency("Box_Fill_Color"), visuals.returnflagtransparency("Box_Fill_ColorTwo")
+      local barGradientOne, barGradientTwo = visuals.returnflagcolor("GradientColor1"), visuals.returnflagcolor("GradientColor2")
 
 
-      local isChams, chamOutlineTransparency, chamFillColor, chamOutlineColor = visuals:returnflag("Chams"), visuals:returnflagtransparency("Cham_Outline_Color"), visuals:returnflagcolor("Cham_Color"), visuals:returnflagcolor("Cham_Outline_Color")
-      local isEnabled = visuals:returnflag("EnableAll")
+      local isChams, chamOutlineTransparency, chamFillColor, chamOutlineColor = visuals.returnflag("Chams"), visuals.returnflagtransparency("Cham_Outline_Color"), visuals.returnflagcolor("Cham_Color"), visuals.returnflagcolor("Cham_Outline_Color")
+      local isEnabled = visuals.returnflag("EnableAll")
 
 
       local barGradientPattern = Variables.NewGradient{Variables.GradientNumberSequence(0, barGradientOne), Variables.GradientNumberSequence(1, barGradientTwo)}
@@ -449,15 +449,15 @@ local function renderESP()
       local fillGradientColor = Variables.NewGradient{Variables.GradientNumberSequence(0, boxFillColorOneC), Variables.GradientNumberSequence(1, boxFillColorTwoC)}
 
 
-      local espLimit = visuals:returnflag("espLimit")
-      local isHBE = visuals:returnflag("hitboxExpander")
+      local espLimit = visuals.returnflag("espLimit")
+      local isHBE = visuals.returnflag("hitboxExpander")
 
 
-      local isGradientSpin, gradientAnimationSpeed = visuals:returnflag("gradientSpin"), visuals:returnflag("gradientAnimationSpeed")
-      local boxFillRotationSpeed = visuals:returnflag("gradientAnimationSpeed")
+      local isGradientSpin, gradientAnimationSpeed = visuals.returnflag("gradientSpin"), visuals.returnflag("gradientAnimationSpeed")
+      local boxFillRotationSpeed = visuals.returnflag("gradientAnimationSpeed")
 
 
-      local currentTextFont, flagFont = visuals:returnflag("TextFont"), visuals:returnflag("TextFlagFont")
+      local currentTextFont, flagFont = visuals.returnflag("TextFont"), visuals.returnflag("TextFlagFont")
       local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
       local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
 
@@ -465,6 +465,9 @@ local function renderESP()
       local Client = Variables.Players.LocalPlayer
       local cameraPos = Variables.Camera.CFrame.Position
       local clientCharacter = Variables.Players.LocalPlayer.Character
+
+
+      local setBoneVis = ESP.setBoneVis
       
        
       for _, player in espCache do
@@ -491,7 +494,7 @@ local function renderESP()
             local chams = holder.chamsholder
             if not clientCharacter or not character or not clientCharacter.Head then
               esp.Visible = false
-              ESP:setBoneVis(boneCache, false)
+              setBoneVis(boneCache, false)
              continue
             end
 
@@ -509,25 +512,20 @@ local function renderESP()
   
                 
             local distancemag = Math.floor((root.Position - cameraPos).Magnitude)
-            local canSee = ESP:distanceCheck(distancemag, isRootVis)
+            local canSee = ESP.distanceCheck(distancemag, isRootVis)
             
   
             local healthCheck, maxHealth = humanoid.Health, humanoid.MaxHealth
             if not isRootVis or not canSee or healthCheck <= 0 then
               esp.Visible = false
-              ESP:setBoneVis(boneCache, false)
+              setBoneVis(boneCache, false)
              continue
             end
             
             
             local leftFlags, leftListLayout = UI.LeftFlags, UI.leftListLayout
             local rightFlags, rightListLayout = UI.RightFlags, UI.rightListLayout
-    
-                
-            --local top2D, isTopVisible
-            --local bottom2D, isBottomVisible
-            --local newSize, halfHeight
-  
+          
                 
             local halfHeight = (rootSize.X + rootSize.Y) / 1.5
             local top2D, isTopVisible = WorldToViewportPoint(Camera, rootPos + Variables.Vector3new(0, halfHeight, 0))
@@ -565,6 +563,7 @@ local function renderESP()
 
             local boxLeftX = Math.floor(centerX - halfBoxWidth)
             local boxRightX = boxLeftX + boxTotalWidth
+            local getVis = ESP.getVis
             
 
             do
@@ -620,7 +619,7 @@ local function renderESP()
 
                   if isVisible and rayOrigin then
                     local visCheck = Variables.Workspace:Raycast(rayOrigin.Position, (head.Position - rayOrigin.Position), visParams)
-                    visFlag.TextColor3 = ESP:getVis(isPlayerVis, isVisColor, notVisColor)
+                    visFlag.TextColor3 = getVis(isPlayerVis, isVisColor, notVisColor)
                     if not visCheck then
                         player.playerVis = true
                       elseif visCheck.Instance == head or visCheck.Instance.Parent == head.Parent then
@@ -634,7 +633,6 @@ local function renderESP()
                
 
                 do --// Misc Flags
-              
 
                   if elapsed >= 1 / elapsed * animationSpeed then
                     local cutOff = Math.clamp((distancemag-250)/(330-250), 0, 1)
@@ -654,13 +652,13 @@ local function renderESP()
        
 
                   aimingFlag.Visible = isAimingText
-                  aimingFlag.TextColor3 = ESP:getVis(true, isAimingColor, notAimingColor)
+                  aimingFlag.TextColor3 = getVis(true, isAimingColor, notAimingColor)
                   aimingFlag.FontFace = flagTextFont
                   aimingFlag.TextSize = flagTextSettings.FontSize
                  
 
                   inventoryFlag.Visible = isInventoryText
-                  inventoryFlag.TextColor3 = ESP:getVis(true, isInventoryColor, notInventoryColor)
+                  inventoryFlag.TextColor3 = getVis(true, isInventoryColor, notInventoryColor)
                   inventoryFlag.TextSize = textFlagFont.FontSize
                   inventoryFlag.FontFace = flagTextFont
                   inventoryFlag.TextSize = flagTextSettings.FontSize
@@ -675,105 +673,100 @@ local function renderESP()
             do --// Skeleton
 
               if isSkeleton then
-                ESP:setBoneVis(boneCache, true)
-                local upperTorso, lowerTorso = ESP:getBoneValue(boneCache, "UpperTorso", "Part"), ESP:getBoneValue(boneCache, "LowerTorso", "Part")
+                setBoneVis(boneCache, true)
+                local getBoneValue, connectBone = ESP.getBoneValue, ESP.connectBone
+                local upperTorso, lowerTorso = getBoneValue(boneCache, "UpperTorso", "Part"), getBoneValue(boneCache, "LowerTorso", "Part")
                   
-                  local headPos, headBone, headOutline = WorldToViewportPoint(Camera, head.Position - Variables.Vector3new(0, .5, 0)), ESP:getBoneValue(boneCache, "Head", "Line"), ESP:getBoneValue(boneCache, "Head", "Outline")
-                  local upperTorsoPos, upperTorsoBone, upperTorsoOutline = WorldToViewportPoint(Camera, upperTorso.Position), ESP:getBoneValue(boneCache, "UpperTorso", "Line"), ESP:getBoneValue(boneCache, "UpperTorso", "Outline")
-                  local lowerTorsoPos, lowerTorsoBone, lowerTorsoOutline = WorldToViewportPoint(Camera, lowerTorso.Position), ESP:getBoneValue(boneCache, "LowerTorso", "Line"), ESP:getBoneValue(boneCache, "LowerTorso", "Outline")
+                  local headPos, headBone, headOutline = WorldToViewportPoint(Camera, head.Position - Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "Head", "Line"), getBoneValue(boneCache, "Head", "Outline")
+                  local upperTorsoPos, upperTorsoBone, upperTorsoOutline = WorldToViewportPoint(Camera, upperTorso.Position), getBoneValue(boneCache, "UpperTorso", "Line"), getBoneValue(boneCache, "UpperTorso", "Outline")
+                  local lowerTorsoPos, lowerTorsoBone, lowerTorsoOutline = WorldToViewportPoint(Camera, lowerTorso.Position), getBoneValue(boneCache, "LowerTorso", "Line"), getBoneValue(boneCache, "LowerTorso", "Outline")
               
 
                   do --// Torso
-                      ESP:connectBone(headBone, isSkeleton and isRootVis, Vector2.new(headPos.X, headPos.Y), Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(headOutline, isSkeleton and isRootVis, Vector2.new(headPos.X, headPos.Y), Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(headBone, isSkeleton and isRootVis, Vector2.new(headPos.X, headPos.Y), Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(headOutline, isSkeleton and isRootVis, Vector2.new(headPos.X, headPos.Y), Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(upperTorsoBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(upperTorsoOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(upperTorsoBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(upperTorsoOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), outlineThickness, outlineColor, outlineZIndex)
                   end
               
 
                   do --// Left Arm
-                      local leftUpperArm, leftLowerArm, leftHand = ESP:getBoneValue(boneCache, "LeftUpperArm", "Part"), ESP:getBoneValue(boneCache, "LeftLowerArm", "Part"), ESP:getBoneValue(boneCache, "LeftHand", "Part")
+                      local leftUpperArm, leftLowerArm, leftHand = getBoneValue(boneCache, "LeftUpperArm", "Part"), getBoneValue(boneCache, "LeftLowerArm", "Part"), getBoneValue(boneCache, "LeftHand", "Part")
               
-                      local leftUpperArmPos, leftUpperArmBone, leftUpperArmOutline = WorldToViewportPoint(Camera, leftUpperArm.Position + Variables.Vector3new(0, .5, 0)), ESP:getBoneValue(boneCache, "LeftUpperArm", "Line"), ESP:getBoneValue(boneCache, "LeftUpperArm", "Outline")
-                      local leftLowerArmPos, leftLowerArmBone, leftLowerArmOutline = WorldToViewportPoint(Camera, leftLowerArm.Position), ESP:getBoneValue(boneCache, "LeftLowerArm", "Line"), ESP:getBoneValue(boneCache, "LeftLowerArm", "Outline")
-                      local leftHandPos, leftHandBone, leftHandOutline = WorldToViewportPoint(Camera, leftHand.Position), ESP:getBoneValue(boneCache, "LeftHand", "Line"), ESP:getBoneValue(boneCache, "LeftHand", "Outline")
+                      local leftUpperArmPos, leftUpperArmBone, leftUpperArmOutline = WorldToViewportPoint(Camera, leftUpperArm.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "LeftUpperArm", "Line"), getBoneValue(boneCache, "LeftUpperArm", "Outline")
+                      local leftLowerArmPos, leftLowerArmBone, leftLowerArmOutline = WorldToViewportPoint(Camera, leftLowerArm.Position), getBoneValue(boneCache, "LeftLowerArm", "Line"), getBoneValue(boneCache, "LeftLowerArm", "Outline")
+                      local leftHandPos, leftHandBone, leftHandOutline = WorldToViewportPoint(Camera, leftHand.Position), getBoneValue(boneCache, "LeftHand", "Line"), getBoneValue(boneCache, "LeftHand", "Outline")
               
-                      ESP:connectBone(leftUpperArmBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(leftUpperArmOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(leftUpperArmBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(leftUpperArmOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(leftLowerArmBone, isSkeleton and isRootVis, Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(leftLowerArmOutline, isSkeleton and isRootVis, Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(leftLowerArmBone, isSkeleton and isRootVis, Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(leftLowerArmOutline, isSkeleton and isRootVis, Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(leftHandBone, isSkeleton and isRootVis, Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), Vector2.new(leftHandPos.X, leftHandPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(leftHandOutline, isSkeleton and isRootVis, Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), Vector2.new(leftHandPos.X, leftHandPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(leftHandBone, isSkeleton and isRootVis, Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), Vector2.new(leftHandPos.X, leftHandPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(leftHandOutline, isSkeleton and isRootVis, Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), Vector2.new(leftHandPos.X, leftHandPos.Y), outlineThickness, outlineColor, outlineZIndex)
                   end
               
 
                   do --// Right Arm
-                      local rightUpperArm, rightLowerArm, rightHand = ESP:getBoneValue(boneCache, "RightUpperArm", "Part"), ESP:getBoneValue(boneCache, "RightLowerArm", "Part"), ESP:getBoneValue(boneCache, "RightHand", "Part")
+                      local rightUpperArm, rightLowerArm, rightHand = getBoneValue(boneCache, "RightUpperArm", "Part"), getBoneValue(boneCache, "RightLowerArm", "Part"), getBoneValue(boneCache, "RightHand", "Part")
               
-                      local rightUpperArmPos, rightUpperArmBone, rightUpperArmOutline = WorldToViewportPoint(Camera, rightUpperArm.Position + Variables.Vector3new(0, .5, 0)), ESP:getBoneValue(boneCache, "RightUpperArm", "Line"), ESP:getBoneValue(boneCache, "RightUpperArm", "Outline")
-                      local rightLowerArmPos, rightLowerArmBone, rightLowerArmOutline = WorldToViewportPoint(Camera, rightLowerArm.Position), ESP:getBoneValue(boneCache, "RightLowerArm", "Line"), ESP:getBoneValue(boneCache, "RightLowerArm", "Outline")
-                      local rightHandPos, rightHandBone, rightHandOutline = WorldToViewportPoint(Camera, rightHand.Position), ESP:getBoneValue(boneCache, "RightHand", "Line"), ESP:getBoneValue(boneCache, "RightHand", "Outline")
+                      local rightUpperArmPos, rightUpperArmBone, rightUpperArmOutline = WorldToViewportPoint(Camera, rightUpperArm.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "RightUpperArm", "Line"), getBoneValue(boneCache, "RightUpperArm", "Outline")
+                      local rightLowerArmPos, rightLowerArmBone, rightLowerArmOutline = WorldToViewportPoint(Camera, rightLowerArm.Position), getBoneValue(boneCache, "RightLowerArm", "Line"), getBoneValue(boneCache, "RightLowerArm", "Outline")
+                      local rightHandPos, rightHandBone, rightHandOutline = WorldToViewportPoint(Camera, rightHand.Position), getBoneValue(boneCache, "RightHand", "Line"), getBoneValue(boneCache, "RightHand", "Outline")
               
-                      ESP:connectBone(rightUpperArmBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(rightUpperArmOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(rightUpperArmBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(rightUpperArmOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(rightLowerArmBone, isSkeleton and isRootVis, Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(rightLowerArmOutline, isSkeleton and isRootVis, Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(rightLowerArmBone, isSkeleton and isRootVis, Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(rightLowerArmOutline, isSkeleton and isRootVis, Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(rightHandBone, isSkeleton and isRootVis, Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), Vector2.new(rightHandPos.X, rightHandPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(rightHandOutline, isSkeleton and isRootVis, Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), Vector2.new(rightHandPos.X, rightHandPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(rightHandBone, isSkeleton and isRootVis, Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), Vector2.new(rightHandPos.X, rightHandPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(rightHandOutline, isSkeleton and isRootVis, Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), Vector2.new(rightHandPos.X, rightHandPos.Y), outlineThickness, outlineColor, outlineZIndex)
                   end
                   
 
                   do --// Left Leg
-                      local leftUpperLeg, leftLowerLeg, leftFoot = ESP:getBoneValue(boneCache, "LeftUpperLeg", "Part"), ESP:getBoneValue(boneCache, "LeftLowerLeg", "Part"), ESP:getBoneValue(boneCache, "LeftFoot", "Part")
+                      local leftUpperLeg, leftLowerLeg, leftFoot = getBoneValue(boneCache, "LeftUpperLeg", "Part"), getBoneValue(boneCache, "LeftLowerLeg", "Part"), getBoneValue(boneCache, "LeftFoot", "Part")
               
-                      local leftUpperLegPos, leftUpperLegBone, leftUpperLegOutline = WorldToViewportPoint(Camera, leftUpperLeg.Position + Variables.Vector3new(0, .5, 0)), ESP:getBoneValue(boneCache, "LeftUpperLeg", "Line"), ESP:getBoneValue(boneCache, "LeftUpperLeg", "Outline")
-                      local leftLowerLegPos, leftLowerLegBone, leftLowerLegOutline = WorldToViewportPoint(Camera, leftLowerLeg.Position), ESP:getBoneValue(boneCache, "LeftLowerLeg", "Line"), ESP:getBoneValue(boneCache, "LeftLowerLeg", "Outline")
-                      local leftFootPos, leftFootBone, leftFootOutline = WorldToViewportPoint(Camera, leftFoot.Position), ESP:getBoneValue(boneCache, "LeftFoot", "Line"), ESP:getBoneValue(boneCache, "LeftFoot", "Outline")
+                      local leftUpperLegPos, leftUpperLegBone, leftUpperLegOutline = WorldToViewportPoint(Camera, leftUpperLeg.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "LeftUpperLeg", "Line"), getBoneValue(boneCache, "LeftUpperLeg", "Outline")
+                      local leftLowerLegPos, leftLowerLegBone, leftLowerLegOutline = WorldToViewportPoint(Camera, leftLowerLeg.Position), getBoneValue(boneCache, "LeftLowerLeg", "Line"), getBoneValue(boneCache, "LeftLowerLeg", "Outline")
+                      local leftFootPos, leftFootBone, leftFootOutline = WorldToViewportPoint(Camera, leftFoot.Position), getBoneValue(boneCache, "LeftFoot", "Line"), getBoneValue(boneCache, "LeftFoot", "Outline")
               
-                      ESP:connectBone(leftUpperLegBone, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(leftUpperLegOutline, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(leftUpperLegBone, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(leftUpperLegOutline, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(leftLowerLegBone, isSkeleton and isRootVis, Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(leftLowerLegOutline, isSkeleton and isRootVis, Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(leftLowerLegBone, isSkeleton and isRootVis, Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(leftLowerLegOutline, isSkeleton and isRootVis, Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(leftFootBone, isSkeleton and isRootVis, Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), Vector2.new(leftFootPos.X, leftFootPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(leftFootOutline, isSkeleton and isRootVis, Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), Vector2.new(leftFootPos.X, leftFootPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(leftFootBone, isSkeleton and isRootVis, Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), Vector2.new(leftFootPos.X, leftFootPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(leftFootOutline, isSkeleton and isRootVis, Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), Vector2.new(leftFootPos.X, leftFootPos.Y), outlineThickness, outlineColor, outlineZIndex)
                   end
               
 
                   do --// Right Leg
-                      local rightUpperLeg, rightLowerLeg, rightFoot = ESP:getBoneValue(boneCache, "RightUpperLeg", "Part"), ESP:getBoneValue(boneCache, "RightLowerLeg", "Part"), ESP:getBoneValue(boneCache, "RightFoot", "Part")
+                      local rightUpperLeg, rightLowerLeg, rightFoot = getBoneValue(boneCache, "RightUpperLeg", "Part"), getBoneValue(boneCache, "RightLowerLeg", "Part"), getBoneValue(boneCache, "RightFoot", "Part")
               
-                      local rightUpperLegPos, rightUpperLegBone, rightUpperLegOutline = WorldToViewportPoint(Camera, rightUpperLeg.Position + Variables.Vector3new(0, .5, 0)), ESP:getBoneValue(boneCache, "RightUpperLeg", "Line"), ESP:getBoneValue(boneCache, "RightUpperLeg", "Outline")
-                      local rightLowerLegPos, rightLowerLegBone, rightLowerLegOutline = WorldToViewportPoint(Camera, rightLowerLeg.Position), ESP:getBoneValue(boneCache, "RightLowerLeg", "Line"), ESP:getBoneValue(boneCache, "RightLowerLeg", "Outline")
-                      local rightFootPos, rightFootBone, rightFootOutline = WorldToViewportPoint(Camera, rightFoot.Position), ESP:getBoneValue(boneCache, "RightFoot", "Line"), ESP:getBoneValue(boneCache, "RightFoot", "Outline")
+                      local rightUpperLegPos, rightUpperLegBone, rightUpperLegOutline = WorldToViewportPoint(Camera, rightUpperLeg.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "RightUpperLeg", "Line"), getBoneValue(boneCache, "RightUpperLeg", "Outline")
+                      local rightLowerLegPos, rightLowerLegBone, rightLowerLegOutline = WorldToViewportPoint(Camera, rightLowerLeg.Position), getBoneValue(boneCache, "RightLowerLeg", "Line"), getBoneValue(boneCache, "RightLowerLeg", "Outline")
+                      local rightFootPos, rightFootBone, rightFootOutline = WorldToViewportPoint(Camera, rightFoot.Position), getBoneValue(boneCache, "RightFoot", "Line"), getBoneValue(boneCache, "RightFoot", "Outline")
               
-                      ESP:connectBone(rightUpperLegBone, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(rightUpperLegOutline, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(rightUpperLegBone, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(rightUpperLegOutline, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(rightLowerLegBone, isSkeleton and isRootVis, Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(rightLowerLegOutline, isSkeleton and isRootVis, Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(rightLowerLegBone, isSkeleton and isRootVis, Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(rightLowerLegOutline, isSkeleton and isRootVis, Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
               
-                      ESP:connectBone(rightFootBone, isSkeleton and isRootVis, Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), Vector2.new(rightFootPos.X, rightFootPos.Y), boneThickness, boneColor, boneZIndex)
-                      ESP:connectBone(rightFootOutline, isSkeleton and isRootVis, Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), Vector2.new(rightFootPos.X, rightFootPos.Y), outlineThickness, outlineColor, outlineZIndex)
+                      connectBone(rightFootBone, isSkeleton and isRootVis, Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), Vector2.new(rightFootPos.X, rightFootPos.Y), boneThickness, boneColor, boneZIndex)
+                      connectBone(rightFootOutline, isSkeleton and isRootVis, Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), Vector2.new(rightFootPos.X, rightFootPos.Y), outlineThickness, outlineColor, outlineZIndex)
                   end
                else
-                  ESP:setBoneVis(boneCache, false)
+                  setBoneVis(boneCache, false)
               end
                   
             end
-                
-
-            do --// Right Flags
-              rightFlags.Position = Variables.UDim2fromOffset(boxRightX + healthBarPadding, posClamp)
-              rightFlags.Size = Variables.UDim2fromOffset(1, boxYSize)
-            end
-
+         
 
             do --// Other
                 local healthBar, bar, barGradient = UI.HealthBar, UI.Bar, UI.BarGradient
@@ -842,6 +835,7 @@ local function renderESP()
               end
                 
             end
+            
       end
 
     end)
@@ -873,7 +867,7 @@ local function ESPObject(self)
 
    
      do -- main text
-       lib:DrawFrame({
+       lib.DrawFrame({
         Name = "BottomFlags",
         Parent = esp.holder,
         Color = Variables.Color3fromRGB(255, 255, 255),
@@ -888,7 +882,7 @@ local function ESPObject(self)
    
    
    
-       lib:DrawText({
+       lib.DrawText({
         Name = "PName", 
    		  Parent = esp.holder,
         TextSize = 10,
@@ -897,7 +891,7 @@ local function ESPObject(self)
 
    
    
-       lib:DrawText({
+       lib.DrawText({
         Name = "Distance", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
@@ -905,7 +899,7 @@ local function ESPObject(self)
        })
    
    
-       lib:DrawText({
+       lib.DrawText({
         Name = "Weapon", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
@@ -913,7 +907,7 @@ local function ESPObject(self)
        })
 
 
-       lib:DrawText({
+       lib.DrawText({
         Name = "VisFlag", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
@@ -921,7 +915,7 @@ local function ESPObject(self)
        })
 
 
-       lib:DrawText({
+       lib.DrawText({
         Name = "ManipFlag", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
@@ -954,7 +948,7 @@ local function ESPObject(self)
    
 
      do -- box
-       lib:DrawFrame({
+       lib.DrawFrame({
            Name = "Box",
            Parent = esp.holder,
            Color = Variables.Color3fromRGB(255, 255, 255),
@@ -969,7 +963,7 @@ local function ESPObject(self)
 
 
 
-       lib:DrawFrame({
+       lib.DrawFrame({
            Name = "BoxFill",
            Parent = esp.holder["Box"],
            Color = Variables.Color3fromRGB(255, 255, 255),
@@ -984,7 +978,7 @@ local function ESPObject(self)
 
 
 
-       lib:DrawGradient({
+       lib.DrawGradient({
           Parent = esp.holder["Box"]["BoxFill"],
           Rotation = -90,
           Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Variables.Color3fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Variables.Color3fromRGB(255, 255, 255))},
@@ -1002,7 +996,7 @@ local function ESPObject(self)
    
 
      do -- HealthBar
-      lib:DrawFrame({
+      lib.DrawFrame({
         Name = "LeftFlags",
         Parent = esp.holder,
         Color = Variables.Color3fromRGB(255, 255, 255),
@@ -1017,7 +1011,7 @@ local function ESPObject(self)
 
 
 
-       lib:DrawFrame({
+       lib.DrawFrame({
         Name = "LeftFlagsTwo",
         Parent = esp.holder["LeftFlags"],
         Color = Variables.Color3fromRGB(255, 255, 255),
@@ -1052,7 +1046,7 @@ local function ESPObject(self)
 
        
 
-       lib:DrawFrame({
+       lib.DrawFrame({
            Name = "HealthBar",
            Parent = esp.holder["LeftFlags"],
            --Parent = esp.holder,
@@ -1067,7 +1061,7 @@ local function ESPObject(self)
        })
        
    
-       lib:DrawFrame({
+       lib.DrawFrame({
            Name = "Bar",
            Parent = esp.holder["LeftFlags"]["HealthBar"],
            Color = Variables.Color3fromRGB(255, 255, 255),
@@ -1081,7 +1075,7 @@ local function ESPObject(self)
        })
       
 
-       lib:DrawText({
+       lib.DrawText({
         Name = "HealthText", 
    		  Parent = esp.holder["LeftFlags"]["LeftFlagsTwo"],
         TextSize = 10,
@@ -1094,11 +1088,11 @@ local function ESPObject(self)
        HealthTextPadding.PaddingLeft = Variables.UDimnew(0, -12)
 
 
-       local healthBarStroke = lib:DrawUIStroke({Parent = esp.holder["LeftFlags"]["HealthBar"]})
+       local healthBarStroke = lib.DrawUIStroke({Parent = esp.holder["LeftFlags"]["HealthBar"]})
        healthBarStroke.LineJoinMode = "Miter"
 
    
-       lib:DrawGradient({
+       lib.DrawGradient({
           Parent = esp.holder["LeftFlags"]["HealthBar"]["Bar"],
           Rotation = -90,
           Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Variables.Color3fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Variables.Color3fromRGB(255, 255, 255))}
@@ -1108,7 +1102,7 @@ local function ESPObject(self)
 
 
      do -- Right Flags
-      lib:DrawFrame({
+      lib.DrawFrame({
         Name = "RightFlags",
         Parent = esp.holder,
         Color = Variables.Color3fromRGB(255, 255, 255),
@@ -1123,7 +1117,7 @@ local function ESPObject(self)
 
 
 
-       lib:DrawFrame({
+       lib.DrawFrame({
         Name = "RightFlagsTwo",
         Parent = esp.holder["RightFlags"],
         Color = Variables.Color3fromRGB(255, 255, 255),
@@ -1158,7 +1152,7 @@ local function ESPObject(self)
 
 
 
-       lib:DrawText({
+       lib.DrawText({
         Name = "AimingText", 
    		  Parent = esp.holder["RightFlags"]["RightFlagsTwo"],
         TextSize = 10,
@@ -1167,7 +1161,7 @@ local function ESPObject(self)
 
 
 
-       lib:DrawText({
+       lib.DrawText({
         Name = "InventoryText", 
    		  Parent = esp.holder["RightFlags"]["RightFlagsTwo"],
         TextSize = 10,
@@ -1189,7 +1183,7 @@ local function ESPObject(self)
      end
 
 
-     local colorStroke, outerStroke, innerStroke = lib:DrawUIStroke({Parent = esp.holder["Box"]}), lib:DrawUIStroke({Parent = esp.holder["Box"]}), lib:DrawUIStroke({Parent = esp.holder["Box"]})
+     local colorStroke, outerStroke, innerStroke = lib.DrawUIStroke({Parent = esp.holder["Box"]}), lib.DrawUIStroke({Parent = esp.holder["Box"]}), lib.DrawUIStroke({Parent = esp.holder["Box"]})
      esp.itemCache = {}
      esp.UI = {
         GUI = esp.holder;
@@ -1321,7 +1315,7 @@ end
 
 local newCharacter = function(Character)
   local v = ESPObject(GetPFromChar(Character))
-  ESP:getParts(v, Character)
+  ESP.getParts(v, Character)
 end
 
 
