@@ -407,31 +407,9 @@ local function renderESP()
     local lastShotUpdate = tick()
     local waitTime
     local ESP = ESP
-    
-    
-    espConnection = Variables.RunService.PreRender:Connect(function(deltatime)
-      visParams.FilterType = Enum.RaycastFilterType.Exclude
-      visParams.IgnoreWater = false
-      visParams.CollisionGroup = "Default"
-      local espLimit = visuals.returnflag("espLimit")
-       
-      for _, player in espCache do
-          local timeElapsed = 0
-          local currentTick = clock()
 
-          
-          local elapsed = currentTick - lastTick
-          timeElapsed += deltatime
-      
-      
-          lastTick += deltatime
-        	if (lastTick < 1 / espLimit) then
-        		return
-        	end
-        	lastTick = 0
-            
-      
-            local isFadeOnDistance, maxFadeDistance, minFadeDistance, maxFadeTransparency = visuals.returnflag("fadeOnDistance"), visuals.returnflag("MaxFadeDistance"), visuals.returnflag("MinFadeDistance"), visuals.returnflag("maxFadeTransparency")
+
+    local isFadeOnDistance, maxFadeDistance, minFadeDistance, maxFadeTransparency = visuals.returnflag("fadeOnDistance"), visuals.returnflag("MaxFadeDistance"), visuals.returnflag("MinFadeDistance"), visuals.returnflag("maxFadeTransparency")
             local isHealthText, healthTextColor = visuals.returnflag("HealthText"), visuals.returnflagcolor("Health_Text_Color")
             
             
@@ -480,8 +458,30 @@ local function renderESP()
             local Client = Variables.Players.LocalPlayer
             local cameraPos = Variables.Camera.CFrame.Position
             local clientCharacter = Variables.Players.LocalPlayer.Character
+    
+    
+    espConnection = Variables.RunService.PreRender:Connect(function(deltatime)
+      visParams.FilterType = Enum.RaycastFilterType.Exclude
+      visParams.IgnoreWater = false
+      visParams.CollisionGroup = "Default"
+      local espLimit = visuals.returnflag("espLimit")
+
+      local timeElapsed = 0
+      local currentTick = clock()
+
+          
+      local elapsed = currentTick - lastTick
+      timeElapsed += deltatime
       
       
+      lastTick += deltatime
+      if (lastTick < 1 / espLimit) then
+        return
+      end
+      lastTick = 0
+      
+       
+      for _, player in espCache do
             local setBoneVis = ESP.setBoneVis
 
 
@@ -822,6 +822,12 @@ local function renderESP()
                 end
 
 
+            end
+
+
+            do --// Flags
+              rightFlags.Position = Variables.UDim2fromOffset(rightX, posClamp)
+              rightFlags.Size = Variables.UDim2fromOffset(1, boxYSize)
             end
 
 
