@@ -429,6 +429,9 @@ local function renderESP()
       local Client = Variables.Players.LocalPlayer
       local cameraPos = Variables.Camera.CFrame.Position
       local clientCharacter = Variables.Players.LocalPlayer.Character
+      if clientCharacter then
+        rayOrigin = clientCharacter.Head
+      end
       
 
       for _, player in espCache do
@@ -436,37 +439,31 @@ local function renderESP()
             local character = player.Character
            
 
-            if not clientCharacter or not character or not clientCharacter.Head then
-               esp.Visible = false
-              continue
-             else
-               esp.Visible = true
-            end
-
-
-            local head, root, humanoid = player.head, player.root, player.humanoid
-            if not library.flags["EnableAll"] or not head or not root or not humanoid then
+            if not library.flags["EnableAll"] or not character or not rayOrigin then
               esp.Visible = false
              continue
-             else
-              esp.Visible = true
             end
-
-
-            rayOrigin = clientCharacter.Head
+            
+            
+            local head, root, humanoid = player.head, player.root, player.humanoid
+            if not head or not root or not humanoid or humanoid.Health <= 0 then
+              esp.Visible = false
+             continue
+            end
+            
+            
             local rootPos = root.Position
+            if (rootPos - cameraPos).Magnitude >= library.flags["MaxDistance"] then
+            
+            
             local pos2, isRootVis = WorldToViewportPoint(cam, rootPos)
-  
-                
-            local distancemag, maxDistance = Math.floor((rootPos - cameraPos).Magnitude), library.flags["MaxDistance"]
-            if not isRootVis or distancemag >= maxDistance or humanoid.Health <= 0 then
-               esp.Visible = false
-              continue
-             else
-               esp.Visible = true
+            if not isRootVis then
+              esp.Visible = false
+             continue
             end
+
             
-            
+            esp.Visible = true
             local leftFlags, leftListLayout = UI.LeftFlags, UI.leftListLayout
             local rightFlags, rightListLayout = UI.RightFlags, UI.rightListLayout
           
