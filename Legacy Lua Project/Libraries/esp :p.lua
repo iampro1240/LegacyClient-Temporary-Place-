@@ -81,12 +81,15 @@ local UDim2new = UDim2.new
 local UDimnew = UDim.new
 local fromOffset = UDim2.fromOffset
 local vectorcreate = vector.create
+local vector2New = Vector2.new
 
 
+local fromRGB = Color3.fromRGB
 local ColorSequencenew = ColorSequence.new
 local ColorSequenceKeypointnew = ColorSequenceKeypoint.new
 local NumberSequencenew = NumberSequence.new
 local NumberSequenceKeypointnew = NumberSequenceKeypoint.new
+
 
 
 do -- Font Registering
@@ -140,7 +143,7 @@ do --// ESP functions
         obj.Parent = properties.Parent or nil
     
         obj.Rotation = properties.Rotation or 0
-        obj.Color = properties.Color or Variables.Color3fromRGB(255, 255, 255)
+        obj.Color = properties.Color or fromRGB(255, 255, 255)
   end
    
    
@@ -162,7 +165,7 @@ do --// ESP functions
        obj.Parent = properties.Parent
        obj.BackgroundTransparency = 1
            
-       obj.BorderColor3 = Variables.Color3fromRGB(0, 0, 0)
+       obj.BorderColor3 = fromRGB(0, 0, 0)
        obj.BorderSizePixel = 0
    
        obj.TextStrokeTransparency = 1
@@ -182,7 +185,7 @@ do --// ESP functions
    
        obj.BackgroundTransparency = properties.BackgroundTransparency
    	   obj.BackgroundColor3 = properties.Color
-   	   obj.BorderColor3 = Variables.Color3fromRGB(0, 0, 0)
+   	   obj.BorderColor3 = fromRGB(0, 0, 0)
    
        obj.BorderSizePixel = properties.BorderSizePixel
        obj.Position = properties.Position
@@ -201,7 +204,7 @@ do --// ESP functions
       obj.Image = properties.Image
    
       obj.BackgroundTransparency = 1
-    	obj.BorderColor3 = Variables.Color3fromRGB(0, 0, 0)
+    	obj.BorderColor3 = fromRGB(0, 0, 0)
    
     	obj.BorderSizePixel = properties.BorderSizePixel
     	obj.Position = properties.Position
@@ -265,7 +268,7 @@ do --// ESP functions
           esp.chamCacheTwo[part].Size = part.Size
           esp.chamCacheTwo[part].Visible = false
           esp.chamCacheTwo[part].Transparency = .7
-          esp.chamCacheTwo[part].Color3 = Variables.Color3fromRGB(0, 0, 0)
+          esp.chamCacheTwo[part].Color3 = fromRGB(0, 0, 0)
           esp.chamCacheTwo[part].Name = "BlackedOut"
   
           esp.partCache[part] = part or {part}
@@ -721,14 +724,14 @@ local function ESPObject(self)
        lib.DrawFrame({
         Name = "BottomFlags",
         Parent = esp.holder,
-        Color = Variables.Color3fromRGB(255, 255, 255),
+        Color = fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
+        Position = UDim2new(0, 632, 0, 569),
+        Size = UDim2new({0.062, 0},{0.126, 0}),
         Zindex = 9999999999,
         Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
    
    
@@ -737,7 +740,7 @@ local function ESPObject(self)
         Name = "PName", 
    		  Parent = esp.holder,
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
    
@@ -746,7 +749,7 @@ local function ESPObject(self)
         Name = "Distance", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
    
    
@@ -754,7 +757,7 @@ local function ESPObject(self)
         Name = "Weapon", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
 
@@ -762,7 +765,7 @@ local function ESPObject(self)
         Name = "VisFlag", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
 
@@ -770,19 +773,19 @@ local function ESPObject(self)
         Name = "ManipFlag", 
    		  Parent = esp.holder["BottomFlags"],
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
        
 
 
        local listLayout = Variables.Instancenew("UIListLayout", esp.holder["BottomFlags"])
        local uiPadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"])
-       listLayout.Padding = Variables.UDimnew(0, 11)
+       listLayout.Padding = UDimnew(0, 11)
        listLayout.VerticalAlignment = "Top"
        listLayout.HorizontalAlignment = "Center"
        listLayout.ItemLineAlignment = "Center"
        listLayout.SortOrder = "LayoutOrder"
-       uiPadding.PaddingBottom = Variables.UDimnew(1, 0)
+       uiPadding.PaddingBottom = UDimnew(1, 0)
 
 
        local weaponPadding, distancePadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["Weapon"]), Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["Distance"])
@@ -790,8 +793,8 @@ local function ESPObject(self)
        --weaponPadding.PaddingTop = UDimnew(-0.15, 0)
 
 
-       --distancePadding.PaddingBottom = Variables.UDimnew(-0.32, 0)
-       --distancePadding.PaddingTop = Variables.UDimnew(-0.15, 0)
+       --distancePadding.PaddingBottom = UDimnew(-0.32, 0)
+       --distancePadding.PaddingTop = UDimnew(-0.15, 0)
    
    
      end
@@ -801,14 +804,14 @@ local function ESPObject(self)
        lib.DrawFrame({
            Name = "Box",
            Parent = esp.holder,
-           Color = Variables.Color3fromRGB(255, 255, 255),
+           Color = fromRGB(255, 255, 255),
            BackgroundTransparency = 1,
            BorderSizePixel = 1,
-           Position = Variables.UDim2new(0.17, 0, 0.12, 0),
-           Size = Variables.UDim2new(0.65, 0, 0.88, 0),
+           Position = UDim2new(0.17, 0, 0.12, 0),
+           Size = UDim2new(0.65, 0, 0.88, 0),
            Zindex = 5,
            Rotation = 0,
-           AnchorPoint = Variables.Vector2new(.5, 0),
+           AnchorPoint = vector2New(.5, 0),
        })
 
 
@@ -816,14 +819,14 @@ local function ESPObject(self)
        lib.DrawFrame({
            Name = "BoxFill",
            Parent = esp.holder["Box"],
-           Color = Variables.Color3fromRGB(255, 255, 255),
+           Color = fromRGB(255, 255, 255),
            BackgroundTransparency = 1,
            BorderSizePixel = 1,
-           Position = Variables.UDim2new(0, 0, 0, 0),
-           Size = Variables.UDim2new(1, 0, 1, 0),
+           Position = UDim2new(0, 0, 0, 0),
+           Size = UDim2new(1, 0, 1, 0),
            Zindex = -5,
            Rotation = 0,
-           AnchorPoint = Variables.Vector2new(0, 0),
+           AnchorPoint = vector2New(0, 0),
        })
 
 
@@ -831,7 +834,7 @@ local function ESPObject(self)
        lib.DrawGradient({
           Parent = esp.holder["Box"]["BoxFill"],
           Rotation = -90,
-          Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Variables.Color3fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Variables.Color3fromRGB(255, 255, 255))},
+          Color = ColorSequence.new{ColorSequenceKeypoint.new(0, fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, fromRGB(255, 255, 255))},
           Transparency = 0
        })
    
@@ -848,14 +851,14 @@ local function ESPObject(self)
       lib.DrawFrame({
         Name = "LeftFlags",
         Parent = esp.holder,
-        Color = Variables.Color3fromRGB(255, 255, 255),
+        Color = fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
+        Position = UDim2new(0, 632, 0, 569),
+        Size = UDim2new({0.062, 0},{0.126, 0}),
         Zindex = 9999999999,
         Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
 
@@ -863,20 +866,20 @@ local function ESPObject(self)
        lib.DrawFrame({
         Name = "LeftFlagsTwo",
         Parent = esp.holder["LeftFlags"],
-        Color = Variables.Color3fromRGB(255, 255, 255),
+        Color = fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
+        Position = UDim2new(0, 632, 0, 569),
+        Size = UDim2new({0.062, 0},{0.126, 0}),
         Zindex = 9999999999,
         Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
        
 
        local listLayout = Variables.Instancenew("UIListLayout", esp.holder["LeftFlags"])
-       listLayout.Padding = Variables.UDimnew(0, -6)
+       listLayout.Padding = UDimnew(0, -6)
        listLayout.FillDirection = "Horizontal"
        listLayout.HorizontalAlignment = "Left"
        listLayout.HorizontalFlex = "None"
@@ -886,7 +889,7 @@ local function ESPObject(self)
 
 
        local listLayout2 = Variables.Instancenew("UIListLayout", esp.holder["LeftFlags"]["LeftFlagsTwo"])
-       listLayout2.Padding = Variables.UDimnew(0, 10)
+       listLayout2.Padding = UDimnew(0, 10)
        listLayout2.FillDirection = "Vertical"
        listLayout2.HorizontalAlignment = "Left"
        listLayout2.HorizontalFlex = "None"
@@ -899,28 +902,28 @@ local function ESPObject(self)
            Name = "HealthBar",
            Parent = esp.holder["LeftFlags"],
            --Parent = esp.holder,
-           Color = Variables.Color3fromRGB(0, 0, 0),
+           Color = fromRGB(0, 0, 0),
            BackgroundTransparency = 0,
            BorderSizePixel = 0,
-           Position = Variables.UDim2new(0.17, 0, 0.12, 0),
-           Size = Variables.UDim2new(0.65, 0, 0.88, 0),
+           Position = UDim2new(0.17, 0, 0.12, 0),
+           Size = UDim2new(0.65, 0, 0.88, 0),
            Zindex = 9999999999,
            Rotation = 0,
-           AnchorPoint = Variables.Vector2new(.5, 0),
+           AnchorPoint = vector2New(.5, 0),
        })
        
    
        lib.DrawFrame({
            Name = "Bar",
            Parent = esp.holder["LeftFlags"]["HealthBar"],
-           Color = Variables.Color3fromRGB(255, 255, 255),
+           Color = fromRGB(255, 255, 255),
            BackgroundTransparency = 0,
            BorderSizePixel = 0,
-           Position = Variables.UDim2new(0, 0, 1, 0),
-           Size = Variables.UDim2new(1, 0, 1, 0),
+           Position = UDim2new(0, 0, 1, 0),
+           Size = UDim2new(1, 0, 1, 0),
            Zindex = 9999999999,
            Rotation = 0,
-           AnchorPoint = Variables.Vector2new(0, 1)
+           AnchorPoint = vector2New(0, 1)
        })
       
 
@@ -928,13 +931,13 @@ local function ESPObject(self)
         Name = "HealthText", 
    		  Parent = esp.holder["LeftFlags"]["LeftFlagsTwo"],
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
 
        local HealthTextPadding = Variables.Instancenew("UIPadding", esp.holder["LeftFlags"]["LeftFlagsTwo"]["HealthText"])
-       HealthTextPadding.PaddingBottom = Variables.UDimnew(.3, 0)
-       HealthTextPadding.PaddingLeft = Variables.UDimnew(0, -12)
+       HealthTextPadding.PaddingBottom = UDimnew(.3, 0)
+       HealthTextPadding.PaddingLeft = UDimnew(0, -12)
 
 
        local healthBarStroke = lib.DrawUIStroke({Parent = esp.holder["LeftFlags"]["HealthBar"]})
@@ -944,7 +947,7 @@ local function ESPObject(self)
        lib.DrawGradient({
           Parent = esp.holder["LeftFlags"]["HealthBar"]["Bar"],
           Rotation = -90,
-          Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Variables.Color3fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Variables.Color3fromRGB(255, 255, 255))}
+          Color = ColorSequence.new{ColorSequenceKeypoint.new(0, fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, fromRGB(255, 255, 255))}
        })
      end
 
@@ -953,14 +956,14 @@ local function ESPObject(self)
       lib.DrawFrame({
         Name = "RightFlags",
         Parent = esp.holder,
-        Color = Variables.Color3fromRGB(255, 255, 255),
+        Color = fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
+        Position = UDim2new(0, 632, 0, 569),
+        Size = UDim2new({0.062, 0},{0.126, 0}),
         Zindex = 9999999999,
         Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
 
@@ -968,20 +971,20 @@ local function ESPObject(self)
        lib.DrawFrame({
         Name = "RightFlagsTwo",
         Parent = esp.holder["RightFlags"],
-        Color = Variables.Color3fromRGB(255, 255, 255),
+        Color = fromRGB(255, 255, 255),
         BackgroundTransparency = 1,
         BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
+        Position = UDim2new(0, 632, 0, 569),
+        Size = UDim2new({0.062, 0},{0.126, 0}),
         Zindex = 9999999999,
         Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
 
 
        local listLayout = Variables.Instancenew("UIListLayout", esp.holder["RightFlags"])
-       listLayout.Padding = Variables.UDimnew(0, 0)
+       listLayout.Padding = UDimnew(0, 0)
        listLayout.FillDirection = "Horizontal"
        listLayout.HorizontalAlignment = "Right"
        listLayout.HorizontalFlex = "None"
@@ -991,7 +994,7 @@ local function ESPObject(self)
 
 
        local listLayout2 = Variables.Instancenew("UIListLayout", esp.holder["RightFlags"]["RightFlagsTwo"])
-       listLayout2.Padding = Variables.UDimnew(0, 10)
+       listLayout2.Padding = UDimnew(0, 10)
        listLayout2.FillDirection = "Vertical"
        listLayout2.HorizontalAlignment = "Right"
        listLayout2.HorizontalFlex = "None"
@@ -1004,7 +1007,7 @@ local function ESPObject(self)
         Name = "AimingText", 
    		  Parent = esp.holder["RightFlags"]["RightFlagsTwo"],
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
 
 
@@ -1013,21 +1016,21 @@ local function ESPObject(self)
         Name = "InventoryText", 
    		  Parent = esp.holder["RightFlags"]["RightFlagsTwo"],
         TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
+        AnchorPoint = vector2New(0, 0)
        })
        
 
 
        local AimTextPadding = Variables.Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["AimingText"])
-       AimTextPadding.PaddingBottom = Variables.UDimnew(0, -9)
-       AimTextPadding.PaddingRight = Variables.UDimnew(0, -25)
-       AimTextPadding.PaddingTop = Variables.UDimnew(0, -2)
+       AimTextPadding.PaddingBottom = UDimnew(0, -9)
+       AimTextPadding.PaddingRight = UDimnew(0, -25)
+       AimTextPadding.PaddingTop = UDimnew(0, -2)
 
 
 
        local InventoryTextPadding = Variables.Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["InventoryText"])
-       InventoryTextPadding.PaddingTop = Variables.UDimnew(0, -4)
-       InventoryTextPadding.PaddingRight = Variables.UDimnew(0, -48)
+       InventoryTextPadding.PaddingTop = UDimnew(0, -4)
+       InventoryTextPadding.PaddingRight = UDimnew(0, -48)
      end
 
 
@@ -1098,8 +1101,8 @@ local function ESPObject(self)
 
 
      local VisTextPadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["VisFlag"])
-     VisTextPadding.PaddingBottom = Variables.UDimnew(0, 0)
-     VisTextPadding.PaddingLeft = Variables.UDimnew(0, 0)
+     VisTextPadding.PaddingBottom = UDimnew(0, 0)
+     VisTextPadding.PaddingLeft = UDimnew(0, 0)
 
 
      colorStroke.ApplyStrokeMode = "Contextual"
@@ -1107,7 +1110,7 @@ local function ESPObject(self)
      colorStroke.LineJoinMode = "Miter"
      colorStroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner
      colorStroke.ZIndex = 1
-     colorStroke.Color = Variables.Color3fromRGB(0, 255, 255)
+     colorStroke.Color = fromRGB(0, 255, 255)
 
 
      outerStroke.ApplyStrokeMode =  "Border"
@@ -1134,14 +1137,13 @@ local function ESPObject(self)
 
 
      local Character = self.Character
-     esp.root, esp.humanoid = Character:WaitForChild("HumanoidRootPart", 60) or FindFirstChild(Character, "HumanoidRootPart"), Character:WaitForChild("Humanoid", 60) or FindFirstChild(Character, "Humanoid")
-     esp.head = Character:WaitForChild("Head", 60) or FindFirstChild(Character, "Head")
-
+     esp.root, esp.humanoid, esp.head = Character:WaitForChild("HumanoidRootPart", 60), Character:WaitForChild("Humanoid", 60), Character:WaitForChild("Head", 60)
+    
  
      for _, part in Character:GetChildren() do
         if part:IsA("MeshPart") or part:IsA("Part") then
-         esp.partCache[part] = Character:WaitForChild(part.Name, 60) or FindFirstChild(Character, part.Name)
-         esp.boneCache[part.Name] = {Part = Character:WaitForChild(part.Name, 60) or FindFirstChild(Character, part.Name), Line = Drawing.new("Line"), Outline = Drawing.new("Line")}
+         esp.partCache[part] = Character:WaitForChild(part.Name, 60)
+         esp.boneCache[part.Name] = {Part = Character:WaitForChild(part.Name, 60), Line = Drawing.new("Line"), Outline = Drawing.new("Line")}
         end
      end
 
