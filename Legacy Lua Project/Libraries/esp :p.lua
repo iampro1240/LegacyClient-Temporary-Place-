@@ -1,5 +1,5 @@
 local library, themes = loadstring(game:HttpGet("https://raw.githubusercontent.com/iampro1240/LegacyClient-Temporary-Place-/refs/heads/main/Legacy%20Lua%20Project/UI/Library.lua"))()
-local getService, getFunction, getGCFunction, deepCopy, Variables, Math, FindFirstChild, FindFirstChildOfClass, WorldToViewportPoint = loadstring(game:HttpGet("https://raw.githubusercontent.com/iampro1240/LegacyClient-Temporary-Place-/refs/heads/main/Legacy%20Lua%20Project/Libraries/Services.lua"))()
+local getService, getFunction, getGCFunction, deepCopy, Variables, Math, FindFirstChild, FindFirstChildOfClass, wtvpp = loadstring(game:HttpGet("https://raw.githubusercontent.com/iampro1240/LegacyClient-Temporary-Place-/refs/heads/main/Legacy%20Lua%20Project/Libraries/Services.lua"))()
 local espConnection
 local ESP = {
   fontSettings = {
@@ -68,8 +68,25 @@ local visualHolder = Instance.new("ScreenGui", gethui())
 visualHolder.IgnoreGuiInset = true
 visualHolder.Enabled = true
 
+
 local typeOf = typeof
 local clock = os.clock
+local currentCamera = workspace.CurrentCamera
+local WorldToViewportPoint = currentCamera.WorldToViewportPoint
+
+
+local round = math.round
+local floor = math.floor
+local UDim2new = UDim2.new
+local UDimnew = UDim.new
+local fromOffset = UDim2.fromOffset
+local vectorcreate = vector.create
+
+
+local ColorSequencenew = ColorSequence.new
+local ColorSequenceKeypointnew = ColorSequenceKeypoint.new
+local NumberSequencenew = NumberSequence.new
+local NumberSequenceKeypointnew = NumberSequenceKeypoint.new
 
 
 do -- Font Registering
@@ -368,17 +385,17 @@ end
 
 do --// Library Functions
   function visuals.returnflag(flag)
-    return library.flags[flag]
+    return flags[flag]
   end
 
    
   function visuals.returnflagcolor(color)
-    return visuals.returnflag(color).Color
+    return flags[color].Color
   end
    
 
   function visuals.returnflagtransparency(color)
-    return visuals.returnflag(color).Alpha or visuals.returnflag(color).Transparency
+    return flags[color].Transparency
   end
 end
 
@@ -400,7 +417,6 @@ local function renderESP()
 
     local accumulatedTime = 0
     local TARGET_INTERVAL = 1 / 60 
-    local cam = workspace.CurrentCamera
     --local WorldToViewportPoint = cam.WorldToViewportPoint
     
     
@@ -413,16 +429,16 @@ local function renderESP()
         
       accumulatedTime -= TARGET_INTERVAL
 
-      local currentTextFont, flagFont = library.flags["TextFont"], library.flags["TextFlagFont"]
+      local currentTextFont, flagFont = flags["TextFont"], flags["TextFlagFont"]
       local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
 
 
       local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
-      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = library.flags["skeletonEnabled"], 1, 3, library.flags["boneColor"].Color, Color3.fromRGB(0, 0, 0), 2, 1
+      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = flags["skeletonEnabled"], 1, 3, flags["boneColor"].Color, Color3.fromRGB(0, 0, 0), 2, 1
        
 
-      local healthBarPadding = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Padding
-      local healthBarPaddingSize = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Size
+      local healthBarPadding = ESP.healthBarSettings[flags["HealthBarPadding"]].Padding
+      local healthBarPaddingSize = ESP.healthBarSettings[flags["HealthBarPadding"]].Size
       local textFlagFont = ESP.fontSettings[flagFont]
       
   
@@ -434,21 +450,21 @@ local function renderESP()
       end
 
 
-      local isEnableAll = library.flags["EnableAll"]
-      local isMaxDistance = library.flags["MaxDistance"]
+      local isEnableAll = flags["EnableAll"]
+      local isMaxDistance = flags["MaxDistance"]
 
 
-      local isName = library.flags["Names"]
-      local isDistance = library.flags["Distance"]
-      local isWeapon = library.flags["Weapon"]
-      local isVisFlag = library.flags["Vis"]
-      local isHealthText = library.flags["HealthText"]
-      local isAimingText = library.flags["AimingText"]
-      local isInventoryText = library.flags["InventoryText"]
+      local isName = flags["Names"]
+      local isDistance = flags["Distance"]
+      local isWeapon = flags["Weapon"]
+      local isVisFlag = flags["Vis"]
+      local isHealthText = flags["HealthText"]
+      local isAimingText = flags["AimingText"]
+      local isInventoryText = flags["InventoryText"]
                 
       
-      local isBox = library.flags["Boxes"]
-      local isHealthBar = library.flags["Healthbar"]
+      local isBox = flags["Boxes"]
+      local isHealthBar = flags["Healthbar"]
       
 
       for _, player in espCache do
@@ -456,28 +472,28 @@ local function renderESP()
             local character = player.Character
            
 
-            if not isEnableAll or not character or not rayOrigin then
+            if not isEnableAll then
               esp.Visible = false
              continue
             end
             
             
             local head, root, humanoid = player.head, player.root, player.humanoid
-            if not head or not root or not humanoid or humanoid.Health <= 0 then
+            if not character or not rayOrigin or not head or not root or not humanoid or humanoid.Health <= 0 then
               esp.Visible = false
              continue
             end
             
             
             local rootPos = root.Position
-            local distancemag = Math.round((rootPos - cameraPos).Magnitude)
+            local distancemag = round((rootPos - cameraPos).Magnitude)
             if distancemag >= isMaxDistance then
               esp.Visible = false
              continue
             end
             
             
-            local pos2, isRootVis = WorldToViewportPoint(cam, rootPos)
+            local pos2, isRootVis = WorldToViewportPoint(currentCamera, rootPos)
             if not isRootVis then
               esp.Visible = false
              continue
@@ -490,8 +506,8 @@ local function renderESP()
           
                 
             local halfHeight = (root.Size.X + root.Size.Y) / 1.5
-            local top2D, isTopVisible = WorldToViewportPoint(cam, rootPos + vector.create(0, halfHeight))
-            local bottom2D, isBottomVisible = WorldToViewportPoint(cam, rootPos - vector.create(0, halfHeight))
+            local top2D, isTopVisible = WorldToViewportPoint(currentCamera, rootPos + vectorcreate(0, halfHeight))
+            local bottom2D, isBottomVisible = WorldToViewportPoint(currentCamera, rootPos - vectorcreate(0, halfHeight))
   
                 
             local isPlayerVis, isPlayerManip = player.playerVis, player.playerManip
@@ -505,14 +521,14 @@ local function renderESP()
                 
             local width = (height * .6) 
             local boxYSize = (height * 1.16 + 7)
-            local posClamp = Math.floor(top2D.Y - height * .019)
+            local posClamp = floor(top2D.Y - height * .019)
   
                 
-            local boxTotalWidth = Math.floor(width * 1.16 + 5)
-            local halfBoxWidth = Math.floor(boxTotalWidth * .5)
+            local boxTotalWidth = floor(width * 1.16 + 5)
+            local halfBoxWidth = floor(boxTotalWidth * .5)
 
 
-            local boxLeftX = Math.floor(centerX - halfBoxWidth)
+            local boxLeftX = floor(centerX - halfBoxWidth)
             local boxRightX = boxLeftX + boxTotalWidth
            
 
@@ -521,12 +537,12 @@ local function renderESP()
                   
                   nameText.Visible = isName
                   if isName then
-                    nameText.Position = UDim2.fromOffset(centerX, posClamp - textSettings.namePadding)
-                    nameText.TextColor3 = library.flags["Name_Color"].Color
+                    nameText.Position = fromOffset(centerX, posClamp - textSettings.namePadding)
+                    nameText.TextColor3 = flags["Name_Color"].Color
                     nameText.FontFace = textFont
                     nameText.TextSize = textSettings.FontSize
 
-                    if library.flags["UseDisplayName"] then
+                    if flags["UseDisplayName"] then
                       nameText.Text = player.Player.DisplayName
                      else
                       nameText.Text = player.Player.Name
@@ -539,8 +555,8 @@ local function renderESP()
                 do --// Distance
                   distanceText.Visible = isDistance
                   if isDistance then
-                    distanceText.Text = distancemag .. library.flags["DistanceType"]
-                    distanceText.TextColor3 = library.flags["Distance_Color"].Color
+                    distanceText.Text = distancemag .. flags["DistanceType"]
+                    distanceText.TextColor3 = flags["Distance_Color"].Color
                     distanceText.FontFace = textFont
                     distanceText.TextSize = textSettings.FontSize
                   end
@@ -550,7 +566,7 @@ local function renderESP()
                 do -- Weapon
                   weaponText.Visible = isWeapon
                   if isWeapon then
-                    weaponText.TextColor3 = library.flags["Weapon_Color"].Color
+                    weaponText.TextColor3 = flags["Weapon_Color"].Color
                     weaponText.Text = player.weapon or "Empty"
                     weaponText.FontFace = textFont
                     weaponText.TextSize = textSettings.FontSize
@@ -575,7 +591,7 @@ local function renderESP()
                           player.playerVis = false
                         end
                     end
-                    visFlag.TextColor3 = ESP.getVis(player.playerVis, library.flags["Vis_Color"].Color, library.flags["Not_Vis_Color"].Color)
+                    visFlag.TextColor3 = ESP.getVis(player.playerVis, flags["Vis_Color"].Color, flags["Not_Vis_Color"].Color)
                   end
                 end
                
@@ -592,8 +608,8 @@ local function renderESP()
                   
                   healthFlag.Visible = isHealthText
                   if isHealthText then
-                    healthFlag.TextColor3 = library.flags["Health_Text_Color"].Color
-                    healthFlag.Text = math.floor(humanoid.Health)
+                    healthFlag.TextColor3 = flags["Health_Text_Color"].Color
+                    healthFlag.Text = floor(humanoid.Health)
                     healthFlag.FontFace = flagTextFont
                     healthFlag.TextSize = flagTextSettings.FontSize
                   end
@@ -601,7 +617,7 @@ local function renderESP()
                   
                   aimingFlag.Visible = isAimingText
                   if isAimingText then
-                    aimingFlag.TextColor3 = getVis(true, library.flags["Aiming_Color"].Color, library.flags["Not_Aiming_Color"].Color)
+                    aimingFlag.TextColor3 = getVis(true, flags["Aiming_Color"].Color, flags["Not_Aiming_Color"].Color)
                     aimingFlag.FontFace = flagTextFont
                     aimingFlag.TextSize = flagTextSettings.FontSize
                   end
@@ -609,7 +625,7 @@ local function renderESP()
                   
                   inventoryFlag.Visible = isInventoryText
                   if isInventoryText then
-                    inventoryFlag.TextColor3 = getVis(true, library.flags["Inventory_Color"].Color, library.flags["Not_Inventory_Color"].Color)
+                    inventoryFlag.TextColor3 = getVis(true, flags["Inventory_Color"].Color, flags["Not_Inventory_Color"].Color)
                     inventoryFlag.TextSize = textFlagFont.FontSize
                     inventoryFlag.FontFace = flagTextFont
                   end
@@ -617,12 +633,12 @@ local function renderESP()
                 end
 
                
-                rightFlags.Position = UDim2.fromOffset(rightX, posClamp)
-                rightFlags.Size = UDim2.fromOffset(1, boxYSize)
+                rightFlags.Position = fromOffset(rightX, posClamp)
+                rightFlags.Size = fromOffset(1, boxYSize)
             
 
-                UI.BottomFlags.Position = UDim2.fromOffset(centerX, Math.floor( posClamp + boxYSize + textSettings.bottomPadding))
-                UI.bottomListLayout.Padding = UDim.new(0, textSettings.bottomListLayoutPadding)
+                UI.BottomFlags.Position = fromOffset(centerX, floor( posClamp + boxYSize + textSettings.bottomPadding))
+                UI.bottomListLayout.Padding = UDimnew(0, textSettings.bottomListLayoutPadding)
             end
           
 
@@ -631,20 +647,20 @@ local function renderESP()
                   local box, boxFill = UI.Box, UI.BoxFill
                   box.Visible = isBox
                   if isBox then
-                    box.Position = UDim2.new(0, centerX, 0, posClamp)
-                    box.Size = UDim2.new(0, boxTotalWidth, 0, boxYSize)
-                    UI.topColor.Color = library.flags["Box_Color"].Color
+                    box.Position = UDim2new(0, centerX, 0, posClamp)
+                    box.Size = UDim2new(0, boxTotalWidth, 0, boxYSize)
+                    UI.topColor.Color = flags["Box_Color"].Color
                     
                     
-                    boxFill.Visible = library.flags["Boxes"] and library.flags["BoxFill"]
-                    boxFill.UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["Box_Fill_Color"].Color), ColorSequenceKeypoint.new(1, library.flags["Box_Fill_ColorTwo"].Color)}
-                   
+                    boxFill.Visible = flags["Boxes"] and flags["BoxFill"]
+                    boxFill.UIGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["Box_Fill_Color"].Color), ColorSequenceKeypointnew(1, flags["Box_Fill_ColorTwo"].Color)}
+                    
 
-                    boxFill.UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, library.flags["GradientColor1"].Transparency), NumberSequenceKeypoint.new(1, library.flags["GradientColor2"].Transparency)}
-                    if library.flags["gradientSpin"] then
-                       boxFill.UIGradient.Rotation += library.flags["gradientAnimationSpeed"] / 100
+                    boxFill.UIGradient.Transparency = NumberSequencenew{NumberSequenceKeypointnew(0, flags["GradientColor1"].Transparency), NumberSequenceKeypointnew(1, flags["GradientColor2"].Transparency)}
+                    if flags["gradientSpin"] then
+                       boxFill.UIGradient.Rotation += flags["gradientAnimationSpeed"] / 100
                      else
-                      boxFill.UIGradient.Rotation = library.flags["FillRotation"]
+                      boxFill.UIGradient.Rotation = flags["FillRotation"]
                     end
                   end
                 end
@@ -653,24 +669,24 @@ local function renderESP()
                   local healthBar, bar, barGradient = UI.HealthBar, UI.Bar, UI.BarGradient
                   healthBar.Visible = isHealthBar
                   if isHealthBar then
-                    leftListLayout.Padding = UDim.new(0, textSettings.leftListLayoutPadding)
+                    leftListLayout.Padding = UDimnew(0, textSettings.leftListLayoutPadding)
                     
   
-                    healthBar.Size = UDim2.new(0, healthBarPaddingSize, 0, boxYSize)
-                    leftFlags.Size = UDim2.fromOffset(-1, boxYSize)
-                    bar.Size = UDim2.new(1, 0, humanoid.Health / humanoid.MaxHealth, 0)
+                    healthBar.Size = UDim2new(0, healthBarPaddingSize, 0, boxYSize)
+                    leftFlags.Size = fromOffset(-1, boxYSize)
+                    bar.Size = UDim2new(1, 0, humanoid.Health / humanoid.MaxHealth, 0)
                      
                      
-                    leftFlags.Position = UDim2.fromOffset(boxLeftX - healthBarPadding, posClamp)
-                    barGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["GradientColor1"].Color), ColorSequenceKeypoint.new(1, library.flags["GradientColor2"].Color)}
+                    leftFlags.Position = fromOffset(boxLeftX - healthBarPadding, posClamp)
+                    barGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["GradientColor1"].Color), ColorSequenceKeypointnew(1, flags["GradientColor2"].Color)}
                   end
                 end
             end
 
 
             do --// Flags
-              rightFlags.Position = UDim2.fromOffset(boxRightX + healthBarPadding, posClamp)
-              rightFlags.Size = UDim2.fromOffset(1, boxYSize)
+              rightFlags.Position = fromOffset(boxRightX + healthBarPadding, posClamp)
+              rightFlags.Size = fromOffset(1, boxYSize)
             end
 
       end
