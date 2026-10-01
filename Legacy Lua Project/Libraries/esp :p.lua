@@ -419,16 +419,16 @@ local function renderESP()
         
       accumulatedTime -= TARGET_INTERVAL
 
-      local currentTextFont, flagFont = visuals.returnflag("TextFont"), visuals.returnflag("TextFlagFont")
+      local currentTextFont, flagFont = library.flags["TextFont"], library.flags["TextFlagFont"]
       local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
 
 
       local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
-      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = visuals.returnflag("skeletonEnabled"), 1, 3, visuals.returnflagcolor("boneColor"), Color3.fromRGB(0, 0, 0), 2, 1
+      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = library.flags["skeletonEnabled"], 1, 3, library.flags["boneColor"], Color3.fromRGB(0, 0, 0), 2, 1
        
 
-      local healthBarPadding = ESP.healthBarSettings[visuals.returnflag("HealthBarPadding")].Padding
-      local healthBarPaddingSize = ESP.healthBarSettings[visuals.returnflag("HealthBarPadding")].Size
+      local healthBarPadding = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Padding
+      local healthBarPaddingSize = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Size
       local textFlagFont = ESP.fontSettings[flagFont]
 
       for _, player in espCache do
@@ -449,7 +449,7 @@ local function renderESP()
 
 
             local head, root, humanoid = holder.head, holder.root, holder.humanoid
-            if not visuals.returnflag("EnableAll") or not head or not root or not humanoid then
+            if not library.flags["EnableAll"] or not head or not root or not humanoid then
               esp.Visible = false
               setBoneVis(boneCache, false)
              continue
@@ -523,14 +523,14 @@ local function renderESP()
 
                 do --// Name
 
-                  nameText.Visible = visuals.returnflag("Names")
-                  if visuals.returnflag("Names") then
+                  nameText.Visible = library.flags["Names"]
+                  if library.flags["Names"] then
                     nameText.Position = UDim2.fromOffset(centerX, posClamp - textSettings.namePadding)
-                    nameText.TextColor3 = visuals.returnflagcolor("Name_Color")
+                    nameText.TextColor3 = library.flags["Name_Color"]
                     nameText.FontFace = textFont
                     nameText.TextSize = textSettings.FontSize
 
-                    if visuals.returnflag("UseDisplayName") then
+                    if library.flags["UseDisplayName"] then
                       nameText.Text = player.Player.DisplayName
                      else
                       nameText.Text = player.Player.Name
@@ -541,10 +541,10 @@ local function renderESP()
     
   
                 do --// Distance
-                  distanceText.Visible = visuals.returnflag("Distance")
-                  if visuals.returnflag("Distance") then
-                    distanceText.Text = distancemag .. visuals.returnflag("DistanceType")
-                    distanceText.TextColor3 = visuals.returnflagcolor("Distance_Color")
+                  distanceText.Visible = library.flags["Distance"]
+                  if library.flags["Distance"] then
+                    distanceText.Text = distancemag .. library.flags["DistanceType"]
+                    distanceText.TextColor3 = library.flags["Distance_Color"]
                     distanceText.FontFace = textFont
                     distanceText.TextSize = textSettings.FontSize
                   end
@@ -552,9 +552,9 @@ local function renderESP()
     
     
                 do -- Weapon
-                  weaponText.Visible = visuals.returnflag("Weapon")
-                  if visuals.returnflag("Weapon") then
-                    weaponText.TextColor3 = visuals.returnflagcolor("Weapon_Color")
+                  weaponText.Visible = library.flags["Weapon"]
+                  if library.flags["Weapon"] then
+                    weaponText.TextColor3 = library.flags["Weapon_Color"]
                     weaponText.Text = weapon
                     weaponText.FontFace = textFont
                     weaponText.TextSize = textSettings.FontSize
@@ -563,8 +563,8 @@ local function renderESP()
     
   
                 do --// Vis Check
-                  visFlag.Visible = visuals.returnflag("Vis") and rayOrigin
-                  if visuals.returnflag("Vis") and rayOrigin then
+                  visFlag.Visible = library.flags["Vis"] and rayOrigin
+                  if library.flags["Vis"] and rayOrigin then
                     visFlag.FontFace = textFont
 
                     visFlag.TextSize = textSettings.FontSize
@@ -579,42 +579,39 @@ local function renderESP()
                           player.playerVis = false
                         end
                     end
-                    visFlag.TextColor3 = getVis(player.playerVis, visuals.returnflagcolor("Vis_Color"), visuals.returnflagcolor("Not_Vis_Color"))
+                    visFlag.TextColor3 = getVis(player.playerVis, library.flags["Vis_Color"], library.flags["Not_Vis_Color"])
                   end
                 end
                
 
                 do --// Misc Flags
+                  
 
-                  if accumulatedTime >= 1 / accumulatedTime * animationSpeed then
-                    local cutOff = math.clamp((distancemag-250)/(330-250), 0, 1)
-                    aimingFlag.Transparency = cutOff
-                    aimingFlag["UIStroke"].Transparency = cutOff
-
-                    inventoryFlag.Transparency = cutOff
-                    inventoryFlag["UIStroke"].Transparency = cutOff
-                  end
-
-                  healthFlag.Visible = visuals.returnflag("HealthText")
-                  if visuals.returnflag("HealthText") then
-                    healthFlag.TextColor3 = visuals.returnflagcolor("Health_Text_Color")
+                  healthFlag.Visible = library.flags["HealthText"]
+                  if library.flags["HealthText"] then
+                    healthFlag.TextColor3 = library.flags["Health_Text_Color"]
                     healthFlag.Text = math.floor(healthCheck)
                     healthFlag.FontFace = flagTextFont
                     healthFlag.TextSize = flagTextSettings.FontSize
                   end
 
-                  aimingFlag.Visible = visuals.returnflag("AimingText")
-                  if visuals.returnflag("AimingText") then
-                    aimingFlag.TextColor3 = getVis(true, visuals.returnflagcolor("Aiming_Color"), visuals.returnflagcolor("Not_Aiming_Color"))
+                  local cutOff = math.clamp((distancemag-250)/(330-250), 0, 1)
+                  aimingFlag.Visible = library.flags["AimingText"]
+                  if library.flags["AimingText"] then
+                    aimingFlag.TextColor3 = getVis(true, library.flags["Aiming_Color"], library.flags["Not_Aiming_Color"])
                     aimingFlag.FontFace = flagTextFont
                     aimingFlag.TextSize = flagTextSettings.FontSize
+                    aimingFlag.Transparency = cutOff
+                    aimingFlag["UIStroke"].Transparency = cutOff
                   end
                   
-                  inventoryFlag.Visible = visuals.returnflag("InventoryText")
-                  if visuals.returnflag("InventoryText") then
-                    inventoryFlag.TextColor3 = getVis(true, visuals.returnflagcolor("Inventory_Color"), visuals.returnflagcolor("Not_Inventory_Color"))
+                  inventoryFlag.Visible = library.flags["InventoryText"]
+                  if library.flags["InventoryText"] then
+                    inventoryFlag.TextColor3 = getVis(true, library.flags["Inventory_Color"], library.flags["Not_Inventory_Color"])
                     inventoryFlag.TextSize = textFlagFont.FontSize
                     inventoryFlag.FontFace = flagTextFont
+                    inventoryFlag.Transparency = cutOff
+                    inventoryFlag["UIStroke"].Transparency = cutOff
                     --inventoryFlag.TextSize = flagTextSettings.FontSize
                   end
 
@@ -623,7 +620,7 @@ local function renderESP()
                
                 rightFlags.Position = UDim2.fromOffset(rightX, posClamp)
                 rightFlags.Size = UDim2.fromOffset(1, boxYSize)
-           
+            
 
                 UI.BottomFlags.Position = UDim2.fromOffset(centerX, Math.floor( posClamp + boxYSize + textSettings.bottomPadding))
                 UI.bottomListLayout.Padding = UDim.new(0, textSettings.bottomListLayoutPadding)
@@ -728,30 +725,30 @@ local function renderESP()
             do --// Other
                 do -- Box
                   local box, boxFill = UI.Box, UI.BoxFill
-                  box.Visible = visuals.returnflag("Boxes")
-                  if visuals.returnflag("Boxes") then
+                  box.Visible = library.flags["Boxes"]
+                  if library.flags["Boxes"] then
                     box.Position = UDim2.new(0, centerX, 0, posClamp)
                     box.Size = UDim2.new(0, boxTotalWidth, 0, boxYSize)
-                    UI.topColor.Color = visuals.returnflagcolor("Box_Color")
+                    UI.topColor.Color = library.flags["Box_Color"]
                     
                     
-                    boxFill.Visible = visuals.returnflag("Boxes") and visuals.returnflag("BoxFill")
-                    boxFill.UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, visuals.returnflagcolor("Box_Fill_Color")), ColorSequenceKeypoint.new(1, visuals.returnflagcolor("Box_Fill_ColorTwo"))}
+                    boxFill.Visible = library.flags["Boxes"] and library.flags["BoxFill"]
+                    boxFill.UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["Box_Fill_Color"]), ColorSequenceKeypoint.new(1, library.flags["Box_Fill_ColorTwo"])}
                    
 
-                    boxFill.UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, visuals.returnflagtransparency("GradientColor1")), NumberSequenceKeypoint.new(1, visuals.returnflagtransparency("GradientColor2"))}
-                    if visuals.returnflag("gradientSpin") then
-                       boxFill.UIGradient.Rotation += visuals.returnflag("gradientAnimationSpeed") / 100
+                    boxFill.UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, library.flags["GradientColor1"]), NumberSequenceKeypoint.new(1, library.flags["GradientColor2"])}
+                    if library.flags["gradientSpin"] then
+                       boxFill.UIGradient.Rotation += library.flags["gradientAnimationSpeed"] / 10
                      else
-                      boxFill.UIGradient.Rotation = visuals.returnflag("FillRotation")
+                      boxFill.UIGradient.Rotation = library.flags["FillRotation"]
                     end
                   end
                 end
   
                 do -- Health Bar
                   local healthBar, bar, barGradient = UI.HealthBar, UI.Bar, UI.BarGradient
-                  healthBar.Visible = visuals.returnflag("Healthbar")
-                  if visuals.returnflag("Healthbar") then
+                  healthBar.Visible = library.flags["Healthbar"]
+                  if library.flags["Healthbar"] then
                     leftListLayout.Padding = UDim.new(0, textSettings.leftListLayoutPadding)
                     
   
@@ -761,7 +758,7 @@ local function renderESP()
                      
                      
                     leftFlags.Position = UDim2.fromOffset(boxLeftX - healthBarPadding, posClamp)
-                    barGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, visuals.returnflagcolor("GradientColor1")), ColorSequenceKeypoint.new(1, visuals.returnflagcolor("GradientColor2"))}
+                    barGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["GradientColor1"]), ColorSequenceKeypoint.new(1, library.flags["GradientColor2"])}
                   end
                 end
             end
