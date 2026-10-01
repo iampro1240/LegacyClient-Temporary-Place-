@@ -432,6 +432,23 @@ local function renderESP()
       if clientCharacter then
         rayOrigin = clientCharacter.Head
       end
+
+
+      local isEnableAll = library.flags["EnableAll"]
+      local isMaxDistance = library.flags["MaxDistance"]
+
+
+      local isName = library.flags["Names"]
+      local isDistance = library.flags["Distance"]
+      local isWeapon = library.flags["Weapon"]
+      local isVisFlag = library.flags["Vis"]
+      local isHealthText = library.flags["HealthText"]
+      local isAimingText = library.flags["AimingText"]
+      local isInventoryText = library.flags["InventoryText"]
+                
+      
+      local isBox = library.flags["Boxes"]
+      local isHealthBar = library.flags["Healthbar"]
       
 
       for _, player in espCache do
@@ -439,7 +456,7 @@ local function renderESP()
             local character = player.Character
            
 
-            if not library.flags["EnableAll"] or not character or not rayOrigin then
+            if not isEnableAll or not character or not rayOrigin then
               esp.Visible = false
              continue
             end
@@ -454,7 +471,7 @@ local function renderESP()
             
             local rootPos = root.Position
             local distancemag = Math.round((rootPos - cameraPos).Magnitude)
-            if distancemag >= library.flags["MaxDistance"] then
+            if distancemag >= isMaxDistance then
               esp.Visible = false
              continue
             end
@@ -501,8 +518,7 @@ local function renderESP()
 
             do --// Texts
                 do --// Name
-
-                  local isName = library.flags["Names"]
+                  
                   nameText.Visible = isName
                   if isName then
                     nameText.Position = UDim2.fromOffset(centerX, posClamp - textSettings.namePadding)
@@ -521,7 +537,6 @@ local function renderESP()
     
   
                 do --// Distance
-                  local isDistance = library.flags["Distance"]
                   distanceText.Visible = isDistance
                   if isDistance then
                     distanceText.Text = distancemag .. library.flags["DistanceType"]
@@ -530,10 +545,9 @@ local function renderESP()
                     distanceText.TextSize = textSettings.FontSize
                   end
                 end
-    
+                
     
                 do -- Weapon
-                  local isWeapon = library.flags["Weapon"]
                   weaponText.Visible = isWeapon
                   if isWeapon then
                     weaponText.TextColor3 = library.flags["Weapon_Color"].Color
@@ -545,7 +559,6 @@ local function renderESP()
     
   
                 do --// Vis Check
-                  local isVisFlag = library.flags["Vis"]
                   visFlag.Visible = isVisFlag and rayOrigin
                   if visFlag.Visible then
                     visFlag.FontFace = textFont
@@ -576,7 +589,7 @@ local function renderESP()
                   inventoryFlag.Transparency = cutOff
                   inventoryFlag["UIStroke"].Transparency = cutOff
 
-                  local isHealthText = library.flags["HealthText"]
+                  
                   healthFlag.Visible = isHealthText
                   if isHealthText then
                     healthFlag.TextColor3 = library.flags["Health_Text_Color"].Color
@@ -585,7 +598,7 @@ local function renderESP()
                     healthFlag.TextSize = flagTextSettings.FontSize
                   end
 
-                  local isAimingText = library.flags["AimingText"]
+                  
                   aimingFlag.Visible = isAimingText
                   if isAimingText then
                     aimingFlag.TextColor3 = getVis(true, library.flags["Aiming_Color"].Color, library.flags["Not_Aiming_Color"].Color)
@@ -593,7 +606,7 @@ local function renderESP()
                     aimingFlag.TextSize = flagTextSettings.FontSize
                   end
                   
-                  local isInventoryText = library.flags["InventoryText"]
+                  
                   inventoryFlag.Visible = isInventoryText
                   if isInventoryText then
                     inventoryFlag.TextColor3 = getVis(true, library.flags["Inventory_Color"].Color, library.flags["Not_Inventory_Color"].Color)
@@ -616,7 +629,6 @@ local function renderESP()
             do --// Other
                 do -- Box
                   local box, boxFill = UI.Box, UI.BoxFill
-                  local isBox = library.flags["Boxes"]
                   box.Visible = isBox
                   if isBox then
                     box.Position = UDim2.new(0, centerX, 0, posClamp)
@@ -639,7 +651,6 @@ local function renderESP()
   
                 do -- Health Bar
                   local healthBar, bar, barGradient = UI.HealthBar, UI.Bar, UI.BarGradient
-                  local isHealthBar = library.flags["Healthbar"]
                   healthBar.Visible = isHealthBar
                   if isHealthBar then
                     leftListLayout.Padding = UDim.new(0, textSettings.leftListLayoutPadding)
