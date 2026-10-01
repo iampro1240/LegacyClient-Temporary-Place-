@@ -452,8 +452,9 @@ local function renderESP()
             end
             
             
+            local distancemag = Math.round((rootPos - cameraPos).Magnitude)
             local rootPos = root.Position
-            if (rootPos - cameraPos).Magnitude >= library.flags["MaxDistance"] then
+            if distancemag >= library.flags["MaxDistance"] then
               esp.Visible = false
              continue
             end
