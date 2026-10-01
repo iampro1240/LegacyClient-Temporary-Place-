@@ -391,7 +391,6 @@ local function renderESP()
 
     local lastShotUpdate = tick()
     local waitTime
-    local ESP = ESP
 
       
     visParams.FilterType = Enum.RaycastFilterType.Exclude
@@ -401,17 +400,6 @@ local function renderESP()
 
     local accumulatedTime = 0
     local TARGET_INTERVAL = 1 / 60 
-    local getBoneValue, connectBone, setBoneVis = ESP.getBoneValue, ESP.connectBone, ESP.setBoneVis
-    local setBoneVis = ESP.setBoneVis
-
-
-    local Client = Variables.Players.LocalPlayer
-    local cameraPos = Variables.Camera.CFrame.Position
-    local clientCharacter = Variables.Players.LocalPlayer.Character
-
-    
-    local nameTextColor = library.flags["Name_Color"].Color
-    warn(nameTextColor)
     
     
     espConnection = Variables.RunService.PreRender:Connect(function(deltatime)
@@ -434,6 +422,14 @@ local function renderESP()
       local healthBarPadding = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Padding
       local healthBarPaddingSize = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Size
       local textFlagFont = ESP.fontSettings[flagFont]
+
+      local getBoneValue, connectBone, setBoneVis = ESP.getBoneValue, ESP.connectBone, ESP.setBoneVis
+      local setBoneVis = ESP.setBoneVis
+  
+  
+      local Client = Variables.Players.LocalPlayer
+      local cameraPos = Variables.Camera.CFrame.Position
+      local clientCharacter = Variables.Players.LocalPlayer.Character
       
 
       for _, player in espCache do
@@ -464,21 +460,20 @@ local function renderESP()
 
             rayOrigin = clientCharacter.Head
             local rootPos, rootSize = root.Position, root.Size
-            local pos2, isRootVis = WorldToViewportPoint(Camera, root.Position)
+            local pos2, isRootVis = WorldToViewportPoint(Camera, rootPos)
   
                 
-            local distancemag = math.floor((root.Position - cameraPos).Magnitude)
+            local distancemag = math.floor((rootPos - cameraPos).Magnitude)
             local canSee = ESP.distanceCheck(distancemag, isRootVis)
             
-  
-            local healthCheck, maxHealth = humanoid.Health, humanoid.MaxHealth
-            if not isRootVis or not canSee or healthCheck <= 0 then
+      
+            if not isRootVis or not canSee or humanoid.Health <= 0 then
                esp.Visible = false
-               setBoneVis(boneCache, false)
+               --setBoneVis(boneCache, false)
               continue
              else
                esp.Visible = true
-               setBoneVis(boneCache, isSkeleton)
+               --setBoneVis(boneCache, isSkeleton)
             end
             
             
@@ -493,12 +488,9 @@ local function renderESP()
                 
             local isPlayerVis, isPlayerManip = player.playerVis, player.playerManip
             local nameText, distanceText, weaponText, visFlag, manipFlag, healthFlag, aimingFlag, inventoryFlag = UI.PName, UI.Distance, UI.Weapon, UI.VisFlag, UI.ManipFlag, UI.HealthText, UI.AimingText, UI.InventoryText
-            
-            
             local healthTextPadding = UI.HealthTextPadding
-            local weapon = player.weapon or "Empty"
-  
-                
+
+
             local centerX = top2D.X
             local centerY = top2D.Y
             local height = (bottom2D.Y - centerY)
@@ -522,10 +514,11 @@ local function renderESP()
 
                 do --// Name
 
-                  nameText.Visible = library.flags["Names"]
-                  if library.flags["Names"] then
+                  local isName = library.flags["Names"]
+                  nameText.Visible = isName
+                  if isName then
                     nameText.Position = UDim2.fromOffset(centerX, posClamp - textSettings.namePadding)
-                    nameText.TextColor3 = nameTextColor
+                    nameText.TextColor3 = library.flags["Name_Color"].Color
                     nameText.FontFace = textFont
                     nameText.TextSize = textSettings.FontSize
 
@@ -540,8 +533,9 @@ local function renderESP()
     
   
                 do --// Distance
-                  distanceText.Visible = library.flags["Distance"]
-                  if library.flags["Distance"] then
+                  local isDistance = library.flags["Distance"]
+                  distanceText.Visible = isDistance
+                  if isDistance then
                     distanceText.Text = distancemag .. library.flags["DistanceType"]
                     distanceText.TextColor3 = library.flags["Distance_Color"].Color
                     distanceText.FontFace = textFont
@@ -551,10 +545,11 @@ local function renderESP()
     
     
                 do -- Weapon
-                  weaponText.Visible = library.flags["Weapon"]
-                  if library.flags["Weapon"] then
+                  local isWeapon = library.flags["Weapon"]
+                  weaponText.Visible = isWeapon
+                  if isWeapon then
                     weaponText.TextColor3 = library.flags["Weapon_Color"].Color
-                    weaponText.Text = weapon
+                    weaponText.Text = player.weapon or "Empty"
                     weaponText.FontFace = textFont
                     weaponText.TextSize = textSettings.FontSize
                   end
@@ -562,8 +557,9 @@ local function renderESP()
     
   
                 do --// Vis Check
-                  visFlag.Visible = library.flags["Vis"] and rayOrigin
-                  if library.flags["Vis"] and rayOrigin then
+                  local isVisFlag = library.flags["Vis"]
+                  visFlag.Visible = isVisFlag and rayOrigin
+                  if visFlag.Visible then
                     visFlag.FontFace = textFont
 
                     visFlag.TextSize = textSettings.FontSize
@@ -592,23 +588,26 @@ local function renderESP()
                   inventoryFlag.Transparency = cutOff
                   inventoryFlag["UIStroke"].Transparency = cutOff
 
-                  healthFlag.Visible = library.flags["HealthText"]
-                  if library.flags["HealthText"] then
+                  local isHealthText = library.flags["HealthText"]
+                  healthFlag.Visible = isHealthText
+                  if isHealthText then
                     healthFlag.TextColor3 = library.flags["Health_Text_Color"].Color
-                    healthFlag.Text = math.floor(healthCheck)
+                    healthFlag.Text = math.floor(humanoid.Health)
                     healthFlag.FontFace = flagTextFont
                     healthFlag.TextSize = flagTextSettings.FontSize
                   end
 
-                  aimingFlag.Visible = library.flags["AimingText"]
-                  if library.flags["AimingText"] then
+                  local isAimingText = library.flags["AimingText"]
+                  aimingFlag.Visible = isAimingText
+                  if isAimingText then
                     aimingFlag.TextColor3 = getVis(true, library.flags["Aiming_Color"].Color, library.flags["Not_Aiming_Color"].Color)
                     aimingFlag.FontFace = flagTextFont
                     aimingFlag.TextSize = flagTextSettings.FontSize
                   end
                   
-                  inventoryFlag.Visible = library.flags["InventoryText"]
-                  if library.flags["InventoryText"] then
+                  local isInventoryText = library.flags["InventoryText"]
+                  inventoryFlag.Visible = isInventoryText
+                  if isInventoryText then
                     inventoryFlag.TextColor3 = getVis(true, library.flags["Inventory_Color"].Color, library.flags["Not_Inventory_Color"].Color)
                     inventoryFlag.TextSize = textFlagFont.FontSize
                     inventoryFlag.FontFace = flagTextFont
@@ -724,8 +723,9 @@ local function renderESP()
             do --// Other
                 do -- Box
                   local box, boxFill = UI.Box, UI.BoxFill
-                  box.Visible = library.flags["Boxes"]
-                  if library.flags["Boxes"] then
+                  local isBox = library.flags["Boxes"]
+                  box.Visible = isBox
+                  if isBox then
                     box.Position = UDim2.new(0, centerX, 0, posClamp)
                     box.Size = UDim2.new(0, boxTotalWidth, 0, boxYSize)
                     UI.topColor.Color = library.flags["Box_Color"].Color
@@ -746,14 +746,15 @@ local function renderESP()
   
                 do -- Health Bar
                   local healthBar, bar, barGradient = UI.HealthBar, UI.Bar, UI.BarGradient
-                  healthBar.Visible = library.flags["Healthbar"]
-                  if library.flags["Healthbar"] then
+                  local isHealthBar = library.flags["Healthbar"]
+                  healthBar.Visible = isHealthBar
+                  if isHealthBar then
                     leftListLayout.Padding = UDim.new(0, textSettings.leftListLayoutPadding)
                     
   
                     healthBar.Size = UDim2.new(0, healthBarPaddingSize, 0, boxYSize)
                     leftFlags.Size = UDim2.fromOffset(-1, boxYSize)
-                    bar.Size = UDim2.new(1, 0, healthCheck / maxHealth, 0)
+                    bar.Size = UDim2.new(1, 0, humanoid.Health / humanoid.MaxHealth, 0)
                      
                      
                     leftFlags.Position = UDim2.fromOffset(boxLeftX - healthBarPadding, posClamp)
