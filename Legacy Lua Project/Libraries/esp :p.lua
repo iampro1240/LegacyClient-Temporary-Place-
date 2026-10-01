@@ -1,388 +1,3 @@
-local library, themes = loadstring(game:HttpGet("https://raw.githubusercontent.com/iampro1240/LegacyClient-Temporary-Place-/refs/heads/main/Legacy%20Lua%20Project/UI/Library.lua"))()
-local getService, getFunction, getGCFunction, deepCopy, Variables, Math, FindFirstChild, FindFirstChildOfClass, WorldToViewportPoint = loadstring(game:HttpGet("https://raw.githubusercontent.com/iampro1240/LegacyClient-Temporary-Place-/refs/heads/main/Legacy%20Lua%20Project/Libraries/Services.lua"))()
-local espConnection
-local ESP = {
-  fontSettings = {
-    Minecraftia = {FontSize = 10, namePadding = 13, bottomPadding = 2, bottomListLayoutPadding = -3, leftListLayoutPadding = 10, bottomHealthTextPadding = -11, leftHealthTextPadding = -19};
-    ProggyTiny = {FontSize = 9, namePadding = 12, bottomPadding = 3, bottomListLayoutPadding = 2, leftListLayoutPadding = 10, bottomHealthTextPadding = -7, leftHealthTextPadding = -14};
-    SmallestPixel = {FontSize = 9, namePadding = 12, bottomPadding = 1, bottomListLayoutPadding = 0, leftListLayoutPadding = 10, bottomHealthTextPadding = -3, leftHealthTextPadding = -10};
-    Tahoma = {FontSize = 12, namePadding = 15, bottomPadding = 1, bottomListLayoutPadding = 0, leftListLayoutPadding = 13, bottomHealthTextPadding = -5, leftHealthTextPadding = -12};
-  };
-  
-
-  healthBarSettings = {
-    ["1 Pixel"] = {Padding = 3, Size = 1},
-    ["2 Pixel"] = {Padding = 4, Size = 2},
-
-    ["Left"] = {Parent = "LeftFlags", AnchorPoint = .5};
-    ["Right"] = {Parent = "RightFlags", AnchorPoint = 1};
-  };
-
-  
-  ValidParts = {
-  	"Head",
-  	"UpperTorso",
-  	"LowerTorso",
-  	"HumanoidRootPart",
-  	"LeftUpperArm",
-  	"LeftLowerArm",
-  	"LeftHand",
-  	"RightUpperArm",
-  	"RightLowerArm",
-  	"RightHand",
-  	"LeftUpperLeg",
-  	"LeftLowerLeg",
-  	"LeftFoot",
-  	"RightUpperLeg",
-  	"RightLowerLeg",
-  	"RightFoot",
-
-
-    "Torso",
-    "LeftArm",
-    "RightArm",
-    "LeftLeg",
-    "RightLeg",
-  };
-
-}
-local FontNames = {
-  ["ProggyClean"] = "ProggyClean.ttf",
-  ["Tahoma"] = "fs-tahoma-8px.ttf",
-  ["Verdana"] = "Verdana-Font.ttf",
-  ["SmallestPixel"] = "smallest_pixel-7.ttf",
-  ["ProggyTiny"] = "ProggyTiny.ttf",
-  ["Minecraftia"] = "Minecraftia-Regular.ttf",
-  ["Tahoma Bold"] = "tahoma_bold.ttf",
-  ["Rubik"] = "Rubik-Regular.ttf"
-}
-local FontIndexes = {"ProggyClean", "Tahoma", "Verdana", "SmallestPixel", "ProggyTiny", "Minecraftia", "Tahoma Bold", "Rubik"}
-local espCache = {}
-local Fonts = {}
-local libraryFunctions = {}
-local visuals = {}
-local lib = {}
-local rayOrigin
-local flags = library.flags
-local visualHolder = Instance.new("ScreenGui", gethui())
-visualHolder.IgnoreGuiInset = true
-visualHolder.Enabled = true
-
-local typeOf = typeof
-local clock = os.clock
-
-
-do -- Font Registering
-        local function RegisterFont(Name, Weight, Style, Asset)
-            if not isfile(Asset.Id) then
-                writefile(Asset.Id, Asset.Font)
-            end
-
-            if isfile(Name .. ".font") then
-                delfile(Name .. ".font")
-            end
-
-            local Data = {
-                name = Name,
-                faces = {
-                    {
-                        name = "Normal",
-                        weight = Weight,
-                        style = Style,
-                        assetId = getcustomasset(Asset.Id),
-                    },
-                },
-            }
-
-            writefile(Name .. ".font", game:GetService("HttpService"):JSONEncode(Data))
-
-            return getcustomasset(Name .. ".font");
-        end
-
-        for name, suffix in FontNames do 
-            local Weight = 400 
-
-            if name == "Rubik" then -- fuckin stupid 
-                Weight = 900 
-            end 
-
-            local RegisteredFont = RegisterFont(name, Weight, "Normal", {
-                Id = suffix,
-                Font = game:HttpGet("https://github.com/i77lhm/storage/raw/refs/heads/main/fonts/" .. suffix),
-            }) 
-            
-            Fonts[name] = Font.new(RegisteredFont, Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-        end
-end
-
-
-do --// ESP functions
-  function lib.DrawGradient(properties)
-        local obj = Variables.Instancenew("UIGradient")
-        obj.Name = "UIGradient"
-        obj.Parent = properties.Parent or nil
-    
-        obj.Rotation = properties.Rotation or 0
-        obj.Color = properties.Color or Variables.Color3fromRGB(255, 255, 255)
-  end
-   
-   
-  function lib.DrawUIStroke(properties)
-       local obj = Variables.Instancenew("UIStroke")
-       obj.Parent = properties.Parent
-       return obj
-  end
-   
-   
-  function lib.DrawText(properties)
-       local obj = Variables.Instancenew("TextLabel")
-       local stroke = Variables.Instancenew("UIStroke")
-       obj.Name = properties.Name
-       obj.TextSize = 10
-       obj.RichText = true
-       stroke.LineJoinMode = Enum.LineJoinMode.Miter
-   
-       obj.Parent = properties.Parent
-       obj.BackgroundTransparency = 1
-           
-       obj.BorderColor3 = Variables.Color3fromRGB(0, 0, 0)
-       obj.BorderSizePixel = 0
-   
-       obj.TextStrokeTransparency = 1
-   	   obj.FontFace = Fonts.Minecraftia
-   
-       obj.AnchorPoint = properties.AnchorPoint
-
-       obj.AutomaticSize = Enum.AutomaticSize.Y
-       stroke.Parent = obj
-  end
-   
-   
-  function lib.DrawFrame(properties)
-       local obj = Variables.Instancenew("Frame")
-       obj.Name = properties.Name
-       obj.Parent = properties.Parent
-   
-       obj.BackgroundTransparency = properties.BackgroundTransparency
-   	   obj.BackgroundColor3 = properties.Color
-   	   obj.BorderColor3 = Variables.Color3fromRGB(0, 0, 0)
-   
-       obj.BorderSizePixel = properties.BorderSizePixel
-       obj.Position = properties.Position
-       obj.Size = properties.Size
-   
-       obj.ZIndex = properties.Zindex
-       obj.Rotation = properties.Rotation
-       obj.AnchorPoint = properties.AnchorPoint
-  end
-   
-   
-  function lib.DrawImage(properties)
-      local obj = Variables.Instancenew("ImageLabel")
-      obj.Name = properties.Name
-      obj.Parent = properties.Parent
-      obj.Image = properties.Image
-   
-      obj.BackgroundTransparency = 1
-    	obj.BorderColor3 = Variables.Color3fromRGB(0, 0, 0)
-   
-    	obj.BorderSizePixel = properties.BorderSizePixel
-    	obj.Position = properties.Position
-    	obj.Size = properties.Size
-    
-      obj.ZIndex = properties.Zindex
-      obj.Rotation = properties.Rotation
-      obj.AnchorPoint = properties.AnchorPoint
-  end
-
-
-  function ESP.getWeapon(weapon)
-    if weapon then
-      return weapon.Name
-     else
-      return "Hands"
-    end
-  end
-
-
-  function ESP.getVis(vis, isVisColor, notVisColor)
-    if vis then
-      return isVisColor
-     else
-      return notVisColor
-    end
-  end
-  
-  
-  function ESP.getManip(manip, isManipColor, notManipColor)
-    if manip then
-      return isManipColor
-     else
-      return notManipColor
-    end
-  end
-  
-  
-  function ESP.getParts(esp, character)
-    if not character or character == nil then
-      return
-    end
-  
-  
-    local folder = Instance.new("Folder", esp.holder)
-    for _, part in character:GetChildren() do
-        if part:IsA("MeshPart") or part:IsA("Part") then
-          if ESP.ValidParts[part.Name] then
-            continue
-          end
-          esp.chamCache[part] = Instance.new("BoxHandleAdornment", folder)
-          esp.chamCache[part].ZIndex = -1
-          esp.chamCache[part].Adornee = part
-          esp.chamCache[part].Size = part.Size
-          esp.chamCache[part].Visible = false
-  
-  
-          esp.chamCacheTwo[part] = Instance.new("BoxHandleAdornment", folder)
-          esp.chamCacheTwo[part].ZIndex = -2
-          esp.chamCacheTwo[part].Adornee = part
-          esp.chamCacheTwo[part].Size = part.Size
-          esp.chamCacheTwo[part].Visible = false
-          esp.chamCacheTwo[part].Transparency = .7
-          esp.chamCacheTwo[part].Color3 = Variables.Color3fromRGB(0, 0, 0)
-          esp.chamCacheTwo[part].Name = "BlackedOut"
-  
-          esp.partCache[part] = part or {part}
-        end
-    end
-  
-  end
-  
-  
-  function ESP.getBones(esp, character)
-    if not character or character == nil then
-      return
-    end
-  
-  
-    for _, part in character:GetChildren() do
-      if cheat.ValidParts[part.Name] then
-        esp.partCache[part] = part or {part}
-      end
-    end
-  
-  end
-  
-  
-  function ESP.distanceCheck(distancemag, onScreen)
-      if distancemag <= visuals.returnflag("MaxDistance") and onScreen then
-         return true
-        else
-          return false
-       end
-  end
-  
-  
-  function ESP.vehicleDistanceCheck(distancemag, onScreen)
-      if distancemag <= visuals.returnflag("VehicleMaxDistance") and onScreen then
-        return true
-       else
-        return false
-      end
-  end
-  
-  
-  function ESP.corpseDistanceCheck(distancemag, onScreen)
-      if distancemag <= visuals.returnflag("CorpseMaxDistance") and onScreen then
-        return true
-       else
-        return false
-      end
-  end
-  
-  
-  function connectBone(Bone, Visible, From, To, Thickness, Color, Zindex)
-      Bone.Visible = Visible
-      Bone.From = From
-      Bone.To = To
-      Bone.Thickness = Thickness
-      Bone.Color = Color
-      Bone.ZIndex = Zindex
-  end
-  
-  
-  function ESP.getBoneValue(cache, bonePart, value)
-      return cache[bonePart][value]
-  end
-  
-  
-  function ESP.setBoneVis(cache, visible)
-      for _, item in cache do
-          item.Line.Visible = visible
-          item.Outline.Visible = visible
-      end
-  end
-  
-  
-  function ESP.color3ToHex(color)
-      local r = Math.floor(color.R * 255)
-      local g = Math.floor(color.G * 255)
-      local b = Math.floor(color.B * 255)
-     return string.format("#%02X%02X%02X", r, g, b)
-  end
-  
-  
-  function ESP.lerp(a, b, t)
-    	return a + (b - a) * t
-  end
-    
-  
-  function ESP.applyPulseSequence(originalKeypoints, t)
-        local newKeypoints = {}
-        
-        -- Oscillates the wave position smoothly back and forth between 0 (left) and 1 (right)
-        -- If 't' is already a 0-to-1 ping-pong value from a tween, you can set wavePos = t
-        local wavePos = (math.sin(t) + 1) / 2 
-        
-        -- Controls how far the fade influence spreads (1.0 spans the full sequence)
-        local waveWidth = 1.0 
-    
-        for _, kp in originalKeypoints do
-            -- Distance between the keypoint's position (0 to 1) and the wave position
-            local dist = math.abs(kp.Time - wavePos)
-            
-            -- Local fade factor (1 = closest to wave center / most transparent, 0 = farthest)
-            local fadeAlpha = math.clamp(1 - (dist / waveWidth), 0, 1)
-            
-            -- Lerp keypoint transparency towards 1 (invisible) based on fadeAlpha
-            local currentTrans = visuals:lerp(kp.Value, 1, fadeAlpha)
-            currentTrans = math.clamp(currentTrans, 0, 1)
-            
-            table.insert(newKeypoints, NumberSequenceKeypoint.new(kp.Time, currentTrans))
-        end
-        
-        return NumberSequence.new(newKeypoints)
-  end
-
-end
-
-
-do --// Library Functions
-  function visuals.returnflag(flag)
-    return library.flags[flag]
-  end
-
-   
-  function visuals.returnflagcolor(color)
-    return visuals.returnflag(color).Color
-  end
-   
-
-  function visuals.returnflagtransparency(color)
-    return visuals.returnflag(color).Alpha or visuals.returnflag(color).Transparency
-  end
-end
-
-
 local function renderESP()
     local lastTick = os.clock()
     local visParams = RaycastParams.new()
@@ -424,7 +39,7 @@ local function renderESP()
 
 
       local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
-      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = library.flags["skeletonEnabled"], 1, 3, library.flags["boneColor"], Color3.fromRGB(0, 0, 0), 2, 1
+      local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = library.flags["skeletonEnabled"], 1, 3, library.flags["boneColor"].Color, Color3.fromRGB(0, 0, 0), 2, 1
        
 
       local healthBarPadding = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Padding
@@ -526,7 +141,7 @@ local function renderESP()
                   nameText.Visible = library.flags["Names"]
                   if library.flags["Names"] then
                     nameText.Position = UDim2.fromOffset(centerX, posClamp - textSettings.namePadding)
-                    nameText.TextColor3 = library.flags["Name_Color"]
+                    nameText.TextColor3 = library.flags["Name_Color"].Color
                     nameText.FontFace = textFont
                     nameText.TextSize = textSettings.FontSize
 
@@ -544,7 +159,7 @@ local function renderESP()
                   distanceText.Visible = library.flags["Distance"]
                   if library.flags["Distance"] then
                     distanceText.Text = distancemag .. library.flags["DistanceType"]
-                    distanceText.TextColor3 = library.flags["Distance_Color"]
+                    distanceText.TextColor3 = library.flags["Distance_Color"].Color
                     distanceText.FontFace = textFont
                     distanceText.TextSize = textSettings.FontSize
                   end
@@ -554,7 +169,7 @@ local function renderESP()
                 do -- Weapon
                   weaponText.Visible = library.flags["Weapon"]
                   if library.flags["Weapon"] then
-                    weaponText.TextColor3 = library.flags["Weapon_Color"]
+                    weaponText.TextColor3 = library.flags["Weapon_Color"].Color
                     weaponText.Text = weapon
                     weaponText.FontFace = textFont
                     weaponText.TextSize = textSettings.FontSize
@@ -579,40 +194,40 @@ local function renderESP()
                           player.playerVis = false
                         end
                     end
-                    visFlag.TextColor3 = getVis(player.playerVis, library.flags["Vis_Color"], library.flags["Not_Vis_Color"])
+                    visFlag.TextColor3 = getVis(player.playerVis, library.flags["Vis_Color"].Color, library.flags["Not_Vis_Color"].Color)
                   end
                 end
                
 
                 do --// Misc Flags
-                  
+
+                  local cutOff = math.clamp((distancemag-250)/(330-250), 0, 1)
+                  aimingFlag.Transparency = cutOff
+                  aimingFlag["UIStroke"].Transparency = cutOff
+
+                  inventoryFlag.Transparency = cutOff
+                  inventoryFlag["UIStroke"].Transparency = cutOff
 
                   healthFlag.Visible = library.flags["HealthText"]
                   if library.flags["HealthText"] then
-                    healthFlag.TextColor3 = library.flags["Health_Text_Color"]
+                    healthFlag.TextColor3 = library.flags["Health_Text_Color"].Color
                     healthFlag.Text = math.floor(healthCheck)
                     healthFlag.FontFace = flagTextFont
                     healthFlag.TextSize = flagTextSettings.FontSize
                   end
 
-                  local cutOff = math.clamp((distancemag-250)/(330-250), 0, 1)
                   aimingFlag.Visible = library.flags["AimingText"]
                   if library.flags["AimingText"] then
-                    aimingFlag.TextColor3 = getVis(true, library.flags["Aiming_Color"], library.flags["Not_Aiming_Color"])
+                    aimingFlag.TextColor3 = getVis(true, library.flags["Aiming_Color"].Color, library.flags["Not_Aiming_Color"].Color)
                     aimingFlag.FontFace = flagTextFont
                     aimingFlag.TextSize = flagTextSettings.FontSize
-                    aimingFlag.Transparency = cutOff
-                    aimingFlag["UIStroke"].Transparency = cutOff
                   end
                   
                   inventoryFlag.Visible = library.flags["InventoryText"]
                   if library.flags["InventoryText"] then
-                    inventoryFlag.TextColor3 = getVis(true, library.flags["Inventory_Color"], library.flags["Not_Inventory_Color"])
+                    inventoryFlag.TextColor3 = getVis(true, library.flags["Inventory_Color"].Color, library.flags["Not_Inventory_Color"].Color)
                     inventoryFlag.TextSize = textFlagFont.FontSize
                     inventoryFlag.FontFace = flagTextFont
-                    inventoryFlag.Transparency = cutOff
-                    inventoryFlag["UIStroke"].Transparency = cutOff
-                    --inventoryFlag.TextSize = flagTextSettings.FontSize
                   end
 
                 end
@@ -729,16 +344,16 @@ local function renderESP()
                   if library.flags["Boxes"] then
                     box.Position = UDim2.new(0, centerX, 0, posClamp)
                     box.Size = UDim2.new(0, boxTotalWidth, 0, boxYSize)
-                    UI.topColor.Color = library.flags["Box_Color"]
+                    UI.topColor.Color = library.flags["Box_Color"].Color
                     
                     
                     boxFill.Visible = library.flags["Boxes"] and library.flags["BoxFill"]
-                    boxFill.UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["Box_Fill_Color"]), ColorSequenceKeypoint.new(1, library.flags["Box_Fill_ColorTwo"])}
+                    boxFill.UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["Box_Fill_Color"].Color), ColorSequenceKeypoint.new(1, library.flags["Box_Fill_ColorTwo"].Color)}
                    
 
-                    boxFill.UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, library.flags["GradientColor1"]), NumberSequenceKeypoint.new(1, library.flags["GradientColor2"])}
+                    boxFill.UIGradient.Transparency = NumberSequence.new{NumberSequenceKeypoint.new(0, library.flags["GradientColor1"].Transparency), NumberSequenceKeypoint.new(1, library.flags["GradientColor2"].Transparency)}
                     if library.flags["gradientSpin"] then
-                       boxFill.UIGradient.Rotation += library.flags["gradientAnimationSpeed"] / 10
+                       boxFill.UIGradient.Rotation += library.flags["gradientAnimationSpeed"] / 100
                      else
                       boxFill.UIGradient.Rotation = library.flags["FillRotation"]
                     end
@@ -758,7 +373,7 @@ local function renderESP()
                      
                      
                     leftFlags.Position = UDim2.fromOffset(boxLeftX - healthBarPadding, posClamp)
-                    barGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["GradientColor1"]), ColorSequenceKeypoint.new(1, library.flags["GradientColor2"])}
+                    barGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, library.flags["GradientColor1"].Color), ColorSequenceKeypoint.new(1, library.flags["GradientColor2"].Color)}
                   end
                 end
             end
@@ -769,552 +384,8 @@ local function renderESP()
               rightFlags.Size = UDim2.fromOffset(1, boxYSize)
             end
 
-
-            --[[for place = 1, #UI do
-              if text:IsA("TextLabel") or not text.Visible then
-                continue
-              end
-               
-
-              if tonumber(place) < text.LayoutOrder then
-                text.LayoutOrder -= 1
-               else
-                text.LayoutOrder += 1
-              end
-                
-            end]]
-
       end
 
     end)
 
-
 end
-
-
-local function ESPObject(self)
-     espCache[self] = {Name = self.Name, Player = self, Character = self.Character, holder = Variables.Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, headDrawing = Drawing.new("Circle"), headDrawingOutline = Drawing.new("Circle"), connection, Colors = Variables.Instancenew("Folder"), Borders = Variables.Instancenew("Folder"), chamsholder = Variables.Instancenew("Folder"), highlight = Variables.Instancenew("Highlight", visualHolder), lastRaycast = 0}
-     local esp, player = espCache[self], espCache[self]
-     local Colors = esp.Colors
-     local Borders = esp.Borders 
-     local espholder, cache, chamsholder, esphighlight = esp.holder, esp.cache, esp.chamsholder, esp.highlight
-                
-   
-     espholder.Name = self.Name
-     espholder.Visible = false
-   
-     chamsholder.Parent = espholder
-     --esphighlight.Parent = espholder
-   
-   
-     Colors.Parent = espholder
-     Borders.Parent = espholder
-     Colors.Name = "Colors"
-     Borders.Name = "Borders"
-   
-
-   
-     do -- main text
-       lib.DrawFrame({
-        Name = "BottomFlags",
-        Parent = esp.holder,
-        Color = Variables.Color3fromRGB(255, 255, 255),
-        BackgroundTransparency = 1,
-        BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
-        Zindex = 9999999999,
-        Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-   
-   
-   
-       lib.DrawText({
-        Name = "PName", 
-   		  Parent = esp.holder,
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-   
-   
-       lib.DrawText({
-        Name = "Distance", 
-   		  Parent = esp.holder["BottomFlags"],
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-   
-   
-       lib.DrawText({
-        Name = "Weapon", 
-   		  Parent = esp.holder["BottomFlags"],
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-
-       lib.DrawText({
-        Name = "VisFlag", 
-   		  Parent = esp.holder["BottomFlags"],
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-
-       lib.DrawText({
-        Name = "ManipFlag", 
-   		  Parent = esp.holder["BottomFlags"],
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-       
-
-
-       local listLayout = Variables.Instancenew("UIListLayout", esp.holder["BottomFlags"])
-       local uiPadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"])
-       listLayout.Padding = Variables.UDimnew(0, 11)
-       listLayout.VerticalAlignment = "Top"
-       listLayout.HorizontalAlignment = "Center"
-       listLayout.ItemLineAlignment = "Center"
-       listLayout.SortOrder = "LayoutOrder"
-       uiPadding.PaddingBottom = Variables.UDimnew(1, 0)
-
-
-       local weaponPadding, distancePadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["Weapon"]), Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["Distance"])
-       --weaponPadding.PaddingBottom = UDimnew(-0.23, 0)
-       --weaponPadding.PaddingTop = UDimnew(-0.15, 0)
-
-
-       --distancePadding.PaddingBottom = Variables.UDimnew(-0.32, 0)
-       --distancePadding.PaddingTop = Variables.UDimnew(-0.15, 0)
-   
-   
-     end
-   
-   
-
-     do -- box
-       lib.DrawFrame({
-           Name = "Box",
-           Parent = esp.holder,
-           Color = Variables.Color3fromRGB(255, 255, 255),
-           BackgroundTransparency = 1,
-           BorderSizePixel = 1,
-           Position = Variables.UDim2new(0.17, 0, 0.12, 0),
-           Size = Variables.UDim2new(0.65, 0, 0.88, 0),
-           Zindex = 5,
-           Rotation = 0,
-           AnchorPoint = Variables.Vector2new(.5, 0),
-       })
-
-
-
-       lib.DrawFrame({
-           Name = "BoxFill",
-           Parent = esp.holder["Box"],
-           Color = Variables.Color3fromRGB(255, 255, 255),
-           BackgroundTransparency = 1,
-           BorderSizePixel = 1,
-           Position = Variables.UDim2new(0, 0, 0, 0),
-           Size = Variables.UDim2new(1, 0, 1, 0),
-           Zindex = -5,
-           Rotation = 0,
-           AnchorPoint = Variables.Vector2new(0, 0),
-       })
-
-
-
-       lib.DrawGradient({
-          Parent = esp.holder["Box"]["BoxFill"],
-          Rotation = -90,
-          Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Variables.Color3fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Variables.Color3fromRGB(255, 255, 255))},
-          Transparency = 0
-       })
-   
-   
-   
-       Colors.Parent = esp.holder["Box"]
-       Borders.Parent = esp.holder["Box"]
-   
-   
-     end
-   
-   
-
-     do -- HealthBar
-      lib.DrawFrame({
-        Name = "LeftFlags",
-        Parent = esp.holder,
-        Color = Variables.Color3fromRGB(255, 255, 255),
-        BackgroundTransparency = 1,
-        BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
-        Zindex = 9999999999,
-        Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-
-
-       lib.DrawFrame({
-        Name = "LeftFlagsTwo",
-        Parent = esp.holder["LeftFlags"],
-        Color = Variables.Color3fromRGB(255, 255, 255),
-        BackgroundTransparency = 1,
-        BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
-        Zindex = 9999999999,
-        Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-       
-
-       local listLayout = Variables.Instancenew("UIListLayout", esp.holder["LeftFlags"])
-       listLayout.Padding = Variables.UDimnew(0, -6)
-       listLayout.FillDirection = "Horizontal"
-       listLayout.HorizontalAlignment = "Left"
-       listLayout.HorizontalFlex = "None"
-       listLayout.VerticalAlignment = "Top"
-       listLayout.ItemLineAlignment = "Start"
-
-
-
-       local listLayout2 = Variables.Instancenew("UIListLayout", esp.holder["LeftFlags"]["LeftFlagsTwo"])
-       listLayout2.Padding = Variables.UDimnew(0, 10)
-       listLayout2.FillDirection = "Vertical"
-       listLayout2.HorizontalAlignment = "Left"
-       listLayout2.HorizontalFlex = "None"
-       listLayout2.VerticalAlignment = "Top"
-       listLayout2.ItemLineAlignment = "Start"
-
-       
-
-       lib.DrawFrame({
-           Name = "HealthBar",
-           Parent = esp.holder["LeftFlags"],
-           --Parent = esp.holder,
-           Color = Variables.Color3fromRGB(0, 0, 0),
-           BackgroundTransparency = 0,
-           BorderSizePixel = 0,
-           Position = Variables.UDim2new(0.17, 0, 0.12, 0),
-           Size = Variables.UDim2new(0.65, 0, 0.88, 0),
-           Zindex = 9999999999,
-           Rotation = 0,
-           AnchorPoint = Variables.Vector2new(.5, 0),
-       })
-       
-   
-       lib.DrawFrame({
-           Name = "Bar",
-           Parent = esp.holder["LeftFlags"]["HealthBar"],
-           Color = Variables.Color3fromRGB(255, 255, 255),
-           BackgroundTransparency = 0,
-           BorderSizePixel = 0,
-           Position = Variables.UDim2new(0, 0, 1, 0),
-           Size = Variables.UDim2new(1, 0, 1, 0),
-           Zindex = 9999999999,
-           Rotation = 0,
-           AnchorPoint = Variables.Vector2new(0, 1)
-       })
-      
-
-       lib.DrawText({
-        Name = "HealthText", 
-   		  Parent = esp.holder["LeftFlags"]["LeftFlagsTwo"],
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-
-       local HealthTextPadding = Variables.Instancenew("UIPadding", esp.holder["LeftFlags"]["LeftFlagsTwo"]["HealthText"])
-       HealthTextPadding.PaddingBottom = Variables.UDimnew(.3, 0)
-       HealthTextPadding.PaddingLeft = Variables.UDimnew(0, -12)
-
-
-       local healthBarStroke = lib.DrawUIStroke({Parent = esp.holder["LeftFlags"]["HealthBar"]})
-       healthBarStroke.LineJoinMode = "Miter"
-
-   
-       lib.DrawGradient({
-          Parent = esp.holder["LeftFlags"]["HealthBar"]["Bar"],
-          Rotation = -90,
-          Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Variables.Color3fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Variables.Color3fromRGB(255, 255, 255))}
-       })
-     end
-
-
-
-     do -- Right Flags
-      lib.DrawFrame({
-        Name = "RightFlags",
-        Parent = esp.holder,
-        Color = Variables.Color3fromRGB(255, 255, 255),
-        BackgroundTransparency = 1,
-        BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
-        Zindex = 9999999999,
-        Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-
-
-       lib.DrawFrame({
-        Name = "RightFlagsTwo",
-        Parent = esp.holder["RightFlags"],
-        Color = Variables.Color3fromRGB(255, 255, 255),
-        BackgroundTransparency = 1,
-        BorderSizePixel = 0,
-        Position = Variables.UDim2new(0, 632, 0, 569),
-        Size = Variables.UDim2new({0.062, 0},{0.126, 0}),
-        Zindex = 9999999999,
-        Rotation = 0,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-
-
-       local listLayout = Variables.Instancenew("UIListLayout", esp.holder["RightFlags"])
-       listLayout.Padding = Variables.UDimnew(0, 0)
-       listLayout.FillDirection = "Horizontal"
-       listLayout.HorizontalAlignment = "Right"
-       listLayout.HorizontalFlex = "None"
-       listLayout.VerticalAlignment = "Top"
-       listLayout.ItemLineAlignment = "Start"
-
-
-
-       local listLayout2 = Variables.Instancenew("UIListLayout", esp.holder["RightFlags"]["RightFlagsTwo"])
-       listLayout2.Padding = Variables.UDimnew(0, 10)
-       listLayout2.FillDirection = "Vertical"
-       listLayout2.HorizontalAlignment = "Right"
-       listLayout2.HorizontalFlex = "None"
-       listLayout2.VerticalAlignment = "Top"
-       listLayout2.ItemLineAlignment = "Start"
-
-
-
-       lib.DrawText({
-        Name = "AimingText", 
-   		  Parent = esp.holder["RightFlags"]["RightFlagsTwo"],
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-
-
-
-       lib.DrawText({
-        Name = "InventoryText", 
-   		  Parent = esp.holder["RightFlags"]["RightFlagsTwo"],
-        TextSize = 10,
-        AnchorPoint = Variables.Vector2new(0, 0)
-       })
-       
-
-
-       local AimTextPadding = Variables.Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["AimingText"])
-       AimTextPadding.PaddingBottom = Variables.UDimnew(0, -9)
-       AimTextPadding.PaddingRight = Variables.UDimnew(0, -25)
-       AimTextPadding.PaddingTop = Variables.UDimnew(0, -2)
-
-
-
-       local InventoryTextPadding = Variables.Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["InventoryText"])
-       InventoryTextPadding.PaddingTop = Variables.UDimnew(0, -4)
-       InventoryTextPadding.PaddingRight = Variables.UDimnew(0, -48)
-     end
-
-
-     local colorStroke, outerStroke, innerStroke = lib.DrawUIStroke({Parent = esp.holder["Box"]}), lib.DrawUIStroke({Parent = esp.holder["Box"]}), lib.DrawUIStroke({Parent = esp.holder["Box"]})
-     esp.itemCache = {}
-     esp.UI = {
-        GUI = esp.holder;
-        PName = esp.holder["PName"];
-        Distance = esp.holder["BottomFlags"]["Distance"];
-        VisFlag = esp.holder["BottomFlags"]["VisFlag"];
-        Weapon = esp.holder["BottomFlags"]["Weapon"];
-        HealthText = esp.holder["LeftFlags"]["LeftFlagsTwo"]["HealthText"];
-        ManipFlag = esp.holder["BottomFlags"]["ManipFlag"];
-
-
-
-        BottomFlags = esp.holder["BottomFlags"];
-        LeftFlags = esp.holder["LeftFlags"];
-        LeftFlagsTwo = esp.holder["LeftFlags"]["LeftFlagsTwo"];
-        RightFlags = esp.holder["RightFlags"];
-
-
-
-        bottomListLayout = esp.holder["BottomFlags"]["UIListLayout"];
-        leftListLayout = esp.holder["LeftFlags"]["LeftFlagsTwo"]["UIListLayout"];
-        HealthTextPadding = esp.holder["LeftFlags"]["LeftFlagsTwo"]["HealthText"]["UIPadding"];
-
-
-
-        AimingText = esp.holder["RightFlags"]["RightFlagsTwo"]["AimingText"];
-        AimingTextPadding = esp.holder["RightFlags"]["RightFlagsTwo"]["AimingText"]["UIPadding"];
-        InventoryText = esp.holder["RightFlags"]["RightFlagsTwo"]["InventoryText"];
-        InventoryTextPadding = esp.holder["RightFlags"]["RightFlagsTwo"]["InventoryText"]["UIPadding"];
-        
-      
-
-        Box = esp.holder["Box"];
-        BoxFill = esp.holder["Box"]["BoxFill"];
-   
-   
-
-        HealthBar = esp.holder["LeftFlags"]["HealthBar"];
-        Bar = esp.holder["LeftFlags"]["HealthBar"]["Bar"];
-        BarGradient = esp.holder["LeftFlags"]["HealthBar"]["Bar"]["UIGradient"];
-     }
-     
-    
-     esp.UI.VisFlag.Text = "Visible"
-     esp.UI.AimingText.Text = "Aiming"
-     esp.UI.InventoryText.Text = "Searching"
-     
-
-     esp.UI.Distance.LayoutOrder = 1
-     esp.UI.Weapon.LayoutOrder = 2
-
-
-     esp.UI.VisFlag.LayoutOrder = 3
-     esp.UI.VisFlag.FontFace = Fonts["Minecraftia"]
-
-
-     esp.UI.ManipFlag.Text = "Manipulated"
-     esp.UI.ManipFlag.LayoutOrder = 4
-     esp.UI.ManipFlag.Visible = false
-
-
-     esp.UI.PName.AutomaticSize = Enum.AutomaticSize.Y
-     esp.UI.BottomFlags.AutomaticSize = Enum.AutomaticSize.Y
-
-
-     local VisTextPadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["VisFlag"])
-     VisTextPadding.PaddingBottom = Variables.UDimnew(0, 0)
-     VisTextPadding.PaddingLeft = Variables.UDimnew(0, 0)
-
-
-     colorStroke.ApplyStrokeMode = "Contextual"
-     colorStroke.StrokeSizingMode = "FixedSize"
-     colorStroke.LineJoinMode = "Miter"
-     colorStroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner
-     colorStroke.ZIndex = 1
-     colorStroke.Color = Variables.Color3fromRGB(0, 255, 255)
-
-
-     outerStroke.ApplyStrokeMode =  "Border"
-     outerStroke.StrokeSizingMode = "FixedSize"
-     outerStroke.LineJoinMode = "Miter"
-     outerStroke.BorderStrokePosition = Enum.BorderStrokePosition.Outer
-     outerStroke.ZIndex = 0
-
-
-     innerStroke.ApplyStrokeMode = "Contextual"
-     innerStroke.StrokeSizingMode = "FixedSize"
-     innerStroke.LineJoinMode = "Miter"
-     innerStroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner
-     innerStroke.ZIndex = 0
-     innerStroke.Thickness = 2
-
-
-     esp.UI.topColor = colorStroke
-     esp.UI.outerStroke = outerStroke
-     esp.UI.innerStroke = innerStroke
-
-
-     esp.UI.BoxFill.Transparency = 0
-
-
-     local Character = self.Character
-     esp.root, esp.humanoid = Character:WaitForChild("HumanoidRootPart", 60) or FindFirstChild(Character, "HumanoidRootPart"), Character:WaitForChild("Humanoid", 60) or FindFirstChild(Character, "Humanoid")
-     esp.head = Character:WaitForChild("Head", 60) or FindFirstChild(Character, "Head")
-     espCache[self].highlight.Adornee = Character
-     espCache[self].highlight.Enabled = false
-     espCache[self].highlight.FillTransparency = -1
-
- 
-     for _, part in Character:GetChildren() do
-        if part:IsA("MeshPart") or part:IsA("Part") then
-         esp.partCache[part] = Character:WaitForChild(part.Name, 60) or FindFirstChild(Character, part.Name)
-         esp.boneCache[part.Name] = {Part = Character:WaitForChild(part.Name, 60) or FindFirstChild(Character, part.Name), Line = Drawing.new("Line"), Outline = Drawing.new("Line")}
-        end
-     end
-
-
-     espCache[self].weapon = nil
-      
-    
-     return espCache[self]
-end
-
-
-local function GetPFromChar(p)
-  return Variables.Players:GetPlayerFromCharacter(p)
-end
-
-
-local function newCharacter(Character)
-  local v = ESPObject(GetPFromChar(Character))
-  ESP.getParts(v, Character)
-end
-
-
-local function newPlayer(player)
-  --Variables.taskdefer(newCharacter, player.Character)
-  if player.Character then
-    task.defer(newCharacter, player.Character)
-  end
-
-     
-  player.CharacterAdded:Connect(newCharacter)
-  player.CharacterRemoving:Connect(function()
-    if espCache[player] then
-      espCache[player].holder:Destroy()
-      for _, bone in espCache[player].boneCache do
-        bone.Line:Destroy()
-        bone.Outline:Destroy()
-      end
-      espCache[player].boneCache = nil
-      espCache[player] = nil
-    end
-  end)
-
-end
-
-
-local function OnRemoved(player)
-  if espCache[player] then
-    espCache[player].holder:Destroy()
-    espCache[player] = nil
-  end
-end
-
-
-function ESP.loadESP()
-  Variables.Players.PlayerAdded:Connect(newPlayer)
-  Variables.Players.PlayerRemoving:Connect(OnRemoved)
-  for _, player in Variables.Players:GetPlayers() do
-    if player.Name ~= Variables.Players.LocalPlayer.Name then
-      task.defer(newPlayer, player)
-    end
-  end
-
-
-  Variables.LocalPlayer.ChildAdded:Connect(function(character) 
-    rayOrigin = FindFirstChild(character, "Head")
-  end)
-
-
-  renderESP()
-end
-
-
-return library, themes, ESP, espConnection, espCache
