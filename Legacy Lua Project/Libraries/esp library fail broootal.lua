@@ -458,8 +458,8 @@ local function renderESP()
             local pos2, isRootVis = WorldToViewportPoint(cam, rootPos)
   
                 
-            local distancemag, maxDistance = Math.floor((rootPos - cameraPos).Magnitude)
-            if not isRootVis or not canSee or humanoid.Health <= 0 or distancemag <= library.flags["MaxDistance"] then
+            local distancemag, maxDistance = Math.floor((rootPos - cameraPos).Magnitude), library.flags["MaxDistance"]
+            if not isRootVis or not canSee or humanoid.Health <= 0 or distancemag > library.flags["MaxDistance"] then
                esp.Visible = false
               continue
              else
