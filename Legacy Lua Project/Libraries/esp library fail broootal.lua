@@ -454,6 +454,9 @@ local function renderESP()
             
             local rootPos = root.Position
             if (rootPos - cameraPos).Magnitude >= library.flags["MaxDistance"] then
+              esp.Visible = false
+             continue
+            end
             
             
             local pos2, isRootVis = WorldToViewportPoint(cam, rootPos)
@@ -462,7 +465,7 @@ local function renderESP()
              continue
             end
 
-            
+
             esp.Visible = true
             local leftFlags, leftListLayout = UI.LeftFlags, UI.leftListLayout
             local rightFlags, rightListLayout = UI.RightFlags, UI.rightListLayout
