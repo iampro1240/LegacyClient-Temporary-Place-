@@ -400,7 +400,8 @@ local function renderESP()
 
     local accumulatedTime = 0
     local TARGET_INTERVAL = 1 / 60 
-    local WorldToViewportPoint = Variables.Camera.WorldToViewportPoint
+    local cam = workspace.CurrentCamera
+    local WorldToViewportPoint = cam.WorldToViewportPoint
     
     
     espConnection = Variables.RunService.PreRender:Connect(function(deltatime)
