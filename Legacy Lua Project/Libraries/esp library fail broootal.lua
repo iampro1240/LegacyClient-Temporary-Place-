@@ -424,10 +424,7 @@ local function renderESP()
       local healthBarPadding = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Padding
       local healthBarPaddingSize = ESP.healthBarSettings[library.flags["HealthBarPadding"]].Size
       local textFlagFont = ESP.fontSettings[flagFont]
-
-      local getBoneValue, connectBone, setBoneVis = ESP.getBoneValue, ESP.connectBone, ESP.setBoneVis
-      local setBoneVis = ESP.setBoneVis
-  
+      
   
       local Client = Variables.Players.LocalPlayer
       local cameraPos = Variables.Camera.CFrame.Position
@@ -441,41 +438,32 @@ local function renderESP()
 
             if not clientCharacter or not character or not clientCharacter.Head then
                esp.Visible = false
-               --setBoneVis(boneCache, false)
               continue
              else
                esp.Visible = true
-               --setBoneVis(boneCache, isSkeleton)
             end
 
 
             local head, root, humanoid = player.head, player.root, player.humanoid
             if not library.flags["EnableAll"] or not head or not root or not humanoid then
               esp.Visible = false
-              --setBoneVis(boneCache, false)
              continue
              else
               esp.Visible = true
-              --setBoneVis(boneCache, isSkeleton)
             end
 
 
             rayOrigin = clientCharacter.Head
-            local rootPos, rootSize = root.Position, root.Size
-            local pos2, isRootVis = WorldToViewportPoint(Camera, rootPos)
+            local rootPos = root.Position
+            local pos2, isRootVis = WorldToViewportPoint(cam, rootPos)
   
                 
-            local distancemag = math.floor((rootPos - cameraPos).Magnitude)
-            local canSee = ESP.distanceCheck(distancemag, isRootVis)
-            
-      
-            if not isRootVis or not canSee or humanoid.Health <= 0 then
+            local distancemag, maxDistance = Math.floor((rootPos - cameraPos).Magnitude)
+            if not isRootVis or not canSee or humanoid.Health <= 0 or distancemag <= library.flags["MaxDistance"] then
                esp.Visible = false
-               --setBoneVis(boneCache, false)
               continue
              else
                esp.Visible = true
-               --setBoneVis(boneCache, isSkeleton)
             end
             
             
@@ -483,37 +471,34 @@ local function renderESP()
             local rightFlags, rightListLayout = UI.RightFlags, UI.rightListLayout
           
                 
-            local halfHeight = (rootSize.X + rootSize.Y) / 1.5
-            local top2D, isTopVisible = WorldToViewportPoint(Camera, rootPos + Vector3.new(0, halfHeight, 0))
-            local bottom2D, isBottomVisible = WorldToViewportPoint(Camera, rootPos - Vector3.new(0, halfHeight, 0))
+            local halfHeight = (root.Size.X + root.Size.Y) / 1.5
+            local top2D, isTopVisible = WorldToViewportPoint(cam, rootPos + vector.create(0, halfHeight))
+            local bottom2D, isBottomVisible = WorldToViewportPoint(cam, rootPos - vector.create(0, halfHeight))
   
                 
             local isPlayerVis, isPlayerManip = player.playerVis, player.playerManip
             local nameText, distanceText, weaponText, visFlag, manipFlag, healthFlag, aimingFlag, inventoryFlag = UI.PName, UI.Distance, UI.Weapon, UI.VisFlag, UI.ManipFlag, UI.HealthText, UI.AimingText, UI.InventoryText
             local healthTextPadding = UI.HealthTextPadding
 
-
+          
             local centerX = top2D.X
-            local centerY = top2D.Y
-            local height = (bottom2D.Y - centerY)
+            local height = (bottom2D.Y - top2D.Y)
               
                 
             local width = (height * .6) 
             local boxYSize = (height * 1.16 + 7)
-            local posClamp = math.floor(centerY - height * .019)
+            local posClamp = Math.floor(top2D.Y - height * .019)
   
                 
-            local boxTotalWidth = math.floor(width * 1.16 + 5)
-            local halfBoxWidth = math.floor(boxTotalWidth * .5)
+            local boxTotalWidth = Math.floor(width * 1.16 + 5)
+            local halfBoxWidth = Math.floor(boxTotalWidth * .5)
 
 
-            local boxLeftX = math.floor(centerX - halfBoxWidth)
+            local boxLeftX = Math.floor(centerX - halfBoxWidth)
             local boxRightX = boxLeftX + boxTotalWidth
-            local getVis = ESP.getVis
            
 
             do --// Texts
-
                 do --// Name
 
                   local isName = library.flags["Names"]
@@ -576,7 +561,7 @@ local function renderESP()
                           player.playerVis = false
                         end
                     end
-                    visFlag.TextColor3 = getVis(player.playerVis, library.flags["Vis_Color"].Color, library.flags["Not_Vis_Color"].Color)
+                    visFlag.TextColor3 = ESP.getVis(player.playerVis, library.flags["Vis_Color"].Color, library.flags["Not_Vis_Color"].Color)
                   end
                 end
                
@@ -625,102 +610,7 @@ local function renderESP()
                 UI.BottomFlags.Position = UDim2.fromOffset(centerX, Math.floor( posClamp + boxYSize + textSettings.bottomPadding))
                 UI.bottomListLayout.Padding = UDim.new(0, textSettings.bottomListLayoutPadding)
             end
-
-               
-            do --// Skeleton
-
-              if isSkeleton then
-                local upperTorso, lowerTorso = getBoneValue(boneCache, "UpperTorso", "Part"), getBoneValue(boneCache, "LowerTorso", "Part")
-                  
-                  local headPos, headBone, headOutline = WorldToViewportPoint(Camera, head.Position - Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "Head", "Line"), getBoneValue(boneCache, "Head", "Outline")
-                  local upperTorsoPos, upperTorsoBone, upperTorsoOutline = WorldToViewportPoint(Camera, upperTorso.Position), getBoneValue(boneCache, "UpperTorso", "Line"), getBoneValue(boneCache, "UpperTorso", "Outline")
-                  local lowerTorsoPos, lowerTorsoBone, lowerTorsoOutline = WorldToViewportPoint(Camera, lowerTorso.Position), getBoneValue(boneCache, "LowerTorso", "Line"), getBoneValue(boneCache, "LowerTorso", "Outline")
-              
-
-                  do --// Torso
-                      connectBone(headBone, isSkeleton and isRootVis, Vector2.new(headPos.X, headPos.Y), Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(headOutline, isSkeleton and isRootVis, Vector2.new(headPos.X, headPos.Y), Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(upperTorsoBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(upperTorsoOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), outlineThickness, outlineColor, outlineZIndex)
-                  end
-              
-
-                  do --// Left Arm
-                      local leftUpperArm, leftLowerArm, leftHand = getBoneValue(boneCache, "LeftUpperArm", "Part"), getBoneValue(boneCache, "LeftLowerArm", "Part"), getBoneValue(boneCache, "LeftHand", "Part")
-              
-                      local leftUpperArmPos, leftUpperArmBone, leftUpperArmOutline = WorldToViewportPoint(Camera, leftUpperArm.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "LeftUpperArm", "Line"), getBoneValue(boneCache, "LeftUpperArm", "Outline")
-                      local leftLowerArmPos, leftLowerArmBone, leftLowerArmOutline = WorldToViewportPoint(Camera, leftLowerArm.Position), getBoneValue(boneCache, "LeftLowerArm", "Line"), getBoneValue(boneCache, "LeftLowerArm", "Outline")
-                      local leftHandPos, leftHandBone, leftHandOutline = WorldToViewportPoint(Camera, leftHand.Position), getBoneValue(boneCache, "LeftHand", "Line"), getBoneValue(boneCache, "LeftHand", "Outline")
-              
-                      connectBone(leftUpperArmBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(leftUpperArmOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(leftLowerArmBone, isSkeleton and isRootVis, Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(leftLowerArmOutline, isSkeleton and isRootVis, Vector2.new(leftUpperArmPos.X, leftUpperArmPos.Y), Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(leftHandBone, isSkeleton and isRootVis, Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), Vector2.new(leftHandPos.X, leftHandPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(leftHandOutline, isSkeleton and isRootVis, Vector2.new(leftLowerArmPos.X, leftLowerArmPos.Y), Vector2.new(leftHandPos.X, leftHandPos.Y), outlineThickness, outlineColor, outlineZIndex)
-                  end
-              
-
-                  do --// Right Arm
-                      local rightUpperArm, rightLowerArm, rightHand = getBoneValue(boneCache, "RightUpperArm", "Part"), getBoneValue(boneCache, "RightLowerArm", "Part"), getBoneValue(boneCache, "RightHand", "Part")
-              
-                      local rightUpperArmPos, rightUpperArmBone, rightUpperArmOutline = WorldToViewportPoint(Camera, rightUpperArm.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "RightUpperArm", "Line"), getBoneValue(boneCache, "RightUpperArm", "Outline")
-                      local rightLowerArmPos, rightLowerArmBone, rightLowerArmOutline = WorldToViewportPoint(Camera, rightLowerArm.Position), getBoneValue(boneCache, "RightLowerArm", "Line"), getBoneValue(boneCache, "RightLowerArm", "Outline")
-                      local rightHandPos, rightHandBone, rightHandOutline = WorldToViewportPoint(Camera, rightHand.Position), getBoneValue(boneCache, "RightHand", "Line"), getBoneValue(boneCache, "RightHand", "Outline")
-              
-                      connectBone(rightUpperArmBone, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(rightUpperArmOutline, isSkeleton and isRootVis, Vector2.new(upperTorsoPos.X, upperTorsoPos.Y), Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(rightLowerArmBone, isSkeleton and isRootVis, Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(rightLowerArmOutline, isSkeleton and isRootVis, Vector2.new(rightUpperArmPos.X, rightUpperArmPos.Y), Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(rightHandBone, isSkeleton and isRootVis, Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), Vector2.new(rightHandPos.X, rightHandPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(rightHandOutline, isSkeleton and isRootVis, Vector2.new(rightLowerArmPos.X, rightLowerArmPos.Y), Vector2.new(rightHandPos.X, rightHandPos.Y), outlineThickness, outlineColor, outlineZIndex)
-                  end
-                  
-
-                  do --// Left Leg
-                      local leftUpperLeg, leftLowerLeg, leftFoot = getBoneValue(boneCache, "LeftUpperLeg", "Part"), getBoneValue(boneCache, "LeftLowerLeg", "Part"), getBoneValue(boneCache, "LeftFoot", "Part")
-              
-                      local leftUpperLegPos, leftUpperLegBone, leftUpperLegOutline = WorldToViewportPoint(Camera, leftUpperLeg.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "LeftUpperLeg", "Line"), getBoneValue(boneCache, "LeftUpperLeg", "Outline")
-                      local leftLowerLegPos, leftLowerLegBone, leftLowerLegOutline = WorldToViewportPoint(Camera, leftLowerLeg.Position), getBoneValue(boneCache, "LeftLowerLeg", "Line"), getBoneValue(boneCache, "LeftLowerLeg", "Outline")
-                      local leftFootPos, leftFootBone, leftFootOutline = WorldToViewportPoint(Camera, leftFoot.Position), getBoneValue(boneCache, "LeftFoot", "Line"), getBoneValue(boneCache, "LeftFoot", "Outline")
-              
-                      connectBone(leftUpperLegBone, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(leftUpperLegOutline, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(leftLowerLegBone, isSkeleton and isRootVis, Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(leftLowerLegOutline, isSkeleton and isRootVis, Vector2.new(leftUpperLegPos.X, leftUpperLegPos.Y), Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(leftFootBone, isSkeleton and isRootVis, Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), Vector2.new(leftFootPos.X, leftFootPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(leftFootOutline, isSkeleton and isRootVis, Vector2.new(leftLowerLegPos.X, leftLowerLegPos.Y), Vector2.new(leftFootPos.X, leftFootPos.Y), outlineThickness, outlineColor, outlineZIndex)
-                  end
-              
-
-                  do --// Right Leg
-                      local rightUpperLeg, rightLowerLeg, rightFoot = getBoneValue(boneCache, "RightUpperLeg", "Part"), getBoneValue(boneCache, "RightLowerLeg", "Part"), getBoneValue(boneCache, "RightFoot", "Part")
-              
-                      local rightUpperLegPos, rightUpperLegBone, rightUpperLegOutline = WorldToViewportPoint(Camera, rightUpperLeg.Position + Variables.Vector3new(0, .5, 0)), getBoneValue(boneCache, "RightUpperLeg", "Line"), getBoneValue(boneCache, "RightUpperLeg", "Outline")
-                      local rightLowerLegPos, rightLowerLegBone, rightLowerLegOutline = WorldToViewportPoint(Camera, rightLowerLeg.Position), getBoneValue(boneCache, "RightLowerLeg", "Line"), getBoneValue(boneCache, "RightLowerLeg", "Outline")
-                      local rightFootPos, rightFootBone, rightFootOutline = WorldToViewportPoint(Camera, rightFoot.Position), getBoneValue(boneCache, "RightFoot", "Line"), getBoneValue(boneCache, "RightFoot", "Outline")
-              
-                      connectBone(rightUpperLegBone, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(rightUpperLegOutline, isSkeleton and isRootVis, Vector2.new(lowerTorsoPos.X, lowerTorsoPos.Y), Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(rightLowerLegBone, isSkeleton and isRootVis, Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(rightLowerLegOutline, isSkeleton and isRootVis, Vector2.new(rightUpperLegPos.X, rightUpperLegPos.Y), Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), outlineThickness, outlineColor, outlineZIndex)
-              
-                      connectBone(rightFootBone, isSkeleton and isRootVis, Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), Vector2.new(rightFootPos.X, rightFootPos.Y), boneThickness, boneColor, boneZIndex)
-                      connectBone(rightFootOutline, isSkeleton and isRootVis, Vector2.new(rightLowerLegPos.X, rightLowerLegPos.Y), Vector2.new(rightFootPos.X, rightFootPos.Y), outlineThickness, outlineColor, outlineZIndex)
-                  end
-               
-              end
-                  
-            end
-         
+          
 
             do --// Other
                 do -- Box
@@ -779,7 +669,7 @@ end
 
 
 local function ESPObject(self)
-     espCache[self] = {Name = self.Name, Player = self, Character = self.Character, holder = Variables.Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, headDrawing = Drawing.new("Circle"), headDrawingOutline = Drawing.new("Circle"), connection, Colors = Variables.Instancenew("Folder"), Borders = Variables.Instancenew("Folder"), chamsholder = Variables.Instancenew("Folder"), highlight = Variables.Instancenew("Highlight", visualHolder), lastRaycast = 0}
+     espCache[self] = {Name = self.Name, Player = self, Character = self.Character, holder = Variables.Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, Colors = Variables.Instancenew("Folder"), Borders = Variables.Instancenew("Folder"), chamsholder = Variables.Instancenew("Folder"), highlight = Variables.Instancenew("Highlight", visualHolder), lastRaycast = 0}
      local esp, player = espCache[self], espCache[self]
      local Colors = esp.Colors
      local Borders = esp.Borders 
@@ -798,7 +688,6 @@ local function ESPObject(self)
      Colors.Name = "Colors"
      Borders.Name = "Borders"
    
-
    
      do -- main text
        lib.DrawFrame({
@@ -879,7 +768,6 @@ local function ESPObject(self)
    
      end
    
-   
 
      do -- box
        lib.DrawFrame({
@@ -926,7 +814,6 @@ local function ESPObject(self)
    
    
      end
-   
    
 
      do -- HealthBar
@@ -1032,7 +919,6 @@ local function ESPObject(self)
           Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Variables.Color3fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Variables.Color3fromRGB(255, 255, 255))}
        })
      end
-
 
 
      do -- Right Flags
@@ -1222,9 +1108,6 @@ local function ESPObject(self)
      local Character = self.Character
      esp.root, esp.humanoid = Character:WaitForChild("HumanoidRootPart", 60) or FindFirstChild(Character, "HumanoidRootPart"), Character:WaitForChild("Humanoid", 60) or FindFirstChild(Character, "Humanoid")
      esp.head = Character:WaitForChild("Head", 60) or FindFirstChild(Character, "Head")
-     espCache[self].highlight.Adornee = Character
-     espCache[self].highlight.Enabled = false
-     espCache[self].highlight.FillTransparency = -1
 
  
      for _, part in Character:GetChildren() do
@@ -1295,7 +1178,7 @@ function ESP.loadESP()
 
 
   Variables.LocalPlayer.ChildAdded:Connect(function(character) 
-    rayOrigin = FindFirstChild(character, "Head")
+    rayOrigin = character:FindFirstChild("Head") or character:WaitForChild("Head")
   end)
 
 
