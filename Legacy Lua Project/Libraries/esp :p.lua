@@ -700,7 +700,7 @@ end
 
 
 local function ESPObject(self)
-     espCache[self] = {Name = self.Name, Player = self, Character = self.Character, holder = Variables.Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, Colors = Variables.Instancenew("Folder"), Borders = Variables.Instancenew("Folder"), chamsholder = Variables.Instancenew("Folder"), highlight = Variables.Instancenew("Highlight", visualHolder), lastRaycast = 0}
+     espCache[self] = {Name = self.Name, Player = self, Character = self.Character, holder = Variables.Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, Colors = Variables.Instancenew("Folder"), Borders = Variables.Instancenew("Folder"), chamsholder = Variables.Instancenew("Folder"), highlight = Variables.Instancenew("Highlight", visualHolder), lastRaycast = 0, weapon = nil}
      local esp, player = espCache[self], espCache[self]
      local Colors = esp.Colors
      local Borders = esp.Borders 
@@ -1146,9 +1146,6 @@ local function ESPObject(self)
          esp.boneCache[part.Name] = {Part = Character:WaitForChild(part.Name, 60), Line = Drawing.new("Line"), Outline = Drawing.new("Line")}
         end
      end
-
-
-     espCache[self].weapon = nil
       
     
      return espCache[self]
