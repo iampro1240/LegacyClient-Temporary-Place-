@@ -515,6 +515,7 @@ local function renderESP()
                 
             local isPlayerVis, isPlayerManip = player.playerVis, player.playerManip
             local nameText, distanceText, weaponText, visFlag, manipFlag, healthFlag, aimingFlag, inventoryFlag = UI.PName, UI.Distance, UI.Weapon, UI.VisFlag, UI.ManipFlag, UI.HealthText, UI.AimingText, UI.InventoryText
+            local aimingFlagStroke, inventoryFlagStroke = UI.aimingFlagStroke, UI.inventoryFlagStroke
             local healthTextPadding = UI.HealthTextPadding
 
           
@@ -603,10 +604,9 @@ local function renderESP()
 
                   local cutOff = math.clamp((distancemag-250)/(330-250), 0, 1)
                   aimingFlag.Transparency = cutOff
-                  aimingFlag["UIStroke"].Transparency = cutOff
-
+                  aimingFlagStroke.Transparency = cutOff
                   inventoryFlag.Transparency = cutOff
-                  inventoryFlag["UIStroke"].Transparency = cutOff
+                  inventoryFlagStroke.Transparency = cutOff
 
                   
                   healthFlag.Visible = isHealthText
@@ -1138,6 +1138,7 @@ local function ESPObject(self)
 
      local Character = self.Character
      esp.root, esp.humanoid, esp.head = Character:WaitForChild("HumanoidRootPart", 60), Character:WaitForChild("Humanoid", 60), Character:WaitForChild("Head", 60)
+     UI.aimingFlagStroke, UI.inventoryFlagStroke = esp.UI.AimingText:FindFirstChild("UIStroke"), esp.UI.InventoryText:FindFirstChild("UIStroke")
     
     
      return espCache[self]
