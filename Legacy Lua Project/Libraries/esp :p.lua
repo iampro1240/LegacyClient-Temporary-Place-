@@ -475,7 +475,7 @@ local function renderESP()
             local character = player.Character
            
 
-            if not isEnableAll then
+            if not isEnableAll or not clientCharacter then
               esp.Visible = false
              continue
             end
@@ -1139,14 +1139,6 @@ local function ESPObject(self)
      local Character = self.Character
      esp.root, esp.humanoid, esp.head = Character:WaitForChild("HumanoidRootPart", 60), Character:WaitForChild("Humanoid", 60), Character:WaitForChild("Head", 60)
     
- 
-     for _, part in Character:GetChildren() do
-        if part:IsA("MeshPart") or part:IsA("Part") then
-         esp.partCache[part] = Character:WaitForChild(part.Name, 60)
-         esp.boneCache[part.Name] = {Part = Character:WaitForChild(part.Name, 60), Line = Drawing.new("Line"), Outline = Drawing.new("Line")}
-        end
-     end
-      
     
      return espCache[self]
 end
@@ -1163,6 +1155,16 @@ local function newCharacter(Character)
 end
 
 
+local function destroyESP(Player)
+	local cachedPlayer = espCache[Player] or espCache[Player.Name]
+  if cachedPlayer then
+    cachedPlayer.holder:Destroy()
+    cachedPlayer.boneCache = nil
+    cachedPlayer = nil
+  end
+end
+
+
 local function newPlayer(player)
   --Variables.taskdefer(newCharacter, player.Character)
   if player.Character then
@@ -1171,17 +1173,7 @@ local function newPlayer(player)
 
      
   player.CharacterAdded:Connect(newCharacter)
-  player.CharacterRemoving:Connect(function()
-    if espCache[player] then
-      espCache[player].holder:Destroy()
-      for _, bone in espCache[player].boneCache do
-        bone.Line:Destroy()
-        bone.Outline:Destroy()
-      end
-      espCache[player].boneCache = nil
-      espCache[player] = nil
-    end
-  end)
+  player.CharacterRemoving:Connect(destroyESP)
 
 end
 
@@ -1194,12 +1186,29 @@ local function OnRemoved(player)
 end
 
 
+local function createESP(Player)
+  if Player.Character then
+  	task.defer(ESPObject, Player)
+  end
+  
+  Player.CharacterAdded:Connect(function(Character)
+    task.defer(ESPObject, Player)
+  end)
+    
+  Player.CharacterRemoving:Connect(function(Character)
+    task.defer(destroyESP, Player)
+  end)
+end
+
+
 function ESP.loadESP()
-  Variables.Players.PlayerAdded:Connect(newPlayer)
-  Variables.Players.PlayerRemoving:Connect(OnRemoved)
+  
+
+  Variables.Players.PlayerAdded:Connect(createESP)
+  Variables.Players.PlayerRemoving:Connect(destroyESP)
   for _, player in Variables.Players:GetPlayers() do
     if player.Name ~= Variables.Players.LocalPlayer.Name then
-      task.defer(newPlayer, player)
+      task.defer(ESPObject, player)
     end
   end
 
