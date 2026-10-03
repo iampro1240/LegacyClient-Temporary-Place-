@@ -1134,7 +1134,7 @@ local function ESPObject(self)
 
 
      esp.UI.BoxFill.Transparency = 0
-     UI.aimingFlagStroke, UI.inventoryFlagStroke = lib.DrawUIStroke({Parent = esp.UI.AimingText}), lib.DrawUIStroke({Parent = esp.UI.InventoryText})
+     esp.UI.aimingFlagStroke, esp.UI.inventoryFlagStroke = lib.DrawUIStroke({Parent = esp.UI.AimingText}), lib.DrawUIStroke({Parent = esp.UI.InventoryText})
 
 
      local Character = self.Character
