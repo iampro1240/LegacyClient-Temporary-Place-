@@ -1208,7 +1208,7 @@ function ESP.loadESP()
   Variables.Players.PlayerRemoving:Connect(destroyESP)
   for _, player in Variables.Players:GetPlayers() do
     if player.Name ~= Variables.Players.LocalPlayer.Name then
-      task.defer(ESPObject, player)
+      task.defer(createESP, player)
     end
   end
 
