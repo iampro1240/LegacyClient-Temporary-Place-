@@ -1134,11 +1134,11 @@ local function ESPObject(self)
 
 
      esp.UI.BoxFill.Transparency = 0
+     UI.aimingFlagStroke, UI.inventoryFlagStroke = lib.DrawUIStroke({Parent = esp.UI.AimingText}), lib.DrawUIStroke({Parent = esp.UI.InventoryText})
 
 
      local Character = self.Character
      esp.root, esp.humanoid, esp.head = Character:WaitForChild("HumanoidRootPart", 60), Character:WaitForChild("Humanoid", 60), Character:WaitForChild("Head", 60)
-     UI.aimingFlagStroke, UI.inventoryFlagStroke = esp.UI.AimingText:FindFirstChild("UIStroke"), esp.UI.InventoryText:FindFirstChild("UIStroke")
     
     
      return espCache[self]
