@@ -144,6 +144,7 @@ do --// ESP functions
     
         obj.Rotation = properties.Rotation or 0
         obj.Color = properties.Color or fromRGB(255, 255, 255)
+        return obj
   end
    
    
@@ -647,7 +648,7 @@ local function renderESP()
 
             do --// Other
                 do -- Box
-                  local box, boxFill = UI.Box, UI.BoxFill
+                  local box, boxFill, boxGradient = UI.Box, UI.BoxFill, UI.BoxFillGradient
                   box.Visible = isBox
                   if isBox then
                     box.Position = UDim2new(0, centerX, 0, posClamp)
@@ -656,14 +657,14 @@ local function renderESP()
                     
                     
                     boxFill.Visible = flags["Boxes"] and flags["BoxFill"]
-                    boxFill.UIGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["Box_Fill_Color"].Color), ColorSequenceKeypointnew(1, flags["Box_Fill_ColorTwo"].Color)}
+                    boxGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["Box_Fill_Color"].Color), ColorSequenceKeypointnew(1, flags["Box_Fill_ColorTwo"].Color)}
                     
 
-                    boxFill.UIGradient.Transparency = NumberSequencenew{NumberSequenceKeypointnew(0, flags["GradientColor1"].Transparency), NumberSequenceKeypointnew(1, flags["GradientColor2"].Transparency)}
+                    boxGradient.Transparency = NumberSequencenew{NumberSequenceKeypointnew(0, flags["GradientColor1"].Transparency), NumberSequenceKeypointnew(1, flags["GradientColor2"].Transparency)}
                     if flags["gradientSpin"] then
-                       boxFill.UIGradient.Rotation += flags["gradientAnimationSpeed"] / 100
+                       boxGradient.Rotation += flags["gradientAnimationSpeed"] / 100
                      else
-                      boxFill.UIGradient.Rotation = flags["FillRotation"]
+                      boxGradient.Rotation = flags["FillRotation"]
                     end
                   end
                 end
@@ -831,7 +832,7 @@ local function ESPObject(self)
 
 
 
-       lib.DrawGradient({
+       esp.UI.BoxFillGradient = lib.DrawGradient({
           Parent = esp.holder["Box"]["BoxFill"],
           Rotation = -90,
           Color = ColorSequence.new{ColorSequenceKeypoint.new(0, fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, fromRGB(255, 255, 255))},
