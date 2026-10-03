@@ -706,6 +706,7 @@ local function ESPObject(self)
      local Colors = esp.Colors
      local Borders = esp.Borders 
      local espholder, cache, chamsholder, esphighlight = esp.holder, esp.cache, esp.chamsholder, esp.highlight
+     esp.UI = {}
                 
    
      espholder.Name = self.Name
