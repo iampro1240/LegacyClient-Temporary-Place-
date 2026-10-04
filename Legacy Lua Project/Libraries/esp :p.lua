@@ -499,83 +499,35 @@ local function renderESP()
     
             local rootPos = root.Position
             local distancemag = round((rootPos - cameraPos).Magnitude)
-
-
-            local cframe, size = character:GetBoundingBox() 
-            local sx, sy, sz = size.X / 2, size.Y / 2, size.Z / 2
-            
-           
-            local corners = {
-                vectorcreate(sx, sy, sz),
-                vectorcreate(-sx, sy, sz),
-                vectorcreate(sx, -sy, sz),
-                vectorcreate(-sx, -sy, sz),
-                vectorcreate(sx, sy, -sz),
-                vectorcreate(-sx, sy, -sz),
-                vectorcreate(sx, -sy, -sz),
-                vectorcreate(-sx, -sy, -sz)
-            }
-            
-            local minX, minY = math.huge, math.huge
-            local maxX, maxY = -math.huge, -math.huge
-            local isOnScreen = false
-
-
-            local boxTotalWidth
-            local halfBoxWidth
-            local boxLeftX
-          
-
-            for _, corner in corners do
-                
-                local worldPos = cframe * corner 
-                local screenPos, visible = WorldToViewportPoint(currentCamera, worldPos)
-                
-                if visible then
-                  isOnScreen = true
-                end
-            
-                -- Find the outermost points to create the 2D box limits
-                if screenPos.X < minX then minX = screenPos.X end
-                if screenPos.X > maxX then maxX = screenPos.X end
-                if screenPos.Y < minY then minY = screenPos.Y end
-                if screenPos.Y > maxY then maxY = screenPos.Y end
-            end
-            
-
+    
             local pos2, isRootVis = WorldToViewportPoint(currentCamera, rootPos)
-            if not isOnScreen or distancemag >= isMaxDistance then
+            if not isRootVis or distancemag >= isMaxDistance then
                 esp.Visible = false
                 continue
             end
     
             esp.Visible = true
-            local boxLeftX = floor(minX)
-            local boxTopY = floor(minY)
-                
-            local boxTotalWidth = floor(maxX - minX)
-            local boxYSize = floor(maxY - minY)
-
-
     
             local halfHeight = (root.Size.X + root.Size.Y) / 1.5
             local offsetVector = vectorcreate(0, halfHeight, 0)
             
             local top2D = WorldToViewportPoint(currentCamera, rootPos + offsetVector)
-            --local bottom2D = WorldToViewportPoint(currentCamera, rootPos - offsetVector)
+            local bottom2D = WorldToViewportPoint(currentCamera, rootPos - offsetVector)
     
             local nameText, distanceText, weaponText = UI.PName, UI.Distance, UI.Weapon
             local visFlag, healthFlag, aimingFlag, inventoryFlag = UI.VisFlag, UI.HealthText, UI.AimingText, UI.InventoryText
             local aimingFlagStroke, inventoryFlagStroke = UI.aimingFlagStroke, UI.inventoryFlagStroke
-            
-            --local centerX = pos2.X
-            --local height = (bottom2D.Y - top2D.Y)
-            --local width = height * 0.6
-
-            --local boxYSize = height * 1.16 + 7
-            local posClamp = floor(top2D.Y - boxTopY * 0.019)
+    
+            local centerX = top2D.X
+            local height = (bottom2D.Y - top2D.Y)
+            local width = height * 0.6
+            local boxYSize = height * 1.16 + 7
+            local posClamp = floor(top2D.Y - height * 0.019)
+    
+            local boxTotalWidth = floor(width * 1.16 + 5)
+            local halfBoxWidth = floor(boxTotalWidth * 0.5)
+            local boxLeftX = floor(centerX - halfBoxWidth)
             local boxRightX = boxLeftX + boxTotalWidth
-            
     
             -- Name Text
             nameText.Visible = isName
