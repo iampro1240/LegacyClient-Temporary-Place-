@@ -453,7 +453,7 @@ local function renderESP()
       local Client = Variables.Players.LocalPlayer
       local cameraPos = Variables.Camera.CFrame.Position
       local clientCharacter = Variables.Players.LocalPlayer.Character
-      if clientCharacter then
+      if clientCharacter and clientCharacter:FindFirstChild("Head") then
         rayOrigin = clientCharacter.Head
       end
 
