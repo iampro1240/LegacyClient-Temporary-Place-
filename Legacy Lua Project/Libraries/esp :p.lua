@@ -648,7 +648,7 @@ local function renderESP()
 
             do --// Other
                 do -- Box
-                  local box, boxFill, boxGradient = UI.Box, UI.BoxFill, UI.BoxFillGradient
+                  local box, boxFill = UI.Box, UI.BoxFill
                   box.Visible = isBox
                   if isBox then
                     box.Position = UDim2new(0, centerX, 0, posClamp)
