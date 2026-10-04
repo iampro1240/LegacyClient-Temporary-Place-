@@ -94,6 +94,11 @@ local NumberSequencenew = NumberSequence.new
 local NumberSequenceKeypointnew = NumberSequenceKeypoint.new
 
 
+local runService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Instancenew = Instance.new
+
 
 do -- Font Registering
         local function RegisterFont(Name, Weight, Style, Asset)
@@ -141,7 +146,7 @@ end
 
 do --// ESP functions
   function lib.DrawGradient(properties)
-        local obj = Variables.Instancenew("UIGradient")
+        local obj = Instancenew("UIGradient")
         obj.Name = "UIGradient"
         obj.Parent = properties.Parent or nil
     
@@ -152,15 +157,15 @@ do --// ESP functions
    
    
   function lib.DrawUIStroke(properties)
-       local obj = Variables.Instancenew("UIStroke")
+       local obj = Instancenew("UIStroke")
        obj.Parent = properties.Parent
        return obj
   end
    
    
   function lib.DrawText(properties)
-       local obj = Variables.Instancenew("TextLabel")
-       local stroke = Variables.Instancenew("UIStroke")
+       local obj = Instancenew("TextLabel")
+       local stroke = Instancenew("UIStroke")
        obj.Name = properties.Name
        obj.TextSize = 10
        obj.RichText = true
@@ -183,7 +188,7 @@ do --// ESP functions
    
    
   function lib.DrawFrame(properties)
-       local obj = Variables.Instancenew("Frame")
+       local obj = Instancenew("Frame")
        obj.Name = properties.Name
        obj.Parent = properties.Parent
    
@@ -202,7 +207,7 @@ do --// ESP functions
    
    
   function lib.DrawImage(properties)
-      local obj = Variables.Instancenew("ImageLabel")
+      local obj = Instancenew("ImageLabel")
       obj.Name = properties.Name
       obj.Parent = properties.Parent
       obj.Image = properties.Image
@@ -428,7 +433,7 @@ local function renderESP()
     --local WorldToViewportPoint = cam.WorldToViewportPoint
     
     
-    espConnection = Variables.RunService.PreRender:Connect(function(deltatime)
+    espConnection = runService.PreRender:Connect(function(deltatime)
       local timeElapsed = 0
       accumulatedTime += deltatime
       if accumulatedTime < TARGET_INTERVAL then
@@ -707,7 +712,7 @@ end
 
 
 local function ESPObject(self)
-     espCache[self] = {Name = self.Name, Player = self, Character = self.Character, holder = Variables.Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, Colors = Variables.Instancenew("Folder"), Borders = Variables.Instancenew("Folder"), chamsholder = Variables.Instancenew("Folder"), highlight = Variables.Instancenew("Highlight", visualHolder), lastRaycast = 0, weapon = nil}
+     espCache[self] = {Name = self.Name, Player = self, Character = self.Character, holder = Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, Colors = Instancenew("Folder"), Borders = Instancenew("Folder"), chamsholder = Instancenew("Folder"), highlight = Instancenew("Highlight", visualHolder), lastRaycast = 0, weapon = nil}
      local esp, player = espCache[self], espCache[self]
      local Colors = esp.Colors
      local Borders = esp.Borders 
@@ -786,8 +791,8 @@ local function ESPObject(self)
        
 
 
-       local listLayout = Variables.Instancenew("UIListLayout", esp.holder["BottomFlags"])
-       local uiPadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"])
+       local listLayout = Instancenew("UIListLayout", esp.holder["BottomFlags"])
+       local uiPadding = Instancenew("UIPadding", esp.holder["BottomFlags"])
        listLayout.Padding = UDimnew(0, 11)
        listLayout.VerticalAlignment = "Top"
        listLayout.HorizontalAlignment = "Center"
@@ -796,7 +801,7 @@ local function ESPObject(self)
        uiPadding.PaddingBottom = UDimnew(1, 0)
 
 
-       local weaponPadding, distancePadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["Weapon"]), Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["Distance"])
+       local weaponPadding, distancePadding = Instancenew("UIPadding", esp.holder["BottomFlags"]["Weapon"]), Instancenew("UIPadding", esp.holder["BottomFlags"]["Distance"])
        --weaponPadding.PaddingBottom = UDimnew(-0.23, 0)
        --weaponPadding.PaddingTop = UDimnew(-0.15, 0)
 
@@ -886,7 +891,7 @@ local function ESPObject(self)
 
        
 
-       local listLayout = Variables.Instancenew("UIListLayout", esp.holder["LeftFlags"])
+       local listLayout = Instancenew("UIListLayout", esp.holder["LeftFlags"])
        listLayout.Padding = UDimnew(0, -6)
        listLayout.FillDirection = "Horizontal"
        listLayout.HorizontalAlignment = "Left"
@@ -896,7 +901,7 @@ local function ESPObject(self)
 
 
 
-       local listLayout2 = Variables.Instancenew("UIListLayout", esp.holder["LeftFlags"]["LeftFlagsTwo"])
+       local listLayout2 = Instancenew("UIListLayout", esp.holder["LeftFlags"]["LeftFlagsTwo"])
        listLayout2.Padding = UDimnew(0, 10)
        listLayout2.FillDirection = "Vertical"
        listLayout2.HorizontalAlignment = "Left"
@@ -943,7 +948,7 @@ local function ESPObject(self)
        })
 
 
-       local HealthTextPadding = Variables.Instancenew("UIPadding", esp.holder["LeftFlags"]["LeftFlagsTwo"]["HealthText"])
+       local HealthTextPadding = Instancenew("UIPadding", esp.holder["LeftFlags"]["LeftFlagsTwo"]["HealthText"])
        HealthTextPadding.PaddingBottom = UDimnew(.3, 0)
        HealthTextPadding.PaddingLeft = UDimnew(0, -12)
 
@@ -991,7 +996,7 @@ local function ESPObject(self)
 
 
 
-       local listLayout = Variables.Instancenew("UIListLayout", esp.holder["RightFlags"])
+       local listLayout = Instancenew("UIListLayout", esp.holder["RightFlags"])
        listLayout.Padding = UDimnew(0, 0)
        listLayout.FillDirection = "Horizontal"
        listLayout.HorizontalAlignment = "Right"
@@ -1001,7 +1006,7 @@ local function ESPObject(self)
 
 
 
-       local listLayout2 = Variables.Instancenew("UIListLayout", esp.holder["RightFlags"]["RightFlagsTwo"])
+       local listLayout2 = Instancenew("UIListLayout", esp.holder["RightFlags"]["RightFlagsTwo"])
        listLayout2.Padding = UDimnew(0, 10)
        listLayout2.FillDirection = "Vertical"
        listLayout2.HorizontalAlignment = "Right"
@@ -1029,14 +1034,14 @@ local function ESPObject(self)
        
 
 
-       local AimTextPadding = Variables.Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["AimingText"])
+       local AimTextPadding = Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["AimingText"])
        AimTextPadding.PaddingBottom = UDimnew(0, -9)
        AimTextPadding.PaddingRight = UDimnew(0, -25)
        AimTextPadding.PaddingTop = UDimnew(0, -2)
 
 
 
-       local InventoryTextPadding = Variables.Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["InventoryText"])
+       local InventoryTextPadding = Instancenew("UIPadding", esp.holder["RightFlags"]["RightFlagsTwo"]["InventoryText"])
        InventoryTextPadding.PaddingTop = UDimnew(0, -4)
        InventoryTextPadding.PaddingRight = UDimnew(0, -48)
      end
@@ -1108,7 +1113,7 @@ local function ESPObject(self)
      esp.UI.BottomFlags.AutomaticSize = Enum.AutomaticSize.Y
 
 
-     local VisTextPadding = Variables.Instancenew("UIPadding", esp.holder["BottomFlags"]["VisFlag"])
+     local VisTextPadding = Instancenew("UIPadding", esp.holder["BottomFlags"]["VisFlag"])
      VisTextPadding.PaddingBottom = UDimnew(0, 0)
      VisTextPadding.PaddingLeft = UDimnew(0, 0)
 
@@ -1158,39 +1163,12 @@ local function GetPFromChar(p)
 end
 
 
-local function newCharacter(Character)
-  local v = ESPObject(GetPFromChar(Character))
-  ESP.getParts(v, Character)
-end
-
-
 local function destroyESP(Player)
 	local cachedPlayer = espCache[Player] or espCache[Player.Name]
   if cachedPlayer then
     cachedPlayer.holder:Destroy()
     cachedPlayer.boneCache = nil
     cachedPlayer = nil
-  end
-end
-
-
-local function newPlayer(player)
-  --Variables.taskdefer(newCharacter, player.Character)
-  if player.Character then
-    task.defer(newCharacter, player.Character)
-  end
-
-     
-  player.CharacterAdded:Connect(newCharacter)
-  player.CharacterRemoving:Connect(destroyESP)
-
-end
-
-
-local function OnRemoved(player)
-  if espCache[player] then
-    espCache[player].holder:Destroy()
-    espCache[player] = nil
   end
 end
 
@@ -1211,21 +1189,13 @@ end
 
 
 function ESP.loadESP()
-  
-
-  Variables.Players.PlayerAdded:Connect(createESP)
-  Variables.Players.PlayerRemoving:Connect(destroyESP)
-  for _, player in Variables.Players:GetPlayers() do
-    if player.Name ~= Variables.Players.LocalPlayer.Name then
+  Players.PlayerAdded:Connect(createESP)
+  Players.PlayerRemoving:Connect(destroyESP)
+  for _, player in Players:GetPlayers() do
+    if player.Name ~= Players.LocalPlayer.Name then
       task.defer(createESP, player)
     end
   end
-
-
-  Variables.LocalPlayer.ChildAdded:Connect(function(character) 
-    rayOrigin = character:FindFirstChild("Head") or character:WaitForChild("Head")
-  end)
-
 
   renderESP()
 end
