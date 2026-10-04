@@ -433,8 +433,8 @@ local function renderESP()
     --local WorldToViewportPoint = cam.WorldToViewportPoint
     
     
-    local getVisFunc = ESP.getVis -- Localize visibility function
-    local filterTable = {} -- Reuse filter table to eliminate GC allocation
+    local getVisFunc = ESP.getVis
+    local filterTable = {}
     
     espConnection = runService.PreRender:Connect(function(deltatime)
         accumulatedTime += deltatime
@@ -491,7 +491,7 @@ local function renderESP()
             local esp, UI = player.holder, player.UI
             local character = player.Character
     
-            local head, root, humanoid = player.head, player.root, player.humanoid
+            local head, root, humanoid = character:FindFirstChild("Head"), character:FindFirstChild("HumanoidRootPart"), character:FindFirstChild("Humanoid")
             if not character or not head or not root or not humanoid or humanoid.Health <= 0 then
                 esp.Visible = false
                 continue
