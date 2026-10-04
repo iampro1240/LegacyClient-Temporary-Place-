@@ -573,7 +573,7 @@ local function renderESP()
             --local width = height * 0.6
 
             --local boxYSize = height * 1.16 + 7
-            --local posClamp = floor(top2D.Y - height * 0.019)
+            local posClamp = floor(top2D.Y - boxTopY * 0.019)
             local boxRightX = boxLeftX + boxTotalWidth
             
     
