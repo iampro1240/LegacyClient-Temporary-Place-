@@ -424,6 +424,7 @@ local function renderESP()
 
     local accumulatedTime = 0
     local TARGET_INTERVAL = 1 / 60 
+    local fontSettings = ESP.fontSettings
     --local WorldToViewportPoint = cam.WorldToViewportPoint
     
     
@@ -439,15 +440,15 @@ local function renderESP()
       local currentTextFont, flagFont = flags["TextFont"], flags["TextFlagFont"]
       local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
 
-
-      local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
+      
+      local textSettings, flagTextSettings = fontSettings[currentTextFont], fontSettings[flagFont]
       local fontSize = textSettings.FontSize
       local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = flags["skeletonEnabled"], 1, 3, flags["boneColor"].Color, Color3.fromRGB(0, 0, 0), 2, 1
        
 
       local healthBarPadding = ESP.healthBarSettings[flags["HealthBarPadding"]].Padding
       local healthBarPaddingSize = ESP.healthBarSettings[flags["HealthBarPadding"]].Size
-      local textFlagFont = ESP.fontSettings[flagFont]
+      local textFlagFont = fontSettings[flagFont]
       
   
       local Client = Variables.Players.LocalPlayer
