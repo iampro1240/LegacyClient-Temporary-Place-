@@ -77,6 +77,9 @@ local WorldToViewportPoint = currentCamera.WorldToViewportPoint
 
 local round = math.round
 local floor = math.floor
+local clamp = math.clamp
+
+
 local UDim2new = UDim2.new
 local UDimnew = UDim.new
 local fromOffset = UDim2.fromOffset
@@ -437,7 +440,7 @@ local function renderESP()
       local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
 
 
-      local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
+      local textSettings, flagTextSettings, fontSize = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont], textSettings.FontSize
       local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = flags["skeletonEnabled"], 1, 3, flags["boneColor"].Color, Color3.fromRGB(0, 0, 0), 2, 1
        
 
@@ -458,17 +461,21 @@ local function renderESP()
       local isMaxDistance = flags["MaxDistance"]
 
 
-      local isName = flags["Names"]
-      local isDistance = flags["Distance"]
-      local isWeapon = flags["Weapon"]
-      local isVisFlag = flags["Vis"]
-      local isHealthText = flags["HealthText"]
-      local isAimingText = flags["AimingText"]
-      local isInventoryText = flags["InventoryText"]
+      local isName, nameColor, isDisplayName = flags["Names"], flags["Name_Color"].Color, flags["UseDisplayName"]
+      local isDistance, distanceColor, distanceType = flags["Distance"], flags["Distance_Color"].Color, flags["DistanceType"]
+      local isWeapon, weaponColor, playerWeapon = flags["Weapon"], flags["Weapon_Color"].Color, player.weapon
+      local isVisFlag, visColor, notVisColor = flags["Vis"], flags["Vis_Color"].Color, flags["Not_Vis_Color"].Color
+      local isHealthText, healthTextColor = flags["HealthText"], flags["Health_Text_Color"].Color
+      local isAimingText, isAimingColor, notAimingColor = flags["AimingText"], flags["Inventory_Color"].Color, flags["Not_Inventory_Color"].Color
+      local isInventoryText, isInventoryColor, notInventoryColor = flags["InventoryText"], flags["Inventory_Color"].Color, flags["Not_Inventory_Color"].Color
+
+
+      local leftListLayoutPadding = textSettings.leftListLayoutPadding
+      local bottomPadding, bottomListLayoutPadding = textSettings.bottomPadding, textSettings.bottomListLayoutPadding
                 
       
-      local isBox = flags["Boxes"]
-      local isHealthBar = flags["Healthbar"]
+      local isBox, boxColor, isBoxFill = flags["Boxes"], flags["Box_Color"].Color, flags["BoxFill"]
+      local isHealthBar, barGradientOne, barGradientTwo = flags["Healthbar"], flags["GradientColor1"].Color, flags["GradientColor2"].Color
       
 
       for _, player in espCache do
@@ -476,14 +483,14 @@ local function renderESP()
             local character = player.Character
            
 
-            if not isEnableAll or not clientCharacter then
+            if not isEnableAll or not clientCharacter or not rayOrigin then
               esp.Visible = false
              continue
             end
             
             
             local head, root, humanoid = player.head, player.root, player.humanoid
-            if not character or not rayOrigin or not head or not root or not humanoid or humanoid.Health <= 0 then
+            if not character or not head or not root or not humanoid or humanoid.Health <= 0 then
               esp.Visible = false
              continue
             end
@@ -491,14 +498,10 @@ local function renderESP()
             
             local rootPos = root.Position
             local distancemag = round((rootPos - cameraPos).Magnitude)
-            if distancemag >= isMaxDistance then
-              esp.Visible = false
-             continue
-            end
-            
-            
+
+
             local pos2, isRootVis = WorldToViewportPoint(currentCamera, rootPos)
-            if not isRootVis then
+            if not isRootVis or distancemag >= isMaxDistance then
               esp.Visible = false
              continue
             end
@@ -511,10 +514,12 @@ local function renderESP()
                 
             local halfHeight = (root.Size.X + root.Size.Y) / 1.5
             local top2D, isTopVisible = WorldToViewportPoint(currentCamera, rootPos + vectorcreate(0, halfHeight))
+
+            
             local bottom2D, isBottomVisible = WorldToViewportPoint(currentCamera, rootPos - vectorcreate(0, halfHeight))
+            local isPlayerVis, isPlayerManip = player.playerVis, player.playerManip
   
                 
-            local isPlayerVis, isPlayerManip = player.playerVis, player.playerManip
             local nameText, distanceText, weaponText, visFlag, manipFlag, healthFlag, aimingFlag, inventoryFlag = UI.PName, UI.Distance, UI.Weapon, UI.VisFlag, UI.ManipFlag, UI.HealthText, UI.AimingText, UI.InventoryText
             local aimingFlagStroke, inventoryFlagStroke = UI.aimingFlagStroke, UI.inventoryFlagStroke
             local healthTextPadding = UI.HealthTextPadding
@@ -543,11 +548,11 @@ local function renderESP()
                   nameText.Visible = isName
                   if isName then
                     nameText.Position = fromOffset(centerX, posClamp - textSettings.namePadding)
-                    nameText.TextColor3 = flags["Name_Color"].Color
+                    nameText.TextColor3 = nameColor
                     nameText.FontFace = textFont
                     nameText.TextSize = textSettings.FontSize
 
-                    if flags["UseDisplayName"] then
+                    if isDisplayName then
                       nameText.Text = player.Player.DisplayName
                      else
                       nameText.Text = player.Player.Name
@@ -560,31 +565,32 @@ local function renderESP()
                 do --// Distance
                   distanceText.Visible = isDistance
                   if isDistance then
-                    distanceText.Text = distancemag .. flags["DistanceType"]
-                    distanceText.TextColor3 = flags["Distance_Color"].Color
+                    distanceText.Text = distancemag .. distanceType
+                    distanceText.TextColor3 = distanceColor
                     distanceText.FontFace = textFont
-                    distanceText.TextSize = textSettings.FontSize
+                    distanceText.TextSize = fontSize
                   end
                 end
                 
-    
+                
                 do -- Weapon
                   weaponText.Visible = isWeapon
                   if isWeapon then
-                    weaponText.TextColor3 = flags["Weapon_Color"].Color
-                    weaponText.Text = player.weapon or "Empty"
+                    weaponText.TextColor3 = weaponColor
+                    weaponText.Text = playerWeapon or "Empty"
                     weaponText.FontFace = textFont
-                    weaponText.TextSize = textSettings.FontSize
+                    weaponText.TextSize = fontSize
                   end
                 end
     
   
                 do --// Vis Check
                   visFlag.Visible = isVisFlag and rayOrigin
+                  local playerVis = player.playerVis
                   if visFlag.Visible then
                     visFlag.FontFace = textFont
 
-                    visFlag.TextSize = textSettings.FontSize
+                    visFlag.TextSize = fontSize
                     visParams.FilterDescendantsInstances = {clientCharacter, rayOrigin, character}
 
                     if (clock() - player.lastRaycast) > 0.1 then
@@ -596,14 +602,13 @@ local function renderESP()
                           player.playerVis = false
                         end
                     end
-                    visFlag.TextColor3 = ESP.getVis(player.playerVis, flags["Vis_Color"].Color, flags["Not_Vis_Color"].Color)
+                    visFlag.TextColor3 = ESP.getVis(player.playerVis, visColor, notVisColor)
                   end
                 end
                
 
                 do --// Misc Flags
-
-                  local cutOff = math.clamp((distancemag-250)/(330-250), 0, 1)
+                  local cutOff = clamp((distancemag-250)/(330-250), 0, 1)
                   aimingFlag.Transparency = cutOff
                   aimingFlagStroke.Transparency = cutOff
                   inventoryFlag.Transparency = cutOff
@@ -612,7 +617,7 @@ local function renderESP()
                   
                   healthFlag.Visible = isHealthText
                   if isHealthText then
-                    healthFlag.TextColor3 = flags["Health_Text_Color"].Color
+                    healthFlag.TextColor3 = healthTextColor
                     healthFlag.Text = floor(humanoid.Health)
                     healthFlag.FontFace = flagTextFont
                     healthFlag.TextSize = flagTextSettings.FontSize
@@ -621,7 +626,7 @@ local function renderESP()
                   
                   aimingFlag.Visible = isAimingText
                   if isAimingText then
-                    aimingFlag.TextColor3 = getVis(true, flags["Aiming_Color"].Color, flags["Not_Aiming_Color"].Color)
+                    aimingFlag.TextColor3 = getVis(true, isAimingColor, notAimingColor)
                     aimingFlag.FontFace = flagTextFont
                     aimingFlag.TextSize = flagTextSettings.FontSize
                   end
@@ -629,7 +634,7 @@ local function renderESP()
                   
                   inventoryFlag.Visible = isInventoryText
                   if isInventoryText then
-                    inventoryFlag.TextColor3 = getVis(true, flags["Inventory_Color"].Color, flags["Not_Inventory_Color"].Color)
+                    inventoryFlag.TextColor3 = getVis(true, isInventoryColor, notInventoryColor)
                     inventoryFlag.TextSize = textFlagFont.FontSize
                     inventoryFlag.FontFace = flagTextFont
                   end
@@ -640,32 +645,31 @@ local function renderESP()
                 rightFlags.Position = fromOffset(rightX, posClamp)
                 rightFlags.Size = fromOffset(1, boxYSize)
             
-
-                UI.BottomFlags.Position = fromOffset(centerX, floor( posClamp + boxYSize + textSettings.bottomPadding))
-                UI.bottomListLayout.Padding = UDimnew(0, textSettings.bottomListLayoutPadding)
+                
+                UI.BottomFlags.Position = fromOffset(centerX, floor( posClamp + boxYSize + bottomPadding))
+                UI.bottomListLayout.Padding = UDimnew(0, bottomListLayoutPadding)
             end
           
 
             do --// Other
                 do -- Box
-                  local box, boxFill = UI.Box, UI.BoxFill
+                  local box, boxFill, boxStrokeColor = UI.Box, UI.BoxFill, UI.topColor
                   box.Visible = isBox
                   if isBox then
                     box.Position = UDim2new(0, centerX, 0, posClamp)
                     box.Size = UDim2new(0, boxTotalWidth, 0, boxYSize)
-                    UI.topColor.Color = flags["Box_Color"].Color
+                    boxStrokeColor.Color = boxColor
                     
-                    
-                    boxFill.Visible = flags["Boxes"] and flags["BoxFill"]
+                    boxFill.Visible = isBox and isBoxFill
                     --boxGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["Box_Fill_Color"].Color), ColorSequenceKeypointnew(1, flags["Box_Fill_ColorTwo"].Color)}
-                    
-
                     --boxGradient.Transparency = NumberSequencenew{NumberSequenceKeypointnew(0, flags["GradientColor1"].Transparency), NumberSequenceKeypointnew(1, flags["GradientColor2"].Transparency)}
-                    if flags["gradientSpin"] then
+                    
+                    --if flags["gradientSpin"] then
                        --boxGradient.Rotation += flags["gradientAnimationSpeed"] / 100
                      else
                       --boxGradient.Rotation = flags["FillRotation"]
-                    end
+                    --end
+
                   end
                 end
   
@@ -673,16 +677,16 @@ local function renderESP()
                   local healthBar, bar, barGradient = UI.HealthBar, UI.Bar, UI.BarGradient
                   healthBar.Visible = isHealthBar
                   if isHealthBar then
-                    leftListLayout.Padding = UDimnew(0, textSettings.leftListLayoutPadding)
+                    leftListLayout.Padding = UDimnew(0, leftListLayoutPadding)
                     
   
                     healthBar.Size = UDim2new(0, healthBarPaddingSize, 0, boxYSize)
                     leftFlags.Size = fromOffset(-1, boxYSize)
                     bar.Size = UDim2new(1, 0, humanoid.Health / humanoid.MaxHealth, 0)
                      
-                     
+                    
                     leftFlags.Position = fromOffset(boxLeftX - healthBarPadding, posClamp)
-                    barGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["GradientColor1"].Color), ColorSequenceKeypointnew(1, flags["GradientColor2"].Color)}
+                    barGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, barGradientOne), ColorSequenceKeypointnew(1, barGradientTwo)}
                   end
                 end
             end
