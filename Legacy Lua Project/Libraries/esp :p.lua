@@ -440,7 +440,8 @@ local function renderESP()
       local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
 
 
-      local textSettings, flagTextSettings, fontSize = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont], textSettings.FontSize
+      local textSettings, flagTextSettings = ESP.fontSettings[currentTextFont], ESP.fontSettings[flagFont]
+      local fontSize = textSettings.FontSize
       local isSkeleton, boneThickness, outlineThickness, boneColor, outlineColor, boneZIndex, outlineZIndex = flags["skeletonEnabled"], 1, 3, flags["boneColor"].Color, Color3.fromRGB(0, 0, 0), 2, 1
        
 
