@@ -470,7 +470,7 @@ local function renderESP()
 
       local isName, nameColor, isDisplayName = flags["Names"], flags["Name_Color"].Color, flags["UseDisplayName"]
       local isDistance, distanceColor, distanceType = flags["Distance"], flags["Distance_Color"].Color, flags["DistanceType"]
-      local isWeapon, weaponColor, playerWeapon = flags["Weapon"], flags["Weapon_Color"].Color, player.weapon
+      local isWeapon, weaponColor = flags["Weapon"], flags["Weapon_Color"].Color
       local isVisFlag, visColor, notVisColor = flags["Vis"], flags["Vis_Color"].Color, flags["Not_Vis_Color"].Color
       local isHealthText, healthTextColor = flags["HealthText"], flags["Health_Text_Color"].Color
       local isAimingText, isAimingColor, notAimingColor = flags["AimingText"], flags["Inventory_Color"].Color, flags["Not_Inventory_Color"].Color
@@ -524,7 +524,7 @@ local function renderESP()
 
             
             local bottom2D, isBottomVisible = WorldToViewportPoint(currentCamera, rootPos - vectorcreate(0, halfHeight))
-            local isPlayerVis, isPlayerManip = player.playerVis, player.playerManip
+            local isPlayerVis, isPlayerManip, playerWeapon = player.playerVis, player.playerManip, player.weapon
   
                 
             local nameText, distanceText, weaponText, visFlag, manipFlag, healthFlag, aimingFlag, inventoryFlag = UI.PName, UI.Distance, UI.Weapon, UI.VisFlag, UI.ManipFlag, UI.HealthText, UI.AimingText, UI.InventoryText
@@ -534,8 +534,6 @@ local function renderESP()
           
             local centerX = top2D.X
             local height = (bottom2D.Y - top2D.Y)
-              
-                
             local width = (height * .6) 
             local boxYSize = (height * 1.16 + 7)
             local posClamp = floor(top2D.Y - height * .019)
@@ -543,8 +541,6 @@ local function renderESP()
                 
             local boxTotalWidth = floor(width * 1.16 + 5)
             local halfBoxWidth = floor(boxTotalWidth * .5)
-
-
             local boxLeftX = floor(centerX - halfBoxWidth)
             local boxRightX = boxLeftX + boxTotalWidth
            
