@@ -657,14 +657,14 @@ local function renderESP()
                     
                     
                     boxFill.Visible = flags["Boxes"] and flags["BoxFill"]
-                    boxGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["Box_Fill_Color"].Color), ColorSequenceKeypointnew(1, flags["Box_Fill_ColorTwo"].Color)}
+                    --boxGradient.Color = ColorSequencenew{ColorSequenceKeypointnew(0, flags["Box_Fill_Color"].Color), ColorSequenceKeypointnew(1, flags["Box_Fill_ColorTwo"].Color)}
                     
 
-                    boxGradient.Transparency = NumberSequencenew{NumberSequenceKeypointnew(0, flags["GradientColor1"].Transparency), NumberSequenceKeypointnew(1, flags["GradientColor2"].Transparency)}
+                    --boxGradient.Transparency = NumberSequencenew{NumberSequenceKeypointnew(0, flags["GradientColor1"].Transparency), NumberSequenceKeypointnew(1, flags["GradientColor2"].Transparency)}
                     if flags["gradientSpin"] then
-                       boxGradient.Rotation += flags["gradientAnimationSpeed"] / 100
+                       --boxGradient.Rotation += flags["gradientAnimationSpeed"] / 100
                      else
-                      boxGradient.Rotation = flags["FillRotation"]
+                      --boxGradient.Rotation = flags["FillRotation"]
                     end
                   end
                 end
