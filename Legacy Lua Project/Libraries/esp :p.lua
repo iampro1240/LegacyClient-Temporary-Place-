@@ -535,17 +535,17 @@ local function renderESP()
                 Arrow.Visible = isArrow
                 if isArrow then
                   local screenPos, angleDeg, distance = calculateArrowTransform(rootPos, INDICATOR_RADIUS)
-                  arrowImage.Position = fromOffset(screenPos.X, screenPos.Y)
-                  arrowImage.Rotation = angleDeg
-                  arrowImage.Visible = true
-                  arrowImage.ImageColor = arrowColor
+                  Arrow.Position = fromOffset(screenPos.X, screenPos.Y)
+                  Arrow.Rotation = angleDeg
+                  Arrow.Visible = true
+                  Arrow.ImageColor = arrowColor
                 end
 
                 continue
             end
     
             esp.Visible = true
-            arrowImage.Visible = false
+            Arrow.Visible = false
     
             local halfHeight = (root.Size.X + root.Size.Y) / 1.5
             local offsetVector = vectorcreate(0, halfHeight, 0)
