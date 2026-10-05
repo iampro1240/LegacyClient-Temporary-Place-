@@ -540,7 +540,7 @@ local function renderESP()
                   Arrow.Position = fromOffset(screenPos.X, screenPos.Y)
                   Arrow.Rotation = angleDeg
                   Arrow.Visible = true
-                  Arrow.ImageColor = arrowColor
+                  Arrow.ImageColor3 = arrowColor
                 end
 
                 continue
