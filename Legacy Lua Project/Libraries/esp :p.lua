@@ -544,9 +544,9 @@ local function renderESP()
                 continue
             end
     
-            warn(Arrow, UI.Arrow)
+           
             esp.Visible = true
-            --Arrow.Visible = false
+            Arrow.Visible = false
     
             local halfHeight = (root.Size.X + root.Size.Y) / 1.5
             local offsetVector = vectorcreate(0, halfHeight, 0)
