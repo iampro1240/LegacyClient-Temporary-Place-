@@ -78,6 +78,8 @@ local WorldToViewportPoint = currentCamera.WorldToViewportPoint
 local round = math.round
 local floor = math.floor
 local clamp = math.clamp
+local mathatan2 = math.atan2
+local mathdeg = math.deg
 
 
 local UDim2new = UDim2.new
@@ -412,6 +414,23 @@ do --// Library Functions
 end
 
 
+local function calculateArrowTransform(targetPosition: Vector3, radius: number)
+    local cameraCFrame = currentCamera.CFrame
+    local localPos = cameraCFrame:PointToObjectSpace(targetPosition)
+    
+    local distance = localPos.Magnitude
+    local angleRad = mathatan2(localPos.X, -localPos.Z)
+    local angleDeg = mathdeg(angleRad)
+    
+    local viewportSize = Camera.ViewportSize
+    local center = vector2New(viewportSize.X / 2, viewportSize.Y / 2)
+    local screenX = center.X + (radius * mathsin(angleRad))
+    local screenY = center.Y - (radius * mathcos(angleRad))
+    
+    return vector2New(screenX, screenY), angleDeg, distance
+end
+
+
 local function renderESP()
     local lastTick = os.clock()
     local visParams = RaycastParams.new()
@@ -483,6 +502,10 @@ local function renderESP()
         local isBox, boxColor, isBoxFill = flags["Boxes"], flags["Box_Color"].Color, flags["BoxFill"]
         local isHealthBar, barGradientOne, barGradientTwo = flags["Healthbar"], flags["GradientColor1"].Color, flags["GradientColor2"].Color
         local barColorSequence = ColorSequencenew{ColorSequenceKeypointnew(0, barGradientOne), ColorSequenceKeypointnew(1, barGradientTwo)}
+
+        local isArrow, arrowColor = flags["arrowEnabled"], flags["arrowColor"].Color
+        local INDICATOR_RADIUS = 180
+        local MAX_DISTANCE = 9e9
     
         local rayOriginPos = rayOriginPart.Position
         local currentClock = clock()
@@ -501,12 +524,28 @@ local function renderESP()
             local distancemag = round((rootPos - cameraPos).Magnitude)
     
             local pos2, isRootVis = WorldToViewportPoint(currentCamera, rootPos)
-            if not isRootVis or distancemag >= isMaxDistance then
+            if distancemag >= isMaxDistance then
                 esp.Visible = false
+                continue
+            end
+
+            local Arrow = UI.Arrow
+            if not isRootVis then
+                esp.Visible = false
+                Arrow.Visible = isArrow
+                if isArrow then
+                  local screenPos, angleDeg, distance = calculateArrowTransform(rootPos, INDICATOR_RADIUS)
+                  arrowImage.Position = fromOffset(screenPos.X, screenPos.Y)
+                  arrowImage.Rotation = angleDeg
+                  arrowImage.Visible = true
+                  arrowImage.ImageColor = arrowColor
+                end
+
                 continue
             end
     
             esp.Visible = true
+            arrowImage.Visible = false
     
             local halfHeight = (root.Size.X + root.Size.Y) / 1.5
             local offsetVector = vectorcreate(0, halfHeight, 0)
@@ -529,7 +568,7 @@ local function renderESP()
             local boxLeftX = floor(centerX - halfBoxWidth)
             local boxRightX = boxLeftX + boxTotalWidth
     
-            -- Name Text
+            
             nameText.Visible = isName
             if isName then
                 nameText.Position = fromOffset(centerX, posClamp - textSettings.namePadding)
@@ -539,7 +578,7 @@ local function renderESP()
                 nameText.Text = isDisplayName and player.Player.DisplayName or player.Player.Name
             end
     
-            -- Distance Text
+            
             distanceText.Visible = isDistance
             if isDistance then
                 distanceText.Text = distancemag .. distanceType
@@ -548,7 +587,7 @@ local function renderESP()
                 distanceText.TextSize = fontSize
             end
     
-            -- Weapon Text
+            
             weaponText.Visible = isWeapon
             if isWeapon then
                 weaponText.TextColor3 = weaponColor
@@ -557,7 +596,7 @@ local function renderESP()
                 weaponText.TextSize = fontSize
             end
     
-            -- Visibility Check (Raycast)
+            
             visFlag.Visible = isVisFlag
             if isVisFlag then
                 visFlag.FontFace = textFont
@@ -579,13 +618,14 @@ local function renderESP()
                 visFlag.TextColor3 = getVisFunc(player.playerVis, visColor, notVisColor)
             end
     
-            -- Misc Flags
+            
             local cutOff = clamp((distancemag - 250) / 80, 0, 1)
             aimingFlag.Transparency = cutOff
             aimingFlagStroke.Transparency = cutOff
             inventoryFlag.Transparency = cutOff
             inventoryFlagStroke.Transparency = cutOff
     
+            
             healthFlag.Visible = isHealthText
             if isHealthText then
                 healthFlag.TextColor3 = healthTextColor
@@ -594,6 +634,7 @@ local function renderESP()
                 healthFlag.TextSize = flagTextSettings.FontSize
             end
     
+
             aimingFlag.Visible = isAimingText
             if isAimingText then
                 aimingFlag.TextColor3 = getVisFunc(true, isAimingColor, notAimingColor)
@@ -601,22 +642,24 @@ local function renderESP()
                 aimingFlag.TextSize = flagTextSettings.FontSize
             end
     
+
             inventoryFlag.Visible = isInventoryText
             if isInventoryText then
-                inventoryFlag.TextColor3 = getVisFunc(true, isInventoryColor, notInventoryColor)
-                inventoryFlag.TextSize = flagTextSettings.FontSize
-                inventoryFlag.FontFace = flagTextFont
+              inventoryFlag.TextColor3 = getVisFunc(true, isInventoryColor, notInventoryColor)
+              inventoryFlag.TextSize = flagTextSettings.FontSize
+              inventoryFlag.FontFace = flagTextFont
             end
-    
-            -- UI Layout Position Updates
+            
+            
             local leftFlags, rightFlags = UI.LeftFlags, UI.RightFlags
             rightFlags.Position = fromOffset(boxRightX + healthBarPadding, posClamp)
             rightFlags.Size = fromOffset(1, boxYSize)
     
+
             UI.BottomFlags.Position = fromOffset(centerX, floor(posClamp + boxYSize + bottomPadding))
             UI.bottomListLayout.Padding = UDimnew(0, bottomListLayoutPadding)
     
-            -- Box Drawing
+            
             local box, boxFill, boxStrokeColor = UI.Box, UI.BoxFill, UI.topColor
             box.Visible = isBox
             if isBox then
@@ -626,7 +669,7 @@ local function renderESP()
                 boxFill.Visible = isBoxFill
             end
     
-            -- Health Bar
+            
             local healthBar, bar, barGradient = UI.HealthBar, UI.Bar, UI.BarGradient
             healthBar.Visible = isHealthBar
             if isHealthBar then
@@ -979,6 +1022,15 @@ local function ESPObject(self)
      end
 
 
+     do -- Arrow
+      local arrow = Instancenew("ImageLabel", esp.holder)
+      arrow.BackgroundTransparency = 1
+      arrow.Image = "rbxassetid://92023845052369"
+      arrow.Name = "Arrow"
+      arrow.Visible = false
+     end
+
+
      local colorStroke, outerStroke, innerStroke = lib.DrawUIStroke({Parent = esp.holder["Box"]}), lib.DrawUIStroke({Parent = esp.holder["Box"]}), lib.DrawUIStroke({Parent = esp.holder["Box"]})
      esp.itemCache = {}
      esp.UI = {
@@ -1020,6 +1072,7 @@ local function ESPObject(self)
         HealthBar = esp.holder["LeftFlags"]["HealthBar"];
         Bar = esp.holder["LeftFlags"]["HealthBar"]["Bar"];
         BarGradient = esp.holder["LeftFlags"]["HealthBar"]["Bar"]["UIGradient"];
+        Arrow = esp.holder["Arrow"];
      }
      
     
