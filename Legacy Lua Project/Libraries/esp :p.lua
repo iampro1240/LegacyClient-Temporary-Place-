@@ -422,7 +422,7 @@ local function calculateArrowTransform(targetPosition: Vector3, radius: number)
     local angleRad = mathatan2(localPos.X, -localPos.Z)
     local angleDeg = mathdeg(angleRad)
     
-    local viewportSize = Camera.ViewportSize
+    local viewportSize = currentCamera.ViewportSize
     local center = vector2New(viewportSize.X / 2, viewportSize.Y / 2)
     local screenX = center.X + (radius * mathsin(angleRad))
     local screenY = center.Y - (radius * mathcos(angleRad))
