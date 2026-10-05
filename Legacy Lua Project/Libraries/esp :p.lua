@@ -80,6 +80,8 @@ local floor = math.floor
 local clamp = math.clamp
 local mathatan2 = math.atan2
 local mathdeg = math.deg
+local mathsin = math.sin
+local mathcos = math.cos
 
 
 local UDim2new = UDim2.new
