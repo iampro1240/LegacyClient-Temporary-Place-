@@ -534,7 +534,7 @@ local function renderESP()
                 esp.Visible = false
                 Arrow.Visible = isArrow
                 if isArrow then
-                  local screenPos, angleDeg, distance = calculateArrowTransform(rootPos, INDICATOR_RADIUS)
+                  local screenPos, angleDeg, distance = calculateArrowTransform(rootPos, 180)
                   Arrow.Position = fromOffset(screenPos.X, screenPos.Y)
                   Arrow.Rotation = angleDeg
                   Arrow.Visible = true
