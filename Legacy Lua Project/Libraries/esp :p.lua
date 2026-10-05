@@ -544,8 +544,9 @@ local function renderESP()
                 continue
             end
     
+            warn(Arrow, UI.Arrow)
             esp.Visible = true
-            Arrow.Visible = false
+            --Arrow.Visible = false
     
             local halfHeight = (root.Size.X + root.Size.Y) / 1.5
             local offsetVector = vectorcreate(0, halfHeight, 0)
@@ -1022,8 +1023,9 @@ local function ESPObject(self)
      end
 
 
+     local arrow
      do -- Arrow
-      local arrow = Instancenew("ImageLabel", esp.holder)
+      arrow = Instancenew("ImageLabel", esp.holder)
       arrow.BackgroundTransparency = 1
       arrow.Image = "rbxassetid://92023845052369"
       arrow.Name = "Arrow"
@@ -1072,7 +1074,7 @@ local function ESPObject(self)
         HealthBar = esp.holder["LeftFlags"]["HealthBar"];
         Bar = esp.holder["LeftFlags"]["HealthBar"]["Bar"];
         BarGradient = esp.holder["LeftFlags"]["HealthBar"]["Bar"]["UIGradient"];
-        Arrow = esp.holder["Arrow"];
+        Arrow = arrow;
      }
      
     
