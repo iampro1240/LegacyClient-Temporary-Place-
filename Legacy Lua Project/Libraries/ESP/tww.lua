@@ -102,6 +102,7 @@ local NumberSequenceKeypointnew = NumberSequenceKeypoint.new
 
 local runService = game:GetService("RunService")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 local Instancenew = Instance.new
 
