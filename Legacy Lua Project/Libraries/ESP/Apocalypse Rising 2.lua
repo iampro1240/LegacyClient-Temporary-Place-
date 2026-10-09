@@ -106,12 +106,6 @@ local LocalPlayer = Players.LocalPlayer
 local Instancenew = Instance.new
 
 
-local repChar = require(ReplicatedStorage.Modules.Character.RepCharHandler.RepChar)
-local Global = require(ReplicatedStorage.SharedModules.Global)
-local playerTables = Global.RepCharHandler:GetRepChars() 
-local clientCharacter = Global.PlayerCharacter.Character
-
-
 do -- Font Registering
         local function RegisterFont(Name, Weight, Style, Asset)
             if not isfile(Asset.Id) then
@@ -463,10 +457,9 @@ local function renderESP()
         local healthBarPadding = ESP.healthBarSettings[flags["HealthBarPadding"]].Padding
         local healthBarPaddingSize = ESP.healthBarSettings[flags["HealthBarPadding"]].Size
         local textFlagFont = fontSettings[flagFont]
-    
-        local Client = Players.LocalPlayer
-        local cameraPos = currentCamera.CFrame.Position
         
+        local cameraPos = currentCamera.CFrame.Position
+        local clientCharacter = LocalPlayer.Character
         local rayOriginPart = clientCharacter and clientCharacter:FindFirstChild("Head")
         if not rayOriginPart then return end
     
@@ -501,6 +494,7 @@ local function renderESP()
 
         for _, player in espCache do
             local esp, UI = player.holder, player.UI
+            local actualPlayer = player.Player
             local character = player.Character
     
             local head, root, humanoid = character:FindFirstChild("Head"), character:FindFirstChild("HumanoidRootPart"), character:FindFirstChild("Humanoid")
@@ -560,7 +554,7 @@ local function renderESP()
                 nameText.TextColor3 = nameColor
                 nameText.FontFace = textFont
                 nameText.TextSize = fontSize
-                nameText.Text = isDisplayName and player.Player.DisplayName or player.Player.Name
+                nameText.Text = isDisplayName and actualPlayer.DisplayName or actualPlayer.Name
             end
     
             
