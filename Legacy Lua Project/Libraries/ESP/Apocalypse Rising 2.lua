@@ -664,7 +664,7 @@ end
 
 local function ESPObject(self)
   setthreadidentity(8)
-     espCache[self.Player] = {Name = self.Player.Name, Player = self.Player, Character = self.Character, playerTable = self, holder = Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, Colors = Instancenew("Folder"), Borders = Instancenew("Folder"), chamsholder = Instancenew("Folder"), highlight = Instancenew("Highlight", visualHolder), lastRaycast = 0, weapon = nil}
+     espCache[self.Player] = {Name = self.Name, Player = self, Character = self.Character, holder = Instancenew("Frame", visualHolder), playerVis = false, playerManip = false, partCache = {}, boneCache = {}, chamCache = {}, chamCacheTwo = {}, Colors = Instancenew("Folder"), Borders = Instancenew("Folder"), chamsholder = Instancenew("Folder"), highlight = Instancenew("Highlight", visualHolder), lastRaycast = 0, weapon = nil}
      local esp, player = espCache[self.Player], espCache[self.Player]
      local Colors = esp.Colors
      local Borders = esp.Borders 
