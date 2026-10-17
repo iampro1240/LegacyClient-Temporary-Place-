@@ -1677,9 +1677,9 @@ function ESP.loadESP()
   end)
 
   for _, player in Players:GetPlayers() do
-    --if player.Name ~= Players.LocalPlayer.Name then
+    if player.Name ~= Players.LocalPlayer.Name then
       task.defer(createESP, player)
-    --end
+    end
   end
   
 
