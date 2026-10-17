@@ -389,7 +389,7 @@ local function renderESP()
 		   for _, corpse in corpseCache do
               corpse.holder.Visible = false
 		   end
-		   
+
 		   return
         end 
 
@@ -506,7 +506,10 @@ local function renderESP()
                    
                    local boxLeftX = floor(centerX - halfBoxWidth)
                    local posClamp = floor(centerY - halfBoxHeight)
+
+				   
 				   local cutOff = clamp((distancemag - 250) / 80, 0, 1)
+				   local aimingStroke, inventoryStroke = aimingFlag:FindFirstChild("UIStroke"), inventoryFlag:FindFirstChild("UIStroke")
                    
                    
                    nameText.Visible = isName
@@ -567,7 +570,9 @@ local function renderESP()
                    if isAimingText then
                      aimingFlag.TextColor3 = getVisFunc(animator.Zooming.Value, isAimingColor, notAimingColor)
 					 aimingFlag.TextTransparency = cutOff
-       			     aimingFlag["UIStroke"].Transparency = cutOff
+					 if aimingStroke then
+       			       aimingStroke.Transparency = cutOff
+					 end
                    end
                    
                    
@@ -575,7 +580,10 @@ local function renderESP()
                    if isInventoryText then
 					 inventoryFlag.TextColor3 = getVisFunc(animator.InventorySearch.Value, isInventoryColor, notInventoryColor)
 					 inventoryFlag.TextTransparency = cutOff
-					 inventoryFlag["UIStroke"].Transparency = cutOff
+					 if inventoryStroke then
+       			       inventoryStroke.Transparency = cutOff
+					 end
+					 --inventoryFlag["UIStroke"].Transparency = cutOff
                    end
                    
                    
