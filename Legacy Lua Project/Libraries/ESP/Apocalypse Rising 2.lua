@@ -385,6 +385,10 @@ local function renderESP()
 		   for _, vehicle in vehicleCache do
               vehicle.holder.Visible = false
 		   end
+
+		   for _, corpse in corpseCache do
+              corpse.holder.Visible = false
+		   end
 		   
 		   return
         end 
@@ -641,7 +645,7 @@ local function renderESP()
                 local box, boxStrokeColor = UI.Box, UI.topColor
 				
                 
-    			if not vehicleModel or not localCharacter then
+    			if not vehicleModel then
     			  esp.Visible = false
                  continue
     			end
@@ -726,7 +730,7 @@ local function renderESP()
             local isDistance, distanceColor, distanceType = flags["CorpseDistance"], flags["Corpse_Distance_Color"].Color, flags["CorpseDistanceType"]
     		local isBox, boxColor = flags["CorpseBoxes"], flags["Corpse_Box_Color"].Color
             
-
+            
     		for _, corpse in corpseCache do
                 local esp, UI, chamCache = corpse.holder, corpse.UI, corpse.chamCache
     			local corpseModel = corpse.Corpse
@@ -736,7 +740,7 @@ local function renderESP()
                 local box, boxStrokeColor = UI.Box, UI.topColor
 				
                 
-    			if not corpseModel or not localCharacter then
+    			if not corpseModel then
     			  esp.Visible = false
                  continue
     			end
@@ -748,19 +752,10 @@ local function renderESP()
 
                 local centerPos = boxCFrame.Position
                 local distancemag = floor((centerPos - cameraPos).Magnitude)
-
-
-				if distancemag >= isMaxDistance then
-    			  esp.Visible = false
-    			  for _, cham in chamCache do
-    				cham.Visible = false
-    			  end
-                  continue
-                end
-        
+				
 
 				local center2D, isRootVis = WorldToViewportPoint(currentCamera, centerPos)
-                if not isRootVis then
+                if not isRootVis or distancemag >= isMaxDistance then
                   esp.Visible = false
                  continue
                 end
