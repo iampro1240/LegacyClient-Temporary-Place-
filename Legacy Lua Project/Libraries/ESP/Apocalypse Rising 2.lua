@@ -1652,7 +1652,13 @@ end
 local function destroyESP(cache, value)
   if cache[value] then
     cache[value].holder:Destroy()
-	cache[value].chamCache:Destroy()
+
+	for _, cham in cache[value].chamCache do
+	   if cham ~= nil then
+		cham:Destroy()
+	   end
+	end
+
 	for _, tble in cache[value] do
 	  if type(tble) == "table" then
 		tble = nil
@@ -1685,9 +1691,9 @@ function ESP.loadESP()
   end)
 
   for _, player in Players:GetPlayers() do
-    if player.Name ~= Players.LocalPlayer.Name then
+    --if player.Name ~= Players.LocalPlayer.Name then
       task.defer(createESP, player)
-    end
+    --end
   end
   
 
@@ -1712,7 +1718,3 @@ function ESP.loadESP()
 
   renderESP()
 end
-ESP.loadESP()
-
-
-return library, themes, ESP, espConnection, espCache
