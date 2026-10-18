@@ -770,7 +770,7 @@ local function renderESP()
                 esp.Visible = true
                 
 				
-                local offsetVector = vectorcreate(0, boxSize.Y * .5, 0)
+                local offsetVector = vectorcreate(0, boxSize.Y / 2, 0)
                 local top2D = WorldToViewportPoint(currentCamera, centerPos + offsetVector)
                 local bottom2D = WorldToViewportPoint(currentCamera, centerPos - offsetVector)
                 local height = (bottom2D.Y - top2D.Y)
@@ -1679,7 +1679,7 @@ local function createESP(Player)
   end)
     
   Player.CharacterRemoving:Connect(function(Character)
-    task.defer(destroyESP, vehicleCache, Player)
+    task.defer(destroyESP, espCache, Player)
   end)
 end
 
