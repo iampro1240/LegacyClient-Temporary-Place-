@@ -762,7 +762,7 @@ local function renderESP()
                 local distancemag = floor((centerPos - cameraPos).Magnitude)
 				
 
-				local center2D, isRootVis = WorldToViewportPoint(currentCamera, centerPos)
+				local center2D, isRootVis = WorldToViewportPoint(currentCamera, centerPos - vectorcreate(0, .5))
                 if not isRootVis or distancemag >= isMaxDistance then
                   esp.Visible = false
                  continue
@@ -770,12 +770,12 @@ local function renderESP()
                 esp.Visible = true
                 
 				
-                local offsetVector = vectorcreate(0, boxSize.Y / 2, 0)
+                local offsetVector = vectorcreate(0, boxSize.Y / 5, 0)
                 local top2D = WorldToViewportPoint(currentCamera, centerPos + offsetVector)
                 local bottom2D = WorldToViewportPoint(currentCamera, centerPos - offsetVector)
                 local height = (bottom2D.Y - top2D.Y)
 
-				local maxHorizontal = math.max(boxSize.X, boxSize.Z)
+				local maxHorizontal = math.max(boxSize.X + 3, boxSize.Z + 3)
                 local safeY = math.max(boxSize.Y, 0.001)
                 local width = height * (maxHorizontal / safeY)
 				--height * (mathmax(boxSize.X, boxSize.Z) / boxSize.Y)
