@@ -1718,3 +1718,5 @@ function ESP.loadESP()
 
   renderESP()
 end
+
+return library, themes, ESP, espConnection, espCache
