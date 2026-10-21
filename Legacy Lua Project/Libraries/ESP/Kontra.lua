@@ -9041,17 +9041,23 @@ function ESP.loadESP()
   local characterHook
   characterHook = hookfunction(characters.new, newcclosure(function(p108, p109)
      if not checkcaller() then
-	     local returnedValue = characterHook(p108, p109)
-	     setthreadidentity(8)
-	     destroyESP(espCache, returnedValue)
-	     task.defer(PlayerObject, returnedValue)
-	     setthreadidentity(2)
+	   local returnedValue = characterHook(p108, p109)
+	   setthreadidentity(8)
+	   destroyESP(espCache, returnedValue)
+	   task.defer(PlayerObject, returnedValue)
+	   setthreadidentity(2)
 	  return returnedValue
 	 end
      
       
     return characterHook(p108, p109)
   end))
+
+
+  Players.PlayerAdded:Connect(createESP)
+  Players.PlayerRemoving:Connect(function(player)
+	destroyESP(espCache, player)
+  end)
   
   for _, Table in getgc(true) do
    if type(Table) == "table" and rawget(Table, "Model") and rawget(Table, "Health") then
@@ -9069,4 +9075,4 @@ end
 
 --run_on_thread(getactorthreads()[1], code)
 --ESP.loadESP()
---return library, themes, ESP, espConnection, espCache
+return library, themes, ESP, espConnection, espCache
