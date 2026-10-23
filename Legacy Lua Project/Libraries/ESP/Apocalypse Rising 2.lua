@@ -7688,7 +7688,7 @@ local function renderESP()
 		local localCharacter = LocalPlayer.Character
         
         
-		if not isEnableAll or not localCharacter then
+		if not isEnableAll then
            for _, player in espCache do
               player.holder.Visible = false
 
@@ -7698,7 +7698,16 @@ local function renderESP()
            end
         end 
         
-		
+		if not localCharacter or localCharacter == nil then
+            for _, player in espCache do
+              player.holder.Visible = false
+
+			  for _, cham in player.chamCache do
+			    cham.Visible = false
+			  end
+           end
+        end
+
 		local charFind = localCharacter.FindFirstChild
        	do --// Player
        	  local currentTextFont, flagFont = flags["TextFont"], flags["TextFlagFont"]
