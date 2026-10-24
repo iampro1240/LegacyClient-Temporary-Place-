@@ -7708,7 +7708,6 @@ local function renderESP()
            end
         end
 
-		local charFind = localCharacter.FindFirstChild
        	do --// Player
        	  local currentTextFont, flagFont = flags["TextFont"], flags["TextFlagFont"]
        	  local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
@@ -7724,14 +7723,15 @@ local function renderESP()
 			return
 		  end
 
-		  if not localCharacter and localCharacter.PrimaryPart then 
+		  if localCharacter.PrimaryPart then 
 			return
 		  end
       
        	  local rayOriginPart = localCharacter.Head
        	  if not rayOriginPart then return end
        
-               
+
+	      local charFind = localCharacter.FindFirstChild
        	  local isMaxDistance = flags["MaxDistance"]
        	  local isName, nameColor, isDisplayName = flags["Names"], flags["Name_Color"].Color, flags["UseDisplayName"]
        	  local isDistance, distanceColor, distanceType = flags["Distance"], flags["Distance_Color"].Color, flags["DistanceType"]
