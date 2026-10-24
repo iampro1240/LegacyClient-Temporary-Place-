@@ -7688,7 +7688,7 @@ local function renderESP()
 		local localCharacter = LocalPlayer.Character
         
         
-		if not isEnableAll then
+		if not isEnableAll or not localCharacter then
            for _, player in espCache do
               player.holder.Visible = false
 
@@ -7698,16 +7698,8 @@ local function renderESP()
            end
         end 
         
-		if not localCharacter or localCharacter == nil then
-            for _, player in espCache do
-              player.holder.Visible = false
-
-			  for _, cham in player.chamCache do
-			    cham.Visible = false
-			  end
-           end
-        end
-
+		
+		local charFind = localCharacter.FindFirstChild
        	do --// Player
        	  local currentTextFont, flagFont = flags["TextFont"], flags["TextFlagFont"]
        	  local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
@@ -7730,8 +7722,7 @@ local function renderESP()
        	  local rayOriginPart = localCharacter.Head
        	  if not rayOriginPart then return end
        
-
-	      local charFind = localCharacter.FindFirstChild
+               
        	  local isMaxDistance = flags["MaxDistance"]
        	  local isName, nameColor, isDisplayName = flags["Names"], flags["Name_Color"].Color, flags["UseDisplayName"]
        	  local isDistance, distanceColor, distanceType = flags["Distance"], flags["Distance_Color"].Color, flags["DistanceType"]
