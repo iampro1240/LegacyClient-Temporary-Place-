@@ -6458,7 +6458,7 @@ end
 --
 
 
---[==[do -- sections + tabs
+[==[do -- sections + tabs
  local window = library:window({
   	name = os.date("Legacy | %b %d %Y"),
   	size = UDim2.fromOffset(500, 650),
@@ -7687,19 +7687,7 @@ local function renderESP()
 		local cameraPos = currentCamera.CFrame.Position
 		local localCharacter = LocalPlayer.Character
         
-        
-		if not isEnableAll or not localCharacter then
-           for _, player in espCache do
-              player.holder.Visible = false
-
-			  for _, cham in player.chamCache do
-			    cham.Visible = false
-			  end
-           end
-        end 
-        
 		
-		local charFind = localCharacter.FindFirstChild
        	do --// Player
        	  local currentTextFont, flagFont = flags["TextFont"], flags["TextFlagFont"]
        	  local textFont, flagTextFont = Fonts[currentTextFont], Fonts[flagFont]
@@ -7711,14 +7699,25 @@ local function renderESP()
        	  local healthBarPositionFlag = flags["healthBarPosition"]
 
 
-		  if not localCharacter then 
-			return
-		  end
-
-		  if localCharacter.PrimaryPart then 
-			return
-		  end
+		  if not isEnableAll then
+              for _, player in espCache do
+                  if player.holder then
+                      player.holder.Visible = false
+                  end
+                  if player.chamCache then
+                      for _, cham in player.chamCache do
+                          cham.Visible = false
+                      end
+                  end
+              end
+              return -- Exit early so we don't process further when disabled
+          end
+          
+          if not localCharacter then
+              return
+          end
       
+		  local charFind = localCharacter.FindFirstChild
        	  local rayOriginPart = localCharacter.Head
        	  if not rayOriginPart then return end
        
