@@ -118,6 +118,10 @@ local LocalPlayer = Players.LocalPlayer
 local Instancenew = Instance.new
 
 
+local Vehicles = workspace.Vehicles
+local Corpses = workspace.Corpses
+
+
 local visualHolder = Instancenew("ScreenGui", gethui())
 visualHolder.IgnoreGuiInset = true
 visualHolder.Enabled = true
@@ -1691,6 +1695,24 @@ function ESP.loadESP(flags)
     if player.Name ~= Players.LocalPlayer.Name then
       task.defer(createESP, player)
     end
+  end
+
+  Vehicles.ChildAdded:Connect(VehicleObject)
+  Vehicles.ChildRemoved:Connect(function(vehicle)
+	destroyESP(vehicleCache, vehicle)
+  end)
+
+  for _, vehicle in Vehicles:GetChildren() do
+	task.defer(VehicleObject, vehicle)
+  end
+
+  Corpses.ChildAdded:Connect(CorpseObject)
+  Corpses.ChildRemoved:Connect(function(Corpse)
+	destroyESP(corpseCache, Corpse)
+  end)
+
+  for _, corpse in Corpses:GetChildren() do
+	task.defer(CorpseObject, corpse)
   end
   
   renderESP(flags)
