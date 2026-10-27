@@ -331,7 +331,7 @@ local function getVis(vis, isVisColor, notVisColor)
 end
 
 
-function ESP.renderESP(flags)
+function renderESP(flags)
     local visParams = RaycastParams.new()
     visParams.FilterType = Enum.RaycastFilterType.Exclude
     visParams.IgnoreWater = false
@@ -1681,7 +1681,7 @@ function ESP.Unload()
 end
 
 
-function ESP.loadESP()
+function ESP.loadESP(flags)
   Players.PlayerAdded:Connect(createESP)
   Players.PlayerRemoving:Connect(function(player)
 	destroyESP(espCache, player)
@@ -1693,7 +1693,7 @@ function ESP.loadESP()
     end
   end
   
-  renderESP()
+  renderESP(flags)
 end
 
 
