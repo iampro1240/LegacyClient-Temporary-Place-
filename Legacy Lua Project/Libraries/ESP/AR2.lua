@@ -426,7 +426,7 @@ local function renderESP(flags)
           
           
           for _, player in espCache do
-            local esp, UI, chamCache, boneCache = player.holder, player.UI, player.chamCache, player.boneCache
+            local esp, UI, chamCache, boneCache, cachedPositions = player.holder, player.UI, player.chamCache, player.boneCache, player.cachedPositions
             local actualPlayer = player.Player
             local character = player.Character
             local espVisible = esp.Visible
@@ -657,7 +657,7 @@ local function renderESP(flags)
                 local part = character[name]
                 local partPosition = part.Position
                 local bonePos = WorldToViewportPoint(currentCamera, partPosition)
-                player.cachedPositions[name] = bonePos
+                cachedPositions[name] = bonePos
               end
 
 
